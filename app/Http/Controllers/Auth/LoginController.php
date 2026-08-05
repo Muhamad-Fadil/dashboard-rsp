@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Rules\RecaptchaRule;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -20,7 +21,11 @@ class LoginController extends Controller
         $credentials = $request->validate([
             'email'    => ['required', 'email'],
             'password' => ['required'],
+            'g-recaptcha-response' => ['required', new RecaptchaRule()],
         ]);
+
+        // hapus captcha dari $credentials biar tidak ikut dicek Auth::attempt
+        unset($credentials['g-recaptcha-response']);
 
         if (! Auth::attempt($credentials, $request->boolean('remember'))) {
             return back()
@@ -30,11 +35,7 @@ class LoginController extends Controller
 
         $request->session()->regenerate();
 
-        $user = Auth::user();
-
-        // kalau ada URL yang dituju sebelum diminta login, arahkan ke situ,
-        // kalau tidak, arahkan sesuai role-nya masing-masing
-        return redirect()->intended($user->redirectUrl());
+        return redirect()->intended(Auth::user()->redirectUrl());
     }
 
     public function logout(Request $request): RedirectResponse
