@@ -16,7 +16,7 @@
 	<body id="kt_body" style="background-image: url({{ asset('assets/media/bg/bg-10.jpg') }})" class="quick-panel-right demo-panel-right offcanvas-right header-fixed subheader-enabled page-loading">
 		<div class="d-flex flex-column flex-root">
 			<div class="login login-3 login-signin-on d-flex flex-row-fluid" id="kt_login">
-				<div class="d-flex flex-center bgi-size-cover bgi-no-repeat flex-row-fluid" style="background-image: url({{ asset('assets/media/bg/bg-8.jpg') }});">
+				<div class="d-flex flex-center bgi-size-cover bgi-no-repeat flex-row-fluid" style="background-image: url({{ asset('assets/media/bg/bg-12.png') }});">
 					<div class="login-form text-center text-white p-7 position-relative overflow-hidden">
 						<div class="d-flex flex-center mb-10">
 							<a href="#">
@@ -24,20 +24,20 @@
 							</a>
 						</div>
 						<div class="login-signin">
-							<div class="mb-15">
-								<h3>Sign In To Dashboard</h3>
-								<p class="opacity-60 font-weight-bold">Enter your details to login to your account:</p>
+							<div class="mb-15" style="color: #006a51;">
+								<h3 class="font-weight-bolder">Sign In To Dashboard</h3>
+								<p class="opacity-80 font-weight-bold">Enter your details to login to your account:</p>
 							</div>
 							<form class="form" id="kt_login_signin_form" method="POST" action="{{ route('login') }}">
                                 @csrf
 								<div class="form-group">
-									<input class="form-control h-auto text-white placeholder-white opacity-70 bg-dark-o-70 rounded-pill border-0 py-4 px-8 mb-5 @error('email') is-invalid @enderror" type="text" placeholder="Email" name="email" value="{{ old('email') }}" autocomplete="off" />
+									<input class="form-control h-auto text-white placeholder-white bg-dark-o-70 rounded-pill border-0 py-4 px-8 mb-5 @error('email') is-invalid @enderror" type="text" placeholder="Email" name="email" value="{{ old('email') }}" autocomplete="off" />
                                     @error('email')
                                         <div class="text-white font-weight-bold mt-2" style="background:rgba(0,0,0,.35); border-radius: 8px; padding: 6px 12px;">{{ $message }}</div>
                                     @enderror
 								</div>
 								<div class="form-group">
-									<input class="form-control h-auto text-white placeholder-white opacity-70 bg-dark-o-70 rounded-pill border-0 py-4 px-8 mb-5" type="password" placeholder="Password" name="password" />
+									<input class="form-control h-auto text-white placeholder-white bg-dark-o-70 rounded-pill border-0 py-4 px-8 mb-5" type="password" placeholder="Password" name="password" />
 								</div>
 								<div class="form-group text-center">
 									<div class="g-recaptcha d-inline-block" data-sitekey="{{ config('services.recaptcha.site_key') }}"></div>
@@ -58,7 +58,7 @@
 								</div>
 							</form>
 							<div class="mt-10">
-								<span class="opacity-70 mr-4">Don't have an account yet?</span>
+								<span class="opacity-80 mr-4">Don't have an account yet?</span>
 								<a href="javascript:;" id="kt_login_signup" class="text-white font-weight-bold">Sign Up</a>
 							</div>
 						</div>
