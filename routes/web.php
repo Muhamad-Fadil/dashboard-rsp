@@ -27,6 +27,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/divisi/{division:slug}', [DivisiController::class, 'show'])
         ->name('divisi.dashboard')
         ->middleware(['role:direktur,manajer,operator', 'division.access']);
+
+    Route::get('/divisi/{division:slug}/kunjungan-harian', [DivisiController::class, 'kunjunganHarian'])
+        ->name('divisi.kunjungan-harian')
+        ->middleware(['role:direktur,manajer,operator', 'division.access']);
 });
 
 // arahkan halaman utama ke /login
