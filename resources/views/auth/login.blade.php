@@ -16,7 +16,7 @@
 	<body id="kt_body" style="background-image: url({{ asset('assets/media/bg/bg-10.jpg') }})" class="quick-panel-right demo-panel-right offcanvas-right header-fixed subheader-enabled page-loading">
 		<div class="d-flex flex-column flex-root">
 			<div class="login login-3 login-signin-on d-flex flex-row-fluid" id="kt_login">
-				<div class="d-flex flex-center bgi-size-cover bgi-no-repeat flex-row-fluid" style="background-image: url({{ asset('assets/media/bg/bg-12.png') }});">
+				<div class="d-flex flex-center bgi-size-cover bgi-no-repeat flex-row-fluid" style="background-image: url({{ asset('assets/media/bg/bg-13.png') }});">
 					<div class="login-form text-center text-white p-7 position-relative overflow-hidden">
 						<div class="d-flex flex-center mb-10">
 							<a href="#">
@@ -45,7 +45,7 @@
 										<div class="text-white font-weight-bold mt-2" style="background:rgba(0,0,0,.35); border-radius: 8px; padding: 6px 12px;">{{ $message }}</div>
 									@enderror
 								</div>
-								<div class="form-group d-flex flex-wrap justify-content-between align-items-center px-8">
+								<div class="form-group d-flex flex-wrap justify-content-between align-items-center px-8" >
 									<div class="checkbox-inline">
 										<label class="checkbox checkbox-outline checkbox-white text-white m-0">
 										<input type="checkbox" name="remember" />
@@ -54,7 +54,7 @@
 									<a href="javascript:;" id="kt_login_forgot" class="text-white font-weight-bold">Forget Password ?</a>
 								</div>
 								<div class="form-group text-center mt-10">
-									<button type="submit" id="kt_login_signin_submit" class="btn btn-pill btn-outline-white font-weight-bold opacity-90 px-15 py-3">Sign In</button>
+									<button type="submit" id="kt_login_signin_submit" class=" btn btn-success btn-shadow font-weight-bold opacity-90 px-15 py-3">Sign In</button>
 								</div>
 							</form>
 							<div class="mt-10">

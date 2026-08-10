@@ -77,7 +77,7 @@
     {{-- Header + Filter --}}
     <div class="page-header d-flex justify-content-between align-items-center flex-wrap mb-6">
         <div>
-            <h1 class="font-weight-bolder mb-1"><i class="fas fa-heartbeat mr-2"></i>Dashboard Layanan</h1>
+            <h1 class="font-weight-bolder mb-1">Dashboard Layanan</h1>
             <span class="text-muted-light font-weight-bold">Statistik pelayanan pasien & fasilitas rumah sakit</span>
         </div>
     </div>
