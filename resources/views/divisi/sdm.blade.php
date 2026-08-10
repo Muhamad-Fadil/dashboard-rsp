@@ -114,7 +114,7 @@
             <div class="card stat-card"><div class="card-body">
                 <div class="stat-icon" style="background:#FFF6E0; color:#FFA800;"><i class="fas fa-plane-departure"></i></div>
                 <div class="stat-value text-dark">{{ $data['jumlah_cuti_aktif'] }}</div>
-                <div class="stat-label">Pegawai Cuti/Izin Hari Ini HEHE</div>
+                <div class="stat-label">Pegawai Cuti/Izin Hari Ini</div>
             </div></div>
         </div>
         <div class="col-xl-3 col-md-6 mb-4">
