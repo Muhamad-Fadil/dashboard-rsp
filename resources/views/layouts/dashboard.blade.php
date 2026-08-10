@@ -9,6 +9,18 @@
     <link href="{{ asset('assets/css/style.bundle.css') }}" rel="stylesheet" type="text/css" />
     <link rel="shortcut icon" href="{{ asset('assets/media/logos/favicon.ico') }}" />
 
+    <style>
+        .icon-inline {
+            width: 1em; height: 1em;
+            display: inline-block;
+            vertical-align: -0.125em;
+        }
+        nav[role="navigation"] svg {
+            width: 16px !important;
+            height: 16px !important;
+        }
+    </style>
+
     @stack('styles')
 </head>
 <body id="kt_body" style="background:#f4f6f9;">

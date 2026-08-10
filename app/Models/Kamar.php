@@ -11,10 +11,11 @@ class Kamar extends Model
     protected $table = 'kamar';
 
     protected $fillable = [
-        'nomor_kamar',
-        'unit_kerja_id',
-        'kelas',
-        'tarif_per_hari',
+            'nomor_kamar',
+            'nama_bangsal',
+            'unit_kerja_id',
+            'kelas',
+            'tarif_per_hari',
     ];
 
     public function unitKerja(): BelongsTo

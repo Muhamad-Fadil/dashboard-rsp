@@ -4,6 +4,8 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DirekturController;
 use App\Http\Controllers\DivisiController;
+use App\Http\Controllers\PasienController;
+use App\Http\Controllers\KunjunganController;
 use Illuminate\Support\Facades\Route;
 
 // ---- Login ----
@@ -30,6 +32,14 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/divisi/{division:slug}/kunjungan-harian', [DivisiController::class, 'kunjunganHarian'])
         ->name('divisi.kunjungan-harian')
+        ->middleware(['role:direktur,manajer,operator', 'division.access']);
+
+    Route::get('/divisi/{division:slug}/pasien', [PasienController::class, 'index'])
+        ->name('divisi.pasien')
+        ->middleware(['role:direktur,manajer,operator', 'division.access']);
+
+    Route::get('/divisi/{division:slug}/kunjungan', [KunjunganController::class, 'index'])
+        ->name('divisi.kunjungan')
         ->middleware(['role:direktur,manajer,operator', 'division.access']);
 });
 

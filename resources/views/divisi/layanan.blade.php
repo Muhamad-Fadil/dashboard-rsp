@@ -74,6 +74,7 @@
 @section('content')
 <div class="container-fluid px-6 py-6">
 
+    @include('partials.submenu-layanan')
     {{-- Header + Filter --}}
     <div class="page-header d-flex justify-content-between align-items-center flex-wrap mb-6">
         <div>

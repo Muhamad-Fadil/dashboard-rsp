@@ -13,8 +13,8 @@ class BedSeeder extends Seeder
         $semuaKamar = Kamar::all();
 
         foreach ($semuaKamar as $kamar) {
-            // ICU cuma 1 bed per "kamar", kamar biasa 2 bed
-            $jumlahBed = $kamar->kelas === 'icu' ? 1 : 2;
+            // ICU & HCU cuma 1 bed per "kamar" (perawatan intensif/high care), kamar biasa 2 bed
+            $jumlahBed = in_array($kamar->kelas, ['icu', 'hcu']) ? 1 : 2;
 
             for ($i = 1; $i <= $jumlahBed; $i++) {
                 $nomorBed = $jumlahBed === 1 ? 'A' : chr(64 + $i); // A, B
