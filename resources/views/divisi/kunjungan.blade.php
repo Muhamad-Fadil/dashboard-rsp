@@ -26,6 +26,7 @@
             <h1 class="font-weight-bolder text-dark mb-0">Kunjungan</h1>
             <span class="text-muted font-weight-bold">Daftar seluruh kunjungan pasien rawat jalan, rawat inap, dan IGD</span>
         </div>
+        <x-modal-pdf id="modalPdfKunjungan" title="Data Kunjungan" :action="route('divisi.kunjungan.pdf', $division->slug)" />
     </div>
 
     @include('partials.submenu-layanan')

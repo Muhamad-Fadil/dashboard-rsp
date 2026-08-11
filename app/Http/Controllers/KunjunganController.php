@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Division;
 use App\Models\Kunjungan;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\View\View;
 
 class KunjunganController extends Controller
@@ -51,5 +53,27 @@ class KunjunganController extends Controller
             'awal' => $awal,
             'akhir' => $akhir,
         ]);
+        
+    }
+
+    public function exportPdf(Request $request, Division $division)
+    {
+        abort_unless($division->slug === 'layanan', 404);
+
+        $awal = Carbon::parse($request->query('awal', now()->subDays(30)))->startOfDay();
+        $akhir = Carbon::parse($request->query('akhir', now()))->endOfDay();
+
+        $kunjungan = Kunjungan::with(['pasien', 'poli', 'dokter', 'operator'])
+            ->whereBetween('waktu_daftar', [$awal, $akhir])
+            ->orderBy('waktu_daftar')
+            ->get();
+
+        $pdf = Pdf::loadView('pdf.kunjungan', [
+            'kunjungan' => $kunjungan,
+            'awal' => $awal,
+            'akhir' => $akhir,
+        ])->setPaper('a4', 'landscape');
+
+        return $pdf->stream('kunjungan-' . $awal->format('Ymd') . '-' . $akhir->format('Ymd') . '.pdf');
     }
 }

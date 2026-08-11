@@ -3,11 +3,11 @@
         ['label' => 'Ringkasan', 'route' => 'divisi.dashboard', 'aktif' => true],
         ['label' => 'Data Pasien', 'route' => 'divisi.pasien', 'aktif' => true],
         ['label' => 'Kunjungan', 'route' => 'divisi.kunjungan', 'aktif' => true],
-        ['label' => 'Rawat Inap', 'route' => null, 'aktif' => false],
-        ['label' => 'Operasi', 'route' => null, 'aktif' => false],
-        ['label' => 'Laboratorium', 'route' => null, 'aktif' => false],
-        ['label' => 'Radiologi', 'route' => null, 'aktif' => false],
-        ['label' => 'Resep', 'route' => null, 'aktif' => false],
+        ['label' => 'Rawat Inap', 'route' => 'divisi.rawat-inap', 'aktif' => true],
+        ['label' => 'Operasi', 'route' => 'divisi.operasi', 'aktif' => true],
+        ['label' => 'Laboratorium', 'route' => 'divisi.laboratorium', 'aktif' => true],
+        ['label' => 'Radiologi', 'route' => 'divisi.radiologi', 'aktif' => true],
+        ['label' => 'Resep', 'route' => 'divisi.resep', 'aktif' => true],
     ];
 @endphp
 

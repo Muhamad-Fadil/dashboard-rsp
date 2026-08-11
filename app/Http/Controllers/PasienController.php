@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Division;
 use App\Models\Pasien;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\View\View;
 
 class PasienController extends Controller
@@ -33,5 +35,25 @@ class PasienController extends Controller
             'pasien' => $pasien,
             'cari' => $cari,
         ]);
+    }
+
+    public function exportPdf(Request $request, Division $division)
+    {
+        abort_unless($division->slug === 'layanan', 404);
+
+        $awal = Carbon::parse($request->query('awal', now()->subDays(30)))->startOfDay();
+        $akhir = Carbon::parse($request->query('akhir', now()))->endOfDay();
+
+        $pasien = Pasien::with('jenisPembayaran')
+            ->whereBetween('tanggal_registrasi', [$awal, $akhir])
+            ->orderBy('nama')
+            ->get();
+        $pdf = Pdf::loadView('pdf.pasien', [
+            'pasien' => $pasien,
+            'awal' => $awal,
+            'akhir' => $akhir,
+        ])->setPaper('a4', 'landscape');
+
+        return $pdf->stream('data-pasien-' . $awal->format('Ymd') . '-' . $akhir->format('Ymd') . '.pdf');
     }
 }

@@ -28,6 +28,7 @@
             <h1 class="font-weight-bolder text-dark mb-0">Data Pasien</h1>
             <span class="text-muted font-weight-bold">Seluruh data pasien terdaftar di RSP Goenawan Cisarua</span>
         </div>
+        <x-modal-pdf id="modalPdfPasien" title="Data Pasien" :action="route('divisi.pasien.pdf', $division->slug)" />
     </div>
 
     @include('partials.submenu-layanan')

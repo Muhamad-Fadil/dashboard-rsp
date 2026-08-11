@@ -12,6 +12,7 @@ class Pasien extends Model
     protected $fillable = [
         'no_rm',
         'no_registrasi',
+        'tanggal_registrasi',
         'nama',
         'jenis_kelamin',
         'tanggal_lahir',
@@ -25,6 +26,7 @@ class Pasien extends Model
     {
         return [
             'tanggal_lahir' => 'date',
+            'tanggal_registrasi' => 'date',
         ];
     }
 
