@@ -12,6 +12,10 @@ use App\Http\Controllers\LaboratoriumController;
 use App\Http\Controllers\RadiologiController;
 use App\Http\Controllers\ResepController;
 use App\Http\Controllers\ProduktivitasController;
+use App\Http\Controllers\PendapatanController;
+use App\Http\Controllers\PengeluaranController;
+use App\Http\Controllers\CashFlowController;
+use App\Http\Controllers\KlaimBpjsController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -84,6 +88,23 @@ Route::middleware('auth')->group(function () {
     // ---- Sub-menu SDM: Produktivitas ----
     Route::get('/divisi/{division:slug}/produktivitas', [ProduktivitasController::class, 'index'])
         ->name('divisi.sdm.produktivitas')
+        ->middleware(['role:direktur,manajer,operator', 'division.access']);
+
+    // ---- Sub-menu Keuangan: Pendapatan, Pengeluaran, Cashflow ----
+    Route::get('/divisi/{division:slug}/pendapatan', [PendapatanController::class, 'index'])
+        ->name('divisi.keuangan.pendapatan')
+        ->middleware(['role:direktur,manajer,operator', 'division.access']);
+
+    Route::get('/divisi/{division:slug}/pengeluaran', [PengeluaranController::class, 'index'])
+        ->name('divisi.keuangan.pengeluaran')
+        ->middleware(['role:direktur,manajer,operator', 'division.access']);
+
+    Route::get('/divisi/{division:slug}/cash-flow', [CashFlowController::class, 'index'])
+        ->name('divisi.keuangan.cash-flow')
+        ->middleware(['role:direktur,manajer,operator', 'division.access']);
+
+    Route::get('/divisi/{division:slug}/klaim-bpjs', [KlaimBpjsController::class, 'index'])
+        ->name('divisi.keuangan.klaim-bpjs')
         ->middleware(['role:direktur,manajer,operator', 'division.access']);
 });
 
