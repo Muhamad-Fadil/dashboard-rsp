@@ -11,7 +11,9 @@ use App\Http\Controllers\OperasiController;
 use App\Http\Controllers\LaboratoriumController;
 use App\Http\Controllers\RadiologiController;
 use App\Http\Controllers\ResepController;
+use App\Http\Controllers\ProduktivitasController;
 use Illuminate\Support\Facades\Route;
+
 
 // ---- Login ----
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -54,15 +56,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/divisi/{division:slug}/kunjungan/pdf', [KunjunganController::class, 'exportPdf'])
         ->name('divisi.layanan.kunjungan.pdf')
         ->middleware(['role:direktur,manajer,operator', 'division.access']);
-    
+
     Route::get('/divisi/{division:slug}/rawat-inap', [RawatInapController::class, 'index'])
         ->name('divisi.layanan.rawat-inap')
         ->middleware(['role:direktur,manajer,operator', 'division.access']);
-    
+
     Route::get('/divisi/{division:slug}/rawat-inap/pdf', [RawatInapController::class, 'exportPdf'])
         ->name('divisi.layanan.rawat-inap.pdf')
         ->middleware(['role:direktur,manajer,operator', 'division.access']);
-    
+
     Route::get('/divisi/{division:slug}/operasi', [OperasiController::class, 'index'])
         ->name('divisi.layanan.operasi')
         ->middleware(['role:direktur,manajer,operator', 'division.access']);
@@ -74,11 +76,16 @@ Route::middleware('auth')->group(function () {
     Route::get('/divisi/{division:slug}/radiologi', [RadiologiController::class, 'index'])
         ->name('divisi.layanan.radiologi')
         ->middleware(['role:direktur,manajer,operator', 'division.access']);
-    
+
     Route::get('/divisi/{division:slug}/resep', [ResepController::class, 'index'])
         ->name('divisi.layanan.resep')
+        ->middleware(['role:direktur,manajer,operator', 'division.access']);
+
+    // ---- Sub-menu SDM: Produktivitas ----
+    Route::get('/divisi/{division:slug}/produktivitas', [ProduktivitasController::class, 'index'])
+        ->name('divisi.sdm.produktivitas')
         ->middleware(['role:direktur,manajer,operator', 'division.access']);
 });
 
 // arahkan halaman utama ke /login
-Route::get('/', fn () => redirect()->route('login'));
+Route::get('/', fn() => redirect()->route('login'));

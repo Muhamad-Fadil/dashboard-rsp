@@ -42,7 +42,7 @@ class SdmIndikatorService
             ->selectRaw('profesi.kategori, count(*) as total')
             ->groupBy('profesi.kategori')
             ->get()
-            ->map(fn ($row) => [
+            ->map(fn($row) => [
                 'kategori' => $row->kategori,
                 'label' => $label[$row->kategori] ?? $row->kategori,
                 'total' => $row->total,
@@ -118,6 +118,36 @@ class SdmIndikatorService
                 $q->whereBetween('tanggal_mulai', [$awal, $akhir]);
             })
             ->count();
+    }
+
+    public function produktivitasPerUnit(Carbon $awal, Carbon $akhir)
+    {
+        $pegawaiPerUnit = Pegawai::where('pegawai.aktif', true)
+            ->join('unit_kerja', 'pegawai.unit_kerja_id', '=', 'unit_kerja.id')
+            ->selectRaw('unit_kerja.id as unit_kerja_id, unit_kerja.nama_unit, count(*) as jumlah_pegawai')
+            ->groupBy('unit_kerja.id', 'unit_kerja.nama_unit')
+            ->get();
+
+        $kunjunganPerUnit = \App\Models\Kunjungan::whereBetween('kunjungan.waktu_daftar', [$awal, $akhir])
+            ->join('poli', 'kunjungan.poli_id', '=', 'poli.id')
+            ->selectRaw('poli.unit_kerja_id, count(*) as beban_kerja')
+            ->groupBy('poli.unit_kerja_id')
+            ->get()
+            ->pluck('beban_kerja', 'unit_kerja_id');
+
+        return $pegawaiPerUnit->map(function ($unit) use ($kunjunganPerUnit) {
+            $bebanKerja = (int) ($kunjunganPerUnit[$unit->unit_kerja_id] ?? 0);
+            $rasio = $unit->jumlah_pegawai > 0
+                ? round($bebanKerja / $unit->jumlah_pegawai, 1)
+                : 0;
+
+            return [
+                'nama_unit' => $unit->nama_unit,
+                'jumlah_pegawai' => $unit->jumlah_pegawai,
+                'beban_kerja' => $bebanKerja,
+                'rasio' => $rasio,
+            ];
+        })->sortByDesc('rasio')->values();
     }
 
     /**
