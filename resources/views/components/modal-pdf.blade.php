@@ -1,6 +1,6 @@
 @props(['id', 'title', 'action'])
 
-<button type="button" class="btn btn-light-primary font-weight-bold" data-toggle="modal" data-target="#{{ $id }}">
+<button type="button" class="btn btn-dark font-weight-bold" data-toggle="modal" data-target="#{{ $id }}">
     Download PDF
 </button>
 

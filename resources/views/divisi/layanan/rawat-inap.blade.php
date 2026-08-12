@@ -15,18 +15,33 @@
     .table-modern tbody tr:hover { background: #f9f9fb; }
     .badge-modern { border-radius: 20px; padding: 6px 14px; font-weight: 600; font-size: 12px; }
     nav[role="navigation"] svg { width: 16px !important; height: 16px !important; }
+
+    .page-header {
+        background: linear-gradient(135deg, #845401 0%, #eae42c 100%);
+        width: 100%;
+        border-radius: 18px;
+        padding: 28px 32px;
+        color: #fff;
+        box-shadow: 0 10px 30px rgba(105,147,255,.25);
+    }
+    .page-header h1 { color: #fff; }
+    .page-header .text-muted-light { color: rgba(255,255,255,.8) !important; }
 </style>
 @endpush
 
 @section('content')
 <div class="container-fluid px-6 py-6">
+    
+    @include('partials.submenu-layanan')
 
-    <div class="d-flex justify-content-between align-items-center flex-wrap mb-4">
-        <div>
-            <h1 class="font-weight-bolder text-dark mb-0">Rawat Inap</h1>
-            <span class="text-muted font-weight-bold">Daftar pasien rawat inap, kamar/bed, dan lama perawatan</span>
-        </div>
+    <div class="d-flex justify-content-between align-items-center flex-wrap">
+        <div class="page-header d-flex justify-content-between align-items-center flex-wrap mb-6">
+            <div>
+                <h1 class="font-weight-bolder mb-1">Rawat Inap</h1>
+                <span class="text-muted-light font-weight-bold">Daftar pasien rawat inap, kamar/bed, dan lama perawatan</span>
+            </div>
         <x-modal-pdf id="modalPdfRawatInap" title="Data Rawat Inap" :action="route('divisi.layanan.rawat-inap.pdf', $division->slug)">
+        </div>
             <div class="form-group mb-0">
                 <label class="font-weight-bold font-size-sm">Bangsal (opsional)</label>
                 <select name="bangsal" class="form-control form-control-solid">
@@ -39,7 +54,6 @@
         </x-modal-pdf>
     </div>
 
-    @include('partials.submenu-layanan')
 
     {{-- Ringkasan --}}
     <div class="row mb-2">

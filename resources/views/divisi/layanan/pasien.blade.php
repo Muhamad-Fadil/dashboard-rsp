@@ -17,21 +17,34 @@
         display: flex; align-items: center; justify-content: center;
         font-weight: 700; font-size: 15px;
     }
+
+    .page-header {
+        background: linear-gradient(135deg, #005d21 0%, #09c5e6 100%);
+        width: 100%;
+        border-radius: 18px;
+        padding: 28px 32px;
+        color: #fff;
+        box-shadow: 0 10px 30px rgba(105,147,255,.25);
+    }
+    .page-header h1 { color: #fff; }
+    .page-header .text-muted-light { color: rgba(255,255,255,.8) !important; }
 </style>
 @endpush
 
 @section('content')
-<div class="container-fluid px-6 py-6">
-
-    <div class="d-flex justify-content-between align-items-center flex-wrap mb-4">
-        <div>
-            <h1 class="font-weight-bolder text-dark mb-0">Data Pasien</h1>
-            <span class="text-muted font-weight-bold">Seluruh data pasien terdaftar di RSP Goenawan Cisarua</span>
-        </div>
-        <x-modal-pdf id="modalPdfPasien" title="Data Pasien" :action="route('divisi.layanan.pasien.pdf', $division->slug)" />
-    </div>
+<div class="container-fluid px-6 py-6" style="">
 
     @include('partials.submenu-layanan')
+
+    <div class="d-flex justify-content-between align-items-center flex-wrap">
+        <div class="page-header d-flex justify-content-between align-items-center flex-wrap mb-6">
+            <div>
+                <h1 class="font-weight-bolder mb-1">Data Pasien</h1>
+                <span class="text-muted-light font-weight-bold">Seluruh data pasien terdaftar di RSP Goenawan Cisarua</span>
+            </div>
+            <x-modal-pdf id="modalPdfPasien" title="Data Pasien" :action="route('divisi.layanan.pasien.pdf', $division->slug)" />
+        </div>
+    </div>
 
     <div class="card modern-card">
         <div class="card-body p-5">
