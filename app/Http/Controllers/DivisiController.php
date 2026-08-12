@@ -3,6 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Division;
+use App\Models\Kunjungan;
+use App\Models\Laboratorium;
+use App\Models\Operasi;
+use App\Models\Pasien;
+use App\Models\RawatInap;
+use App\Models\Radiologi;
+use App\Models\Resep;
 use App\Services\KeuanganIndikatorService;
 use App\Services\LayananIndikatorService;
 use App\Services\SdmIndikatorService;
@@ -48,9 +55,36 @@ class DivisiController extends Controller
         $data = $service->ringkasan($awal, $akhir);
         $data['kunjungan_per_bulan'] = $service->kunjunganPerBulan($jumlahBulanChart);
 
+        // ringkasan cepat dari tiap sub-menu, buat ditampilkan sebagai akses cepat di Ringkasan
+        $ringkasanSubMenu = [
+            'pasien' => [
+                'total' => Pasien::count(),
+            ],
+            'kunjungan' => [
+                'total' => Kunjungan::count(),
+                'menunggu' => Kunjungan::where('status', 'menunggu')->count(),
+            ],
+            'rawat_inap' => [
+                'dirawat' => RawatInap::whereNull('tanggal_keluar')->count(),
+            ],
+            'operasi' => [
+                'aktif' => Operasi::whereIn('status', ['dijadwalkan', 'berlangsung'])->count(),
+            ],
+            'laboratorium' => [
+                'aktif' => Laboratorium::whereIn('status', ['menunggu', 'diproses'])->count(),
+            ],
+            'radiologi' => [
+                'aktif' => Radiologi::whereIn('status', ['menunggu', 'diproses'])->count(),
+            ],
+            'resep' => [
+                'aktif' => Resep::whereIn('status', ['menunggu', 'diproses'])->count(),
+            ],
+        ];
+
         return view('divisi.layanan.dashboard', [
             'division' => $division,
             'data' => $data,
+            'ringkasanSubMenu' => $ringkasanSubMenu,
             'awal' => $awal,
             'akhir' => $akhir,
             'jumlahBulanChart' => $jumlahBulanChart,
