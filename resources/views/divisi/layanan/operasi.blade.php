@@ -79,7 +79,7 @@
                 </div>
                 <button type="submit" class="btn btn-primary font-weight-bold px-6">Terapkan</button>
                 @if ($cari || $status)
-                    <a href="{{ route('divisi.operasi', $division->slug) }}" class="btn btn-light font-weight-bold px-4">Reset</a>
+                    <a href="{{ route('divisi.layanan.operasi', $division->slug) }}" class="btn btn-light font-weight-bold px-4">Reset</a>
                 @endif
             </form>
 

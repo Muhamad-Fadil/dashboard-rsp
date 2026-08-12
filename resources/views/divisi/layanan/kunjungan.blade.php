@@ -26,7 +26,7 @@
             <h1 class="font-weight-bolder text-dark mb-0">Kunjungan</h1>
             <span class="text-muted font-weight-bold">Daftar seluruh kunjungan pasien rawat jalan, rawat inap, dan IGD</span>
         </div>
-        <x-modal-pdf id="modalPdfKunjungan" title="Data Kunjungan" :action="route('divisi.kunjungan.pdf', $division->slug)" />
+        <x-modal-pdf id="modalPdfKunjungan" title="Data Kunjungan" :action="route('divisi.layanan.kunjungan.pdf', $division->slug)" />
     </div>
 
     @include('partials.submenu-layanan')
@@ -97,7 +97,7 @@
                 </div>
                 <button type="submit" class="btn btn-primary font-weight-bold px-6">Terapkan</button>
                 @if ($cari || $jenis || $status)
-                    <a href="{{ route('divisi.kunjungan', $division->slug) }}" class="btn btn-light font-weight-bold px-4">Reset</a>
+                    <a href="{{ route('divisi.layanan.kunjungan', $division->slug) }}" class="btn btn-light font-weight-bold px-4">Reset</a>
                 @endif
             </form>
 

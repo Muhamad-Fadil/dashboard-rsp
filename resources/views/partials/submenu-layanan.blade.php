@@ -1,13 +1,13 @@
 @php
     $menuLayanan = [
         ['label' => 'Ringkasan', 'route' => 'divisi.dashboard', 'aktif' => true],
-        ['label' => 'Data Pasien', 'route' => 'divisi.pasien', 'aktif' => true],
-        ['label' => 'Kunjungan', 'route' => 'divisi.kunjungan', 'aktif' => true],
-        ['label' => 'Rawat Inap', 'route' => 'divisi.rawat-inap', 'aktif' => true],
-        ['label' => 'Operasi', 'route' => 'divisi.operasi', 'aktif' => true],
-        ['label' => 'Laboratorium', 'route' => 'divisi.laboratorium', 'aktif' => true],
-        ['label' => 'Radiologi', 'route' => 'divisi.radiologi', 'aktif' => true],
-        ['label' => 'Resep', 'route' => 'divisi.resep', 'aktif' => true],
+        ['label' => 'Data Pasien', 'route' => 'divisi.layanan.pasien', 'aktif' => true],
+        ['label' => 'Kunjungan', 'route' => 'divisi.layanan.kunjungan', 'aktif' => true],
+        ['label' => 'Rawat Inap', 'route' => 'divisi.layanan.rawat-inap', 'aktif' => true],
+        ['label' => 'Operasi', 'route' => 'divisi.layanan.operasi', 'aktif' => true],
+        ['label' => 'Laboratorium', 'route' => 'divisi.layanan.laboratorium', 'aktif' => true],
+        ['label' => 'Radiologi', 'route' => 'divisi.layanan.radiologi', 'aktif' => true],
+        ['label' => 'Resep', 'route' => 'divisi.layanan.resep', 'aktif' => true],
     ];
 @endphp
 

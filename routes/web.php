@@ -36,47 +36,47 @@ Route::middleware('auth')->group(function () {
         ->middleware(['role:direktur,manajer,operator', 'division.access']);
 
     Route::get('/divisi/{division:slug}/kunjungan-harian', [DivisiController::class, 'kunjunganHarian'])
-        ->name('divisi.kunjungan-harian')
+        ->name('divisi.layanan.kunjungan-harian')
         ->middleware(['role:direktur,manajer,operator', 'division.access']);
 
     Route::get('/divisi/{division:slug}/pasien', [PasienController::class, 'index'])
-        ->name('divisi.pasien')
+        ->name('divisi.layanan.pasien')
         ->middleware(['role:direktur,manajer,operator', 'division.access']);
 
     Route::get('/divisi/{division:slug}/pasien/pdf', [PasienController::class, 'exportPdf'])
-        ->name('divisi.pasien.pdf')
+        ->name('divisi.layanan.pasien.pdf')
         ->middleware(['role:direktur,manajer,operator', 'division.access']);
 
     Route::get('/divisi/{division:slug}/kunjungan', [KunjunganController::class, 'index'])
-        ->name('divisi.kunjungan')
+        ->name('divisi.layanan.kunjungan')
         ->middleware(['role:direktur,manajer,operator', 'division.access']);
 
     Route::get('/divisi/{division:slug}/kunjungan/pdf', [KunjunganController::class, 'exportPdf'])
-        ->name('divisi.kunjungan.pdf')
+        ->name('divisi.layanan.kunjungan.pdf')
         ->middleware(['role:direktur,manajer,operator', 'division.access']);
     
     Route::get('/divisi/{division:slug}/rawat-inap', [RawatInapController::class, 'index'])
-        ->name('divisi.rawat-inap')
+        ->name('divisi.layanan.rawat-inap')
         ->middleware(['role:direktur,manajer,operator', 'division.access']);
     
     Route::get('/divisi/{division:slug}/rawat-inap/pdf', [RawatInapController::class, 'exportPdf'])
-        ->name('divisi.rawat-inap.pdf')
+        ->name('divisi.layanan.rawat-inap.pdf')
         ->middleware(['role:direktur,manajer,operator', 'division.access']);
     
     Route::get('/divisi/{division:slug}/operasi', [OperasiController::class, 'index'])
-        ->name('divisi.operasi')
+        ->name('divisi.layanan.operasi')
         ->middleware(['role:direktur,manajer,operator', 'division.access']);
 
     Route::get('/divisi/{division:slug}/laboratorium', [LaboratoriumController::class, 'index'])
-        ->name('divisi.laboratorium')
+        ->name('divisi.layanan.laboratorium')
         ->middleware(['role:direktur,manajer,operator', 'division.access']);
 
     Route::get('/divisi/{division:slug}/radiologi', [RadiologiController::class, 'index'])
-        ->name('divisi.radiologi')
+        ->name('divisi.layanan.radiologi')
         ->middleware(['role:direktur,manajer,operator', 'division.access']);
     
     Route::get('/divisi/{division:slug}/resep', [ResepController::class, 'index'])
-        ->name('divisi.resep')
+        ->name('divisi.layanan.resep')
         ->middleware(['role:direktur,manajer,operator', 'division.access']);
 });
 

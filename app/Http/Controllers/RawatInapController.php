@@ -44,7 +44,7 @@ class RawatInapController extends Controller
 
         $daftarBangsal = \App\Models\Kamar::select('nama_bangsal')->distinct()->orderBy('nama_bangsal')->pluck('nama_bangsal');
 
-        return view('divisi.rawat-inap', [
+        return view('divisi.layanan.rawat-inap', [
             'division' => $division,
             'rawatInap' => $rawatInap,
             'ringkasan' => $ringkasan,
@@ -71,7 +71,7 @@ class RawatInapController extends Controller
             ->orderBy('tanggal_masuk')
             ->get();
 
-        $pdf = Pdf::loadView('pdf.rawat-inap', [
+        $pdf = Pdf::loadView('pdf.layanan.rawat-inap', [
             'rawatInap' => $rawatInap,
             'awal' => $awal,
             'akhir' => $akhir,

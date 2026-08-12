@@ -25,13 +25,13 @@ class DivisiController extends Controller
 
         return match ($division->slug) {
             'layanan' => $this->tampilLayanan($division, $awal, $akhir, $jumlahBulanChart),
-            'sdm' => view('divisi.sdm', [
+            'sdm' => view('divisi.sdm.dashboard', [
                 'division' => $division,
                 'data' => app(SdmIndikatorService::class)->ringkasan($awal, $akhir),
                 'awal' => $awal,
                 'akhir' => $akhir,
             ]),
-            'keuangan' => view('divisi.keuangan', [
+            'keuangan' => view('divisi.keuangan.dashboard', [
                 'division' => $division,
                 'data' => app(KeuanganIndikatorService::class)->ringkasan($awal, $akhir),
                 'awal' => $awal,
@@ -48,7 +48,7 @@ class DivisiController extends Controller
         $data = $service->ringkasan($awal, $akhir);
         $data['kunjungan_per_bulan'] = $service->kunjunganPerBulan($jumlahBulanChart);
 
-        return view('divisi.layanan', [
+        return view('divisi.layanan.dashboard', [
             'division' => $division,
             'data' => $data,
             'awal' => $awal,

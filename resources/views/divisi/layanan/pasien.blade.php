@@ -28,7 +28,7 @@
             <h1 class="font-weight-bolder text-dark mb-0">Data Pasien</h1>
             <span class="text-muted font-weight-bold">Seluruh data pasien terdaftar di RSP Goenawan Cisarua</span>
         </div>
-        <x-modal-pdf id="modalPdfPasien" title="Data Pasien" :action="route('divisi.pasien.pdf', $division->slug)" />
+        <x-modal-pdf id="modalPdfPasien" title="Data Pasien" :action="route('divisi.layanan.pasien.pdf', $division->slug)" />
     </div>
 
     @include('partials.submenu-layanan')
@@ -45,7 +45,7 @@
                            placeholder="Cari nama, no RM, no registrasi, atau NIK...">
                     @if ($cari)
                         <div class="input-group-append">
-                            <a href="{{ route('divisi.pasien', $division->slug) }}" class="btn btn-light border-0 text-muted">
+                            <a href="{{ route('divisi.layanan.pasien', $division->slug) }}" class="btn btn-light border-0 text-muted">
                                 &times;
                             </a>
                         </div>

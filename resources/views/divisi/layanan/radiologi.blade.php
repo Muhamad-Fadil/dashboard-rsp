@@ -1,6 +1,6 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Laboratorium')
+@section('title', 'Radiologi')
 
 @push('styles')
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -23,8 +23,8 @@
 
     <div class="d-flex justify-content-between align-items-center flex-wrap mb-4">
         <div>
-            <h1 class="font-weight-bolder text-dark mb-0">Laboratorium</h1>
-            <span class="text-muted font-weight-bold">Daftar pemeriksaan laboratorium pasien</span>
+            <h1 class="font-weight-bolder text-dark mb-0">Radiologi</h1>
+            <span class="text-muted font-weight-bold">Daftar pemeriksaan radiologi pasien</span>
         </div>
     </div>
 
@@ -78,7 +78,7 @@
                 </div>
                 <button type="submit" class="btn btn-primary font-weight-bold px-6">Terapkan</button>
                 @if ($cari || $status)
-                    <a href="{{ route('divisi.laboratorium', $division->slug) }}" class="btn btn-light font-weight-bold px-4">Reset</a>
+                    <a href="{{ route('divisi.layanan.radiologi', $division->slug) }}" class="btn btn-light font-weight-bold px-4">Reset</a>
                 @endif
             </form>
 
@@ -95,19 +95,19 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($laboratorium as $l)
+                        @forelse ($radiologi as $r)
                         <tr>
                             <td>
-                                <div class="font-weight-bold text-dark">{{ $l->kunjungan->pasien->nama ?? '-' }}</div>
-                                <div class="text-muted font-size-sm">{{ $l->kunjungan->pasien->no_rm ?? '-' }}</div>
+                                <div class="font-weight-bold text-dark">{{ $r->kunjungan->pasien->nama ?? '-' }}</div>
+                                <div class="text-muted font-size-sm">{{ $r->kunjungan->pasien->no_rm ?? '-' }}</div>
                             </td>
-                            <td class="font-weight-bold">{{ $l->jenis_pemeriksaan }}</td>
-                            <td>{{ $l->waktu_periksa->format('d M Y, H:i') }}</td>
-                            <td>{{ $l->petugas->name ?? '-' }}</td>
-                            <td>{{ $l->hasil ?? '-' }}</td>
+                            <td class="font-weight-bold">{{ $r->jenis_pemeriksaan }}</td>
+                            <td>{{ $r->waktu_periksa->format('d M Y, H:i') }}</td>
+                            <td>{{ $r->petugas->name ?? '-' }}</td>
+                            <td>{{ $r->hasil ?? '-' }}</td>
                             <td>
                                 @php
-                                    $warnaStatus = match($l->status) {
+                                    $warnaStatus = match($r->status) {
                                         'menunggu' => ['bg' => '#FFF6E0', 'text' => '#FFA800', 'label' => 'Menunggu'],
                                         'diproses' => ['bg' => '#EEF3FF', 'text' => '#6993FF', 'label' => 'Diproses'],
                                         'selesai' => ['bg' => '#E8FFF3', 'text' => '#1BC5BD', 'label' => 'Selesai'],
@@ -117,14 +117,14 @@
                             </td>
                         </tr>
                         @empty
-                        <tr><td colspan="6" class="text-center text-muted py-6">Tidak ada data laboratorium ditemukan</td></tr>
+                        <tr><td colspan="6" class="text-center text-muted py-6">Tidak ada data radiologi ditemukan</td></tr>
                         @endforelse
                     </tbody>
                 </table>
             </div>
 
             <div class="mt-5">
-                {{ $laboratorium->links() }}
+                {{ $radiologi->links() }}
             </div>
 
         </div>

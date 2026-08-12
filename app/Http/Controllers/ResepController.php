@@ -33,7 +33,7 @@ class ResepController extends Controller
             'selesai' => Resep::where('status', 'selesai')->count(),
         ];
 
-        return view('divisi.resep', [
+        return view('divisi.layanan.resep', [
             'division' => $division,
             'resep' => $resep,
             'ringkasan' => $ringkasan,

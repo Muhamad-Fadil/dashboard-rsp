@@ -26,7 +26,7 @@
             <h1 class="font-weight-bolder text-dark mb-0">Rawat Inap</h1>
             <span class="text-muted font-weight-bold">Daftar pasien rawat inap, kamar/bed, dan lama perawatan</span>
         </div>
-        <x-modal-pdf id="modalPdfRawatInap" title="Data Rawat Inap" :action="route('divisi.rawat-inap.pdf', $division->slug)">
+        <x-modal-pdf id="modalPdfRawatInap" title="Data Rawat Inap" :action="route('divisi.layanan.rawat-inap.pdf', $division->slug)">
             <div class="form-group mb-0">
                 <label class="font-weight-bold font-size-sm">Bangsal (opsional)</label>
                 <select name="bangsal" class="form-control form-control-solid">
@@ -99,7 +99,7 @@
                 </div>
                 <button type="submit" class="btn btn-primary font-weight-bold px-6">Terapkan</button>
                 @if ($cari || $status || $bangsal)
-                    <a href="{{ route('divisi.rawat-inap', $division->slug) }}" class="btn btn-light font-weight-bold px-4">Reset</a>
+                    <a href="{{ route('divisi.layanan.rawat-inap', $division->slug) }}" class="btn btn-light font-weight-bold px-4">Reset</a>
                 @endif
             </form>
 

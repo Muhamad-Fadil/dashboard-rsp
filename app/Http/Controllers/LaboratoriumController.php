@@ -33,7 +33,7 @@ class LaboratoriumController extends Controller
             'selesai' => Laboratorium::where('status', 'selesai')->count(),
         ];
 
-        return view('divisi.laboratorium', [
+        return view('divisi.layanan.laboratorium', [
             'division' => $division,
             'laboratorium' => $laboratorium,
             'ringkasan' => $ringkasan,

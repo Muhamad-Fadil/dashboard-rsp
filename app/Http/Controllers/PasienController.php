@@ -30,7 +30,7 @@ class PasienController extends Controller
             ->paginate(15)
             ->withQueryString();
 
-        return view('divisi.pasien', [
+        return view('divisi.layanan.pasien', [
             'division' => $division,
             'pasien' => $pasien,
             'cari' => $cari,
@@ -48,7 +48,7 @@ class PasienController extends Controller
             ->whereBetween('tanggal_registrasi', [$awal, $akhir])
             ->orderBy('nama')
             ->get();
-        $pdf = Pdf::loadView('pdf.pasien', [
+        $pdf = Pdf::loadView('pdf.layanan.pasien', [
             'pasien' => $pasien,
             'awal' => $awal,
             'akhir' => $akhir,

@@ -244,7 +244,7 @@
 @push('scripts')
 <script>
     const dataBulanan = {!! json_encode($data['kunjungan_per_bulan']) !!};
-    const urlKunjunganHarian = "{{ route('divisi.kunjungan-harian', $division->slug) }}";
+    const urlKunjunganHarian = "{{ route('divisi.layanan.kunjungan-harian', $division->slug) }}";
 
     const ctx = document.getElementById('chartKunjungan');
     const gradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 300);

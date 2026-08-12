@@ -33,7 +33,7 @@ class OperasiController extends Controller
             'selesai' => Operasi::where('status', 'selesai')->count(),
         ];
 
-        return view('divisi.operasi', [
+        return view('divisi.layanan.operasi', [
             'division' => $division,
             'operasi' => $operasi,
             'ringkasan' => $ringkasan,

@@ -33,7 +33,7 @@ class RadiologiController extends Controller
             'selesai' => Radiologi::where('status', 'selesai')->count(),
         ];
 
-        return view('divisi.radiologi', [
+        return view('divisi.layanan.radiologi', [
             'division' => $division,
             'radiologi' => $radiologi,
             'ringkasan' => $ringkasan,

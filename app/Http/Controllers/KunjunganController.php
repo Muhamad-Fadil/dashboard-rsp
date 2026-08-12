@@ -43,7 +43,7 @@ class KunjunganController extends Controller
             'igd' => Kunjungan::whereBetween('waktu_daftar', [$awal->startOfDay(), $akhir->endOfDay()])->where('jenis_kunjungan', 'igd')->count(),
         ];
 
-        return view('divisi.kunjungan', [
+        return view('divisi.layanan.kunjungan', [
             'division' => $division,
             'kunjungan' => $kunjungan,
             'ringkasan' => $ringkasan,
@@ -68,7 +68,7 @@ class KunjunganController extends Controller
             ->orderBy('waktu_daftar')
             ->get();
 
-        $pdf = Pdf::loadView('pdf.kunjungan', [
+        $pdf = Pdf::loadView('pdf.layanan.kunjungan', [
             'kunjungan' => $kunjungan,
             'awal' => $awal,
             'akhir' => $akhir,
