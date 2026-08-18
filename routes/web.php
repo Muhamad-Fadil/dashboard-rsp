@@ -32,6 +32,14 @@ Route::middleware('auth')->group(function () {
         ->name('admin.dashboard')
         ->middleware('role:admin');
 
+    Route::get('/admin/users/{user}/edit', [AdminController::class, 'editUser'])
+        ->name('admin.users.edit')
+        ->middleware('role:admin');
+
+    Route::put('/admin/users/{user}', [AdminController::class, 'updateUser'])
+        ->name('admin.users.update')
+        ->middleware('role:admin');
+
     // ---- Kelola Operator: bisa diakses Admin (semua divisi) dan Manajer (divisinya sendiri) ----
     Route::prefix('admin/operator')->name('admin.operator.')->middleware('role:admin,manajer')->group(function () {
         Route::get('/', [OperatorManagementController::class, 'index'])->name('index');
