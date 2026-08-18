@@ -15,6 +15,10 @@
                 {{ auth()->user()->name }}
             </button>
             <div class="dropdown-menu dropdown-menu-right">
+                @if (in_array(auth()->user()->role, ['admin', 'manajer']))
+                    <a class="dropdown-item" href="{{ route('admin.operator.index') }}">Kelola Operator</a>
+                    <div class="dropdown-divider"></div>
+                @endif
                 @if (auth()->user()->role === 'direktur')
                     <a class="dropdown-item" href="{{ route('direktur.dashboard') }}">Pilih Divisi Lain</a>
                     <div class="dropdown-divider"></div>

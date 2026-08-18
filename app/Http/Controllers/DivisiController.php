@@ -50,6 +50,11 @@ class DivisiController extends Controller
 
     protected function tampilLayanan(Division $division, $awal, $akhir, int $jumlahBulanChart): View
     {
+        // Operator nggak boleh lihat Ringkasan (data gabungan semua sub-menu) — arahkan ke sub-menunya sendiri
+        if (auth()->user()->role === 'operator') {
+            abort(403, 'Operator tidak memiliki akses ke halaman Ringkasan. Hubungi Manajer divisi Anda.');
+        }
+        
         $service = app(LayananIndikatorService::class);
 
         $data = $service->ringkasan($awal, $akhir);

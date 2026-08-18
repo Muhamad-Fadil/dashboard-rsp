@@ -15,6 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
         'role' => \App\Http\Middleware\CheckRole::class,
         'division.access' => \App\Http\Middleware\CheckDivisionAccess::class,
+        'submenu' => \App\Http\Middleware\CheckSubmenuAccess::class,
     ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

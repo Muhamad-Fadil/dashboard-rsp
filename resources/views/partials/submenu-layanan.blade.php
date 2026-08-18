@@ -1,14 +1,21 @@
 @php
     $menuLayanan = [
-        ['label' => 'Ringkasan', 'route' => 'divisi.dashboard', 'aktif' => true],
-        ['label' => 'Data Pasien', 'route' => 'divisi.layanan.pasien', 'aktif' => true],
-        ['label' => 'Kunjungan', 'route' => 'divisi.layanan.kunjungan', 'aktif' => true],
-        ['label' => 'Rawat Inap', 'route' => 'divisi.layanan.rawat-inap', 'aktif' => true],
-        ['label' => 'Operasi', 'route' => 'divisi.layanan.operasi', 'aktif' => true],
-        ['label' => 'Laboratorium', 'route' => 'divisi.layanan.laboratorium', 'aktif' => true],
-        ['label' => 'Radiologi', 'route' => 'divisi.layanan.radiologi', 'aktif' => true],
-        ['label' => 'Resep', 'route' => 'divisi.layanan.resep', 'aktif' => true],
+        ['label' => 'Ringkasan', 'route' => 'divisi.dashboard', 'aktif' => true, 'submenu' => null],
+        ['label' => 'Data Pasien', 'route' => 'divisi.layanan.pasien', 'aktif' => true, 'submenu' => 'pasien'],
+        ['label' => 'Kunjungan', 'route' => 'divisi.layanan.kunjungan', 'aktif' => true, 'submenu' => 'kunjungan'],
+        ['label' => 'Rawat Inap', 'route' => 'divisi.layanan.rawat-inap', 'aktif' => true, 'submenu' => 'rawat-inap'],
+        ['label' => 'Operasi', 'route' => 'divisi.layanan.operasi', 'aktif' => true, 'submenu' => 'operasi'],
+        ['label' => 'Laboratorium', 'route' => 'divisi.layanan.laboratorium', 'aktif' => true, 'submenu' => 'laboratorium'],
+        ['label' => 'Radiologi', 'route' => 'divisi.layanan.radiologi', 'aktif' => true, 'submenu' => 'radiologi'],
+        ['label' => 'Resep', 'route' => 'divisi.layanan.resep', 'aktif' => true, 'submenu' => 'resep'],
     ];
+
+    // Kalau yang login Operator, saring cuma tab yang diizinkan (Ringkasan otomatis ke-skip karena submenu=null)
+    if (auth()->user()->role === 'operator') {
+        $menuLayanan = array_filter($menuLayanan, function ($menu) {
+            return $menu['submenu'] && auth()->user()->bisaAksesSubmenu($menu['submenu']);
+        });
+    }
 @endphp
 
 <style>

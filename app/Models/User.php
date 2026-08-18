@@ -75,16 +75,108 @@ class User extends Authenticatable
         return $this->division && $this->division->slug === $divisionSlug;
     }
 
+    public function submenuAkses(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(OperatorSubmenuAkses::class);
+    }
+
+    /**
+     * Daftar semua sub-menu yang ada di Dashboard Layanan.
+     * Kalau nanti SDM/Keuangan juga punya sub-menu bertingkat, tinggal tambah array serupa.
+     */
+    public static function daftarSubmenuLayanan(): array
+    {
+        return [
+            'pasien' => 'Data Pasien',
+            'kunjungan' => 'Kunjungan',
+            'rawat-inap' => 'Rawat Inap',
+            'operasi' => 'Operasi',
+            'laboratorium' => 'Laboratorium',
+            'radiologi' => 'Radiologi',
+            'resep' => 'Resep',
+        ];
+    }
+
+    /**
+     * Mapping slug submenu -> nama route, dipakai buat redirect & link.
+     */
+    public static function submenuRouteMap(): array
+    {
+        return [
+            'pasien' => 'divisi.layanan.pasien',
+            'kunjungan' => 'divisi.layanan.kunjungan',
+            'rawat-inap' => 'divisi.layanan.rawat-inap',
+            'operasi' => 'divisi.layanan.operasi',
+            'laboratorium' => 'divisi.layanan.laboratorium',
+            'radiologi' => 'divisi.layanan.radiologi',
+            'resep' => 'divisi.layanan.resep',
+        ];
+    }
+
+    /**
+     * Cek apakah user ini boleh akses sub-menu tertentu.
+     * - admin, direktur, manajer: selalu boleh (mereka atasan/pengawas semua sub-menu)
+     * - operator: cuma boleh ke sub-menu yang dicentang Manajer-nya
+     */
+    public function bisaAksesSubmenu(string $submenu): bool
+    {
+        if (in_array($this->role, ['admin', 'direktur', 'manajer'], true)) {
+            return true;
+        }
+
+        if ($this->role === 'operator') {
+            return $this->submenuAkses()->where('submenu', $submenu)->exists();
+        }
+
+        return false;
+    }
+
+    /**
+     * Daftar slug submenu yang boleh diakses operator ini (buat filter tampilan menu).
+     */
+    public function daftarSubmenuDiizinkan(): array
+    {
+        if (in_array($this->role, ['admin', 'direktur', 'manajer'], true)) {
+            return array_keys(self::daftarSubmenuLayanan());
+        }
+
+        return $this->submenuAkses()->pluck('submenu')->all();
+    }
+
     /**
      * URL tujuan setelah login, tergantung role.
      */
-    public function redirectUrl(): string
+public function redirectUrl(): string
     {
         return match ($this->role) {
             'admin'    => route('admin.dashboard'),
             'direktur' => route('direktur.dashboard'),
-            'manajer', 'operator' => route('divisi.dashboard', $this->division?->slug),
+            'manajer'  => route('divisi.dashboard', $this->division?->slug),
+            'operator' => $this->redirectUrlOperator(),
             default    => route('login'),
         };
+    }
+
+    /**
+     * Operator diarahkan langsung ke sub-menu pertama yang diizinkan
+     * (bukan ke Ringkasan, karena Ringkasan nampilin data gabungan semua sub-menu).
+     */
+    protected function redirectUrlOperator(): string
+    {
+        if ($this->division?->slug !== 'layanan') {
+            // SDM & Keuangan belum punya sistem sub-menu, tetap ke dashboard biasa
+            return route('divisi.dashboard', $this->division?->slug);
+        }
+
+        $submenuPertama = $this->submenuAkses()->first();
+
+        if (! $submenuPertama) {
+            // belum dikasih akses submenu apapun sama Manajer-nya
+            return route('login');
+        }
+
+        $routeName = self::submenuRouteMap()[$submenuPertama->submenu] ?? 'login';
+
+        return route($routeName, $this->division->slug);
     }
 }
