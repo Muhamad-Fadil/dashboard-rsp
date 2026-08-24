@@ -291,6 +291,34 @@
                 </div>
             </div>
         </div>
+
+            </div>
+
+    {{-- Trend Penyakit --}}
+    <div class="row">
+        <div class="col-lg-12 mb-6">
+            <div class="card modern-card h-100">
+                <div class="card-body p-5">
+                    <h3 class="card-title mb-4">Trend Penyakit Pasien</h3>
+                    <p class="text-muted font-size-sm mb-4">8 diagnosa terbanyak pada periode yang dipilih</p>
+                    @php $maxPenyakit = $data['trend_penyakit']->max('total') ?: 1; @endphp
+                    @forelse ($data['trend_penyakit'] as $penyakit)
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between">
+                            <span class="font-weight-bold text-dark font-size-sm">{{ $penyakit->diagnosa }}</span>
+                            <span class="font-weight-bolder text-primary font-size-sm">{{ $penyakit->total }} kasus</span>
+                        </div>
+                        <div class="poli-bar-bg">
+                            <div class="poli-bar-fill" style="width: {{ ($penyakit->total / $maxPenyakit) * 100 }}%;"></div>
+                        </div>
+                    </div>
+                    @empty
+                    <p class="text-muted">Belum ada data diagnosa pada periode ini</p>
+                    @endforelse
+                </div>
+            </div>
+        </div>
+    </div>
     </div>
 
 </div>

@@ -17,6 +17,7 @@ class Kunjungan extends Model
         'dokter_id',
         'jenis_kunjungan',
         'keluhan',
+        'diagnosa',
         'status',
         'waktu_daftar',
         'waktu_dilayani',

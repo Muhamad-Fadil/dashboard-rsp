@@ -66,6 +66,10 @@ class KunjunganSeeder extends Seeder
                         'Demam dan batuk', 'Sakit kepala', 'Nyeri perut', 'Pusing dan mual',
                         'Kontrol rutin', 'Nyeri sendi', 'Sesak napas ringan', 'Luka ringan',
                     ]),
+                    'diagnosa' => $sudahSelesai ? fake('id_ID')->randomElement([
+                        'ISPA', 'Gastritis', 'Hipertensi', 'Diabetes Melitus Tipe 2', 'Dermatitis',
+                        'Diare Akut', 'Faringitis', 'Nyeri Punggung (Low Back Pain)', 'Demam Berdarah Dengue (DBD)', 'Migrain',
+                    ]) : null,
                     'status' => $sudahSelesai ? 'selesai' : 'menunggu',
                     'waktu_daftar' => $waktuDaftar,
                     'waktu_dilayani' => $waktuDilayani,

@@ -219,9 +219,25 @@ class LayananIndikatorService
         return $hasil;
     }
 
+    
     /**
-     * Ambil semua indikator sekaligus dalam 1 array — ini yang dipanggil dari Controller.
-     */
+     * Trend penyakit (diagnosa) terbanyak dalam periode — dipakai buat grafik/tabel trend penyakit.
+    */
+
+    public function trendPenyakit(Carbon $awal, Carbon $akhir, int $limit = 8)
+    {
+        return Kunjungan::whereBetween('waktu_daftar', [$awal, $akhir])
+        ->whereNotNull('diagnosa')
+        ->selectRaw('diagnosa, count(*) as total')
+        ->groupBy('diagnosa')
+        ->orderByDesc('total')
+        ->limit($limit)
+        ->get();
+ }
+        /**
+         * Ambil semua indikator sekaligus dalam 1 array — ini yang dipanggil dari Controller.
+         */
+        
     public function ringkasan(Carbon $awal, Carbon $akhir): array
     {
         return [
@@ -235,6 +251,7 @@ class LayananIndikatorService
             'bto' => $this->bto($awal, $akhir),
             'waktu_tunggu_rata_rata' => $this->waktuTungguRataRata($awal, $akhir),
             'kunjungan_per_bulan' => $this->kunjunganPerBulan(6),
+            'trend_penyakit' => $this->trendPenyakit($awal, $akhir),
         ];
     }
 }
