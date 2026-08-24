@@ -11,6 +11,11 @@ use App\Http\Controllers\OperasiController;
 use App\Http\Controllers\LaboratoriumController;
 use App\Http\Controllers\RadiologiController;
 use App\Http\Controllers\ProduktivitasController;
+use App\Http\Controllers\KomposisiPegawaiController;
+use App\Http\Controllers\KehadiranController;
+use App\Http\Controllers\CutiIzinController;
+use App\Http\Controllers\DistribusiPegawaiController;
+use App\Http\Controllers\PelatihanController;
 use App\Http\Controllers\PendapatanController;
 use App\Http\Controllers\PengeluaranController;
 use App\Http\Controllers\CashFlowController;
@@ -99,7 +104,27 @@ Route::middleware('auth')->group(function () {
         ->name('divisi.layanan.radiologi')
         ->middleware(['role:direktur,manajer,operator', 'division.access', 'submenu:radiologi']);
 
-    // ---- Sub-menu SDM: Produktivitas ----
+    // ---- Sub-menu SDM: Komposisi Pegawai, Kehadiran, Cuti & Izin, Distribusi Pegawai, Pelatihan, Produktivitas ----
+    Route::get('/divisi/{division:slug}/komposisi', [KomposisiPegawaiController::class, 'index'])
+        ->name('divisi.sdm.komposisi')
+        ->middleware(['role:direktur,manajer,operator', 'division.access']);
+
+    Route::get('/divisi/{division:slug}/kehadiran', [KehadiranController::class, 'index'])
+        ->name('divisi.sdm.kehadiran')
+        ->middleware(['role:direktur,manajer,operator', 'division.access']);
+
+    Route::get('/divisi/{division:slug}/cuti-izin', [CutiIzinController::class, 'index'])
+        ->name('divisi.sdm.cuti-izin')
+        ->middleware(['role:direktur,manajer,operator', 'division.access']);
+
+    Route::get('/divisi/{division:slug}/distribusi', [DistribusiPegawaiController::class, 'index'])
+        ->name('divisi.sdm.distribusi')
+        ->middleware(['role:direktur,manajer,operator', 'division.access']);
+
+    Route::get('/divisi/{division:slug}/pelatihan', [PelatihanController::class, 'index'])
+        ->name('divisi.sdm.pelatihan')
+        ->middleware(['role:direktur,manajer,operator', 'division.access']);
+
     Route::get('/divisi/{division:slug}/produktivitas', [ProduktivitasController::class, 'index'])
         ->name('divisi.sdm.produktivitas')
         ->middleware(['role:direktur,manajer,operator', 'division.access']);

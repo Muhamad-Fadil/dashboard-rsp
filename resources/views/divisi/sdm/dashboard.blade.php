@@ -209,6 +209,37 @@
         </div>
     </div>
 
+    {{-- Indikator Kehadiran Bulanan: Target vs Realisasi --}}
+    <div class="card modern-card mb-6">
+        <div class="card-body p-5">
+            <h3 class="card-title mb-4"><i class="fas fa-calendar-alt text-primary mr-2"></i>Indikator Kehadiran Bulanan</h3>
+            <p class="text-muted font-size-sm mb-4">Perbandingan target kehadiran dengan realisasi tiap bulan ({{ $data['kehadiran_bulanan']->count() }} bulan terakhir)</p>
+            <table class="table table-modern">
+                <thead><tr><th>Bulan</th><th>Target Kehadiran</th><th>Realisasi</th><th>Status</th></tr></thead>
+                <tbody>
+                    @forelse ($data['kehadiran_bulanan'] as $row)
+                    <tr>
+                        <td class="font-weight-bold text-dark">{{ $row['bulan'] }}</td>
+                        <td>{{ $row['target'] }}%</td>
+                        <td class="font-weight-bold">{{ $row['realisasi'] }}%</td>
+                        <td>
+                            @if ($row['status'] === 'Baik')
+                                <span class="badge badge-modern" style="background:#E8FFF3; color:#1BC5BD;">Baik</span>
+                            @elseif ($row['status'] === 'Sesuai target')
+                                <span class="badge badge-modern" style="background:#EEF3FF; color:#6993FF;">Sesuai target</span>
+                            @else
+                                <span class="badge badge-modern" style="background:#FFF6E0; color:#FFA800;">Perlu perhatian</span>
+                            @endif
+                        </td>
+                    </tr>
+                    @empty
+                    <tr><td colspan="4" class="text-muted">Belum ada data kehadiran</td></tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+
 </div>
 @endsection
 
@@ -224,7 +255,7 @@
             labels: komposisiLabels,
             datasets: [{
                 data: komposisiTotals,
-                backgroundColor: ['#8950FC', '#1BC5BD', '#FFA800', '#6993FF'],
+                backgroundColor: ['#8950FC', '#1BC5BD', '#FFA800', '#6993FF', '#F64E60'],
                 borderWidth: 0,
             }]
         },

@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Models\Absensi;
 use App\Models\Pegawai;
 use App\Models\PegawaiPelatihan;
-use App\Models\Profesi;
 use Illuminate\Support\Carbon;
 
 class SdmIndikatorService
@@ -19,8 +18,40 @@ class SdmIndikatorService
     }
 
     /**
-     * Komposisi SDM per kategori profesi (medis, keperawatan, nakes_lain, nonkesehatan).
-     * Return: collection [ ['kategori' => ..., 'label' => ..., 'total' => ..., 'persentase' => ...], ... ]
+     * Klasifikasi 1 profesi ke salah satu dari 5 kelompok SDM (dokter, perawat, nakes_lain,
+     * administrasi, pendukung). Dipakai bareng oleh komposisiSdm() dan daftarPegawai() biar
+     * logic pengelompokannya konsisten di satu tempat.
+     */
+    protected function klasifikasiKelompok(string $kategoriProfesi, string $namaProfesi): string
+    {
+        return match ($kategoriProfesi) {
+            'medis' => 'dokter',
+            'keperawatan' => 'perawat',
+            'nakes_lain' => 'nakes_lain',
+            default => str_contains(strtolower($namaProfesi), 'admin')
+                ? 'administrasi'
+                : 'pendukung',
+        };
+    }
+
+    protected function labelKelompok(): array
+    {
+        return [
+            'dokter' => 'Dokter',
+            'perawat' => 'Perawat',
+            'nakes_lain' => 'Tenaga Kesehatan Lain',
+            'administrasi' => 'Tenaga Administrasi',
+            'pendukung' => 'Tenaga Pendukung',
+        ];
+    }
+
+    /**
+     * Komposisi SDM per kelompok: Dokter, Perawat, Tenaga Kesehatan Lain, Tenaga Administrasi,
+     * Tenaga Pendukung. 5 kelompok ini dipetakan dari 4 kategori profesi yang sudah ada di database
+     * (medis, keperawatan, nakes_lain, nonkesehatan) — kategori "nonkesehatan" dipecah jadi
+     * "administrasi" vs "pendukung" berdasarkan nama profesinya, TANPA ubah skema/tabel.
+     * Return: collection [ ['kelompok' => ..., 'label' => ..., 'total' => ..., 'persentase' => ...], ... ]
+     * Diurutkan dari yang jumlahnya paling besar.
      */
     public function komposisiSdm()
     {
@@ -30,24 +61,56 @@ class SdmIndikatorService
             return collect();
         }
 
-        $label = [
-            'medis' => 'Dokter',
-            'keperawatan' => 'Perawat',
-            'nakes_lain' => 'Tenaga Kesehatan Lain',
-            'nonkesehatan' => 'Tenaga Administrasi/Pendukung',
-        ];
+        $label = $this->labelKelompok();
 
-        return Pegawai::where('pegawai.aktif', true)
+        $pegawai = Pegawai::where('pegawai.aktif', true)
             ->join('profesi', 'pegawai.profesi_id', '=', 'profesi.id')
-            ->selectRaw('profesi.kategori, count(*) as total')
-            ->groupBy('profesi.kategori')
-            ->get()
-            ->map(fn($row) => [
-                'kategori' => $row->kategori,
-                'label' => $label[$row->kategori] ?? $row->kategori,
-                'total' => $row->total,
-                'persentase' => round(($row->total / $total) * 100, 1),
-            ]);
+            ->selectRaw('profesi.kategori, profesi.nama_profesi')
+            ->get();
+
+        $kelompokTerhitung = $pegawai->countBy(
+            fn($p) => $this->klasifikasiKelompok($p->kategori, $p->nama_profesi)
+        );
+
+        return $kelompokTerhitung
+            ->map(fn($jumlah, $kelompok) => [
+                'kelompok' => $kelompok,
+                'label' => $label[$kelompok] ?? ucfirst($kelompok),
+                'total' => $jumlah,
+                'persentase' => round(($jumlah / $total) * 100, 1),
+            ])
+            ->sortByDesc('total')
+            ->values();
+    }
+
+    /**
+     * Daftar pegawai aktif lengkap (dipakai di sub-menu "Komposisi Pegawai"), dengan kelompok
+     * SDM-nya masing-masing, bisa difilter per kelompok dan/atau kata kunci nama/NIP.
+     */
+    public function daftarPegawai(?string $kelompok = null, ?string $cari = null)
+    {
+        $label = $this->labelKelompok();
+
+        $query = Pegawai::where('pegawai.aktif', true)
+            ->with(['profesi', 'unitKerja']);
+
+        if ($cari) {
+            $query->where(function ($q) use ($cari) {
+                $q->where('nama', 'like', "%{$cari}%")
+                    ->orWhere('nip', 'like', "%{$cari}%");
+            });
+        }
+
+        return $query->get()
+            ->map(function ($p) use ($label) {
+                $kelompokPegawai = $this->klasifikasiKelompok($p->profesi->kategori, $p->profesi->nama_profesi);
+                $p->kelompok = $kelompokPegawai;
+                $p->kelompok_label = $label[$kelompokPegawai] ?? ucfirst($kelompokPegawai);
+                return $p;
+            })
+            ->when($kelompok, fn($collection) => $collection->where('kelompok', $kelompok))
+            ->sortBy('nama')
+            ->values();
     }
 
     /**
@@ -83,16 +146,23 @@ class SdmIndikatorService
     }
 
     /**
-     * Jumlah pegawai yang sedang cuti/izin pada rentang tanggal tertentu (default: hari ini).
+     * Jumlah pegawai yang cuti/izin dalam rentang tanggal filter (bukan cuma snapshot hari ini).
+     * Gabungan dari:
+     * - Cuti yang disetujui & jadwalnya overlap dengan periode filter (tabel Cuti)
+     * - Record absensi berstatus 'izin' dalam periode filter (tabel Absensi)
      */
-    public function jumlahCutiAktif(?Carbon $tanggal = null): int
+    public function jumlahCutiAktif(Carbon $awal, Carbon $akhir): int
     {
-        $tanggal = $tanggal ?? now();
-
-        return \App\Models\Cuti::where('status', 'disetujui')
-            ->whereDate('tanggal_mulai', '<=', $tanggal)
-            ->whereDate('tanggal_selesai', '>=', $tanggal)
+        $jumlahCuti = \App\Models\Cuti::where('status', 'disetujui')
+            ->whereDate('tanggal_mulai', '<=', $akhir)
+            ->whereDate('tanggal_selesai', '>=', $awal)
             ->count();
+
+        $jumlahIzin = Absensi::whereBetween('tanggal', [$awal, $akhir])
+            ->where('status', 'izin')
+            ->count();
+
+        return $jumlahCuti + $jumlahIzin;
     }
 
     /**
@@ -118,6 +188,130 @@ class SdmIndikatorService
                 $q->whereBetween('tanggal_mulai', [$awal, $akhir]);
             })
             ->count();
+    }
+
+    /**
+     * Target kehadiran yang ditetapkan rumah sakit (persen). Dipakai buat bandingkan
+     * dengan realisasi kehadiran tiap bulan.
+     */
+    protected function targetKehadiran(): float
+    {
+        return 95.0;
+    }
+
+    /**
+     * Realisasi kehadiran per bulan (N bulan terakhir) dibandingkan dengan target,
+     * plus status: "Baik" (di atas target), "Sesuai target" (pas target), atau
+     * "Perlu perhatian" (di bawah target). Dipakai buat tabel indikator kehadiran bulanan.
+     */
+    public function kehadiranBulanan(int $jumlahBulan = 5)
+    {
+        $target = $this->targetKehadiran();
+        $hasil = collect();
+
+        for ($i = $jumlahBulan - 1; $i >= 0; $i--) {
+            $bulanAcuan = now()->subMonths($i);
+            $awalBulan = $bulanAcuan->copy()->startOfMonth();
+            $akhirBulan = $bulanAcuan->copy()->endOfMonth()->min(now());
+
+            $realisasi = $this->persentaseKehadiran($awalBulan, $akhirBulan);
+
+            $status = match (true) {
+                $realisasi > $target => 'Baik',
+                $realisasi < $target => 'Perlu perhatian',
+                default => 'Sesuai target',
+            };
+
+            $hasil->push([
+                'bulan' => $bulanAcuan->translatedFormat('F Y'),
+                'target' => $target,
+                'realisasi' => $realisasi,
+                'status' => $status,
+            ]);
+        }
+
+        return $hasil;
+    }
+
+    /**
+     * Daftar record absensi dalam periode (dipakai di sub-menu "Kehadiran"), dengan info pegawai.
+     */
+    public function daftarAbsensi(Carbon $awal, Carbon $akhir, ?string $status = null)
+    {
+        $query = Absensi::whereBetween('tanggal', [$awal, $akhir])
+            ->with('pegawai')
+            ->orderByDesc('tanggal');
+
+        if ($status) {
+            $query->where('status', $status);
+        }
+
+        return $query->get();
+    }
+
+    /**
+     * Daftar pengajuan cuti dalam periode (dipakai di sub-menu "Cuti & Izin"), dengan info pegawai.
+     */
+    public function daftarCuti(Carbon $awal, Carbon $akhir, ?string $status = null)
+    {
+        $query = \App\Models\Cuti::where(function ($q) use ($awal, $akhir) {
+            $q->whereDate('tanggal_mulai', '<=', $akhir)
+                ->whereDate('tanggal_selesai', '>=', $awal);
+        })
+            ->with('pegawai')
+            ->orderByDesc('tanggal_mulai');
+
+        if ($status) {
+            $query->where('status', $status);
+        }
+
+        return $query->get();
+    }
+
+    /**
+     * Daftar record izin harian (bukan cuti terjadwal) dalam periode, dari tabel absensi.
+     */
+    public function daftarIzinHarian(Carbon $awal, Carbon $akhir)
+    {
+        return Absensi::whereBetween('tanggal', [$awal, $akhir])
+            ->where('status', 'izin')
+            ->with('pegawai')
+            ->orderByDesc('tanggal')
+            ->get();
+    }
+
+    /**
+     * Daftar pelatihan dalam periode berikut jumlah pesertanya (dipakai di sub-menu "Pelatihan").
+     */
+    public function daftarPelatihan(Carbon $awal, Carbon $akhir)
+    {
+        return \App\Models\Pelatihan::whereBetween('tanggal_mulai', [$awal, $akhir])
+            ->withCount([
+                'peserta as jumlah_peserta' => fn($q) => $q->whereIn('status', ['selesai', 'mengikuti']),
+                'peserta as jumlah_selesai' => fn($q) => $q->where('status', 'selesai'),
+            ])
+            ->orderByDesc('tanggal_mulai')
+            ->get();
+    }
+
+    /**
+     * Distribusi pegawai per unit kerja, LENGKAP dengan daftar nama pegawainya masing-masing
+     * (dipakai di sub-menu "Distribusi Pegawai"). Beda dengan distribusiPerUnit() yang cuma
+     * hitungan ringkas buat kartu di halaman Ringkasan.
+     */
+    public function distribusiPerUnitDetail()
+    {
+        return Pegawai::where('aktif', true)
+            ->with(['profesi', 'unitKerja'])
+            ->get()
+            ->groupBy(fn($p) => $p->unitKerja->nama_unit ?? 'Tanpa Unit')
+            ->map(fn($group, $namaUnit) => [
+                'nama_unit' => $namaUnit,
+                'total' => $group->count(),
+                'pegawai' => $group->sortBy('nama')->values(),
+            ])
+            ->sortByDesc('total')
+            ->values();
     }
 
     public function produktivitasPerUnit(Carbon $awal, Carbon $akhir)
@@ -160,9 +354,10 @@ class SdmIndikatorService
             'komposisi_sdm' => $this->komposisiSdm(),
             'persentase_kehadiran' => $this->persentaseKehadiran($awal, $akhir),
             'rekap_status_absensi' => $this->rekapStatusAbsensi($awal, $akhir),
-            'jumlah_cuti_aktif' => $this->jumlahCutiAktif(),
+            'jumlah_cuti_aktif' => $this->jumlahCutiAktif($awal, $akhir),
             'distribusi_per_unit' => $this->distribusiPerUnit(),
             'jumlah_ikut_pelatihan' => $this->jumlahIkutPelatihan($awal, $akhir),
+            'kehadiran_bulanan' => $this->kehadiranBulanan(5),
         ];
     }
 }
