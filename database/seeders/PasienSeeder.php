@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Pasien;
 use App\Models\Referensi;
+use App\Models\WilayahBogor;
 use Illuminate\Database\Seeder;
 
 class PasienSeeder extends Seeder
@@ -12,6 +13,8 @@ class PasienSeeder extends Seeder
     {
         // ambil id referensi jenis_pembayaran, dengan bobot: BPJS paling banyak (mayoritas pasien RS)
         $jenisPembayaranIds = Referensi::where('kategori', 'jenis_pembayaran')->pluck('id', 'kode');
+
+        $wilayahIds = WilayahBogor::pluck('id')->all();
 
         $pilihanBobot = [
             ...array_fill(0, 55, $jenisPembayaranIds['bpjs']),
@@ -37,6 +40,7 @@ class PasienSeeder extends Seeder
                     'no_hp' => '08' . fake()->numerify('##########'),
                     'nik' => fake()->numerify('################'),
                     'jenis_pembayaran_id' => fake()->randomElement($pilihanBobot),
+                    'wilayah_bogor_id' => fake()->randomElement($wilayahIds),
                 ]
             );
         }

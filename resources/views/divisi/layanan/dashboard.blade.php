@@ -295,30 +295,64 @@
             </div>
 
     {{-- Trend Penyakit --}}
-    <div class="row">
-        <div class="col-lg-12 mb-6">
-            <div class="card modern-card h-100">
-                <div class="card-body p-5">
-                    <h3 class="card-title mb-4">Trend Penyakit Pasien</h3>
-                    <p class="text-muted font-size-sm mb-4">8 diagnosa terbanyak pada periode yang dipilih</p>
-                    @php $maxPenyakit = $data['trend_penyakit']->max('total') ?: 1; @endphp
-                    @forelse ($data['trend_penyakit'] as $penyakit)
-                    <div class="mb-3">
-                        <div class="d-flex justify-content-between">
-                            <span class="font-weight-bold text-dark font-size-sm">{{ $penyakit->diagnosa }}</span>
-                            <span class="font-weight-bolder text-primary font-size-sm">{{ $penyakit->total }} kasus</span>
+        <div class="row">
+            <div class="col-lg-12 mb-6">
+                <div class="card modern-card h-100">
+                    <div class="card-body p-5">
+                        <h3 class="card-title mb-4">Trend Penyakit Pasien</h3>
+                        <p class="text-muted font-size-sm mb-4">8 diagnosa terbanyak pada periode yang dipilih</p>
+                        @php $maxPenyakit = $data['trend_penyakit']->max('total') ?: 1; @endphp
+                        @forelse ($data['trend_penyakit'] as $penyakit)
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between">
+                                <span class="font-weight-bold text-dark font-size-sm">{{ $penyakit->diagnosa }}</span>
+                                <span class="font-weight-bolder text-primary font-size-sm">{{ $penyakit->total }} kasus</span>
+                            </div>
+                            <div class="poli-bar-bg">
+                                <div class="poli-bar-fill" style="width: {{ ($penyakit->total / $maxPenyakit) * 100 }}%;"></div>
+                            </div>
                         </div>
-                        <div class="poli-bar-bg">
-                            <div class="poli-bar-fill" style="width: {{ ($penyakit->total / $maxPenyakit) * 100 }}%;"></div>
-                        </div>
+                        @empty
+                        <p class="text-muted">Belum ada data diagnosa pada periode ini</p>
+                        @endforelse
                     </div>
-                    @empty
-                    <p class="text-muted">Belum ada data diagnosa pada periode ini</p>
-                    @endforelse
                 </div>
             </div>
         </div>
-    </div>
+
+                {{-- Trend Daerah Asal Pasien --}}
+        <div class="row">
+            <div class="col-lg-12 mb-6">
+                <div class="card modern-card h-100">
+                    <div class="card-body p-5">
+                        <h3 class="card-title mb-4">Trend Daerah Asal Pasien</h3>
+                        <p class="text-muted font-size-sm mb-4">10 kecamatan asal pasien terbanyak (Kabupaten/Kota Bogor)</p>
+                        <div class="table-responsive">
+                            <table class="table table-modern">
+                                <thead><tr><th>Kecamatan</th><th>Wilayah</th><th>Jumlah Kunjungan</th></tr></thead>
+                                <tbody>
+                                    @forelse ($data['trend_daerah'] as $daerah)
+                                    <tr>
+                                        <td class="font-weight-bold text-dark">{{ $daerah->nama_kecamatan }}</td>
+                                        <td>
+                                            @if ($daerah->kabupaten_kota === 'kota')
+                                                <span class="badge-modern" style="background:#F1E9FF; color:#8950FC;">Kota Bogor</span>
+                                            @else
+                                                <span class="badge-modern" style="background:#EEF3FF; color:#6993FF;">Kabupaten Bogor</span>
+                                            @endif
+                                        </td>
+                                        <td class="font-weight-bold">{{ $daerah->total }}</td>
+                                    </tr>
+                                    @empty
+                                    <tr><td colspan="3" class="text-center text-muted py-4">Belum ada data pada periode ini</td></tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
 </div>

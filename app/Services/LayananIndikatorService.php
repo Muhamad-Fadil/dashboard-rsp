@@ -233,7 +233,23 @@ class LayananIndikatorService
         ->orderByDesc('total')
         ->limit($limit)
         ->get();
- }
+    }
+
+        /**
+     * Trend jumlah kunjungan berdasarkan asal daerah pasien (Kabupaten/Kota Bogor).
+     */
+    public function trendDaerah(Carbon $awal, Carbon $akhir, int $limit = 10)
+    {
+        return Kunjungan::whereBetween('kunjungan.waktu_daftar', [$awal, $akhir])
+            ->join('pasien', 'kunjungan.pasien_id', '=', 'pasien.id')
+            ->join('wilayah_bogor', 'pasien.wilayah_bogor_id', '=', 'wilayah_bogor.id')
+            ->selectRaw('wilayah_bogor.nama_kecamatan, wilayah_bogor.kabupaten_kota, count(*) as total')
+            ->groupBy('wilayah_bogor.nama_kecamatan', 'wilayah_bogor.kabupaten_kota')
+            ->orderByDesc('total')
+            ->limit($limit)
+            ->get();
+    }
+
         /**
          * Ambil semua indikator sekaligus dalam 1 array — ini yang dipanggil dari Controller.
          */
@@ -252,6 +268,7 @@ class LayananIndikatorService
             'waktu_tunggu_rata_rata' => $this->waktuTungguRataRata($awal, $akhir),
             'kunjungan_per_bulan' => $this->kunjunganPerBulan(6),
             'trend_penyakit' => $this->trendPenyakit($awal, $akhir),
+            'trend_daerah' => $this->trendDaerah($awal, $akhir),
         ];
     }
 }
