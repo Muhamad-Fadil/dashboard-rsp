@@ -163,13 +163,6 @@
                 <div class="quickmenu-sub">Menunggu / diproses</div>
             </a>
         </div>
-        <div class="col-xl-3 col-md-6 mb-4">
-            <a href="{{ route('divisi.layanan.resep', $division->slug) }}" class="quickmenu-card">
-                <div class="quickmenu-label">Resep</div>
-                <div class="quickmenu-value">{{ $ringkasanSubMenu['resep']['aktif'] }}</div>
-                <div class="quickmenu-sub">Menunggu / diproses</div>
-            </a>
-        </div>
     </div>
 
     {{-- 8 Indikator Utama --}}

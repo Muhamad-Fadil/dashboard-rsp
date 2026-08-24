@@ -81,9 +81,6 @@ class DivisiController extends Controller
             'radiologi' => [
                 'aktif' => Radiologi::whereIn('status', ['menunggu', 'diproses'])->count(),
             ],
-            'resep' => [
-                'aktif' => Resep::whereIn('status', ['menunggu', 'diproses'])->count(),
-            ],
         ];
 
         return view('divisi.layanan.dashboard', [

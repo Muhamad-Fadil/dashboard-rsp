@@ -7,7 +7,6 @@
         ['label' => 'Operasi', 'route' => 'divisi.layanan.operasi', 'aktif' => true, 'submenu' => 'operasi'],
         ['label' => 'Laboratorium', 'route' => 'divisi.layanan.laboratorium', 'aktif' => true, 'submenu' => 'laboratorium'],
         ['label' => 'Radiologi', 'route' => 'divisi.layanan.radiologi', 'aktif' => true, 'submenu' => 'radiologi'],
-        ['label' => 'Resep', 'route' => 'divisi.layanan.resep', 'aktif' => true, 'submenu' => 'resep'],
     ];
 
     // Kalau yang login Operator, saring cuma tab yang diizinkan (Ringkasan otomatis ke-skip karena submenu=null)

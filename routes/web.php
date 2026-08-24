@@ -10,7 +10,6 @@ use App\Http\Controllers\KunjunganController;
 use App\Http\Controllers\OperasiController;
 use App\Http\Controllers\LaboratoriumController;
 use App\Http\Controllers\RadiologiController;
-use App\Http\Controllers\ResepController;
 use App\Http\Controllers\ProduktivitasController;
 use App\Http\Controllers\PendapatanController;
 use App\Http\Controllers\PengeluaranController;
@@ -99,10 +98,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/divisi/{division:slug}/radiologi', [RadiologiController::class, 'index'])
         ->name('divisi.layanan.radiologi')
         ->middleware(['role:direktur,manajer,operator', 'division.access', 'submenu:radiologi']);
-
-    Route::get('/divisi/{division:slug}/resep', [ResepController::class, 'index'])
-        ->name('divisi.layanan.resep')
-        ->middleware(['role:direktur,manajer,operator', 'division.access', 'submenu:resep']);
 
     // ---- Sub-menu SDM: Produktivitas ----
     Route::get('/divisi/{division:slug}/produktivitas', [ProduktivitasController::class, 'index'])

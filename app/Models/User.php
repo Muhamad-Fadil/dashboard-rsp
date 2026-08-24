@@ -93,7 +93,6 @@ class User extends Authenticatable
             'operasi' => 'Operasi',
             'laboratorium' => 'Laboratorium',
             'radiologi' => 'Radiologi',
-            'resep' => 'Resep',
         ];
     }
 
@@ -109,7 +108,6 @@ class User extends Authenticatable
             'operasi' => 'divisi.layanan.operasi',
             'laboratorium' => 'divisi.layanan.laboratorium',
             'radiologi' => 'divisi.layanan.radiologi',
-            'resep' => 'divisi.layanan.resep',
         ];
     }
 
