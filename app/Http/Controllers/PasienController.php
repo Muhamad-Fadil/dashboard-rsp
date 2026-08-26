@@ -17,7 +17,11 @@ class PasienController extends Controller
 
         $cari = $request->query('cari');
 
-        $pasien = Pasien::with('jenisPembayaran')
+        $pasien = Pasien::with([
+                'jenisPembayaran',
+                'wilayah',
+                'kunjungan' => fn ($q) => $q->with(['poli', 'dokter'])->orderByDesc('waktu_daftar'),
+            ])
             ->when($cari, function ($query, $cari) {
                 $query->where(function ($q) use ($cari) {
                     $q->where('nama', 'like', "%{$cari}%")
