@@ -11,13 +11,19 @@ class Pegawai extends Model
 
     protected $fillable = [
         'nip',
+        'nik',
         'nama',
         'profesi_id',
         'unit_kerja_id',
         'jenis_kelamin',
         'tanggal_lahir',
+        'tempat_lahir',
         'tanggal_masuk',
         'status_kepegawaian',
+        'pendidikan',
+        'jabatan',
+        'golongan',
+        'jenis_kerja',
         'no_hp',
         'alamat',
         'user_id',
@@ -46,5 +52,10 @@ class Pegawai extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function jadwalShift(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(JadwalShift::class);
     }
 }

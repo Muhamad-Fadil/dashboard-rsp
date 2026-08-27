@@ -12,6 +12,8 @@ use App\Http\Controllers\LaboratoriumController;
 use App\Http\Controllers\RadiologiController;
 use App\Http\Controllers\ProduktivitasController;
 use App\Http\Controllers\KomposisiPegawaiController;
+use App\Http\Controllers\DataPegawaiController;
+use App\Http\Controllers\JadwalKerjaController;
 use App\Http\Controllers\KehadiranController;
 use App\Http\Controllers\CutiIzinController;
 use App\Http\Controllers\DistribusiPegawaiController;
@@ -104,9 +106,17 @@ Route::middleware('auth')->group(function () {
         ->name('divisi.layanan.radiologi')
         ->middleware(['role:direktur,manajer,operator', 'division.access', 'submenu:radiologi']);
 
-    // ---- Sub-menu SDM: Komposisi Pegawai, Kehadiran, Cuti & Izin, Distribusi Pegawai, Pelatihan, Produktivitas ----
+    // ---- Sub-menu SDM: Komposisi Pegawai, Kehadiran, Cuti & Izin, Distribusi Pegawai, Pelatihan, Produktivitas, Data Pegawai, Jadwal Kerja ----
     Route::get('/divisi/{division:slug}/komposisi', [KomposisiPegawaiController::class, 'index'])
         ->name('divisi.sdm.komposisi')
+        ->middleware(['role:direktur,manajer,operator', 'division.access']);
+
+    Route::get('/divisi/{division:slug}/data-pegawai', [DataPegawaiController::class, 'index'])
+        ->name('divisi.sdm.data-pegawai')
+        ->middleware(['role:direktur,manajer,operator', 'division.access']);
+
+    Route::get('/divisi/{division:slug}/jadwal-kerja', [JadwalKerjaController::class, 'index'])
+        ->name('divisi.sdm.jadwal-kerja')
         ->middleware(['role:direktur,manajer,operator', 'division.access']);
 
     Route::get('/divisi/{division:slug}/kehadiran', [KehadiranController::class, 'index'])

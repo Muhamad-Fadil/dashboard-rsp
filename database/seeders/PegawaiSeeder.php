@@ -81,19 +81,54 @@ class PegawaiSeeder extends Seeder
             ['nama' => 'Sumiati', 'profesi' => $cleaning, 'unit' => $unitRanap, 'jk' => 'P', 'masuk' => '2019-06-01'],
         ];
 
+        $kotaLahir = ['Bogor', 'Cianjur', 'Sukabumi', 'Bandung', 'Depok', 'Jakarta', 'Cimahi', 'Cirebon'];
+
+        // Pendidikan & jabatan default per nama profesi — dipakai buat isi Tabel 1
+        $dataProfesi = [
+            'Perawat' => ['pendidikan' => 'D3 Keperawatan', 'jabatan' => 'Perawat Pelaksana', 'jenis_kerja' => 'shift'],
+            'Bidan' => ['pendidikan' => 'D3 Kebidanan', 'jabatan' => 'Bidan Pelaksana', 'jenis_kerja' => 'shift'],
+            'Apoteker' => ['pendidikan' => 'S1 Farmasi - Apoteker', 'jabatan' => 'Apoteker Pelaksana', 'jenis_kerja' => 'shift'],
+            'Analis Laboratorium' => ['pendidikan' => 'D3 Analis Kesehatan', 'jabatan' => 'Analis Pelaksana', 'jenis_kerja' => 'shift'],
+            'Radiografer' => ['pendidikan' => 'D3 Radiologi', 'jabatan' => 'Radiografer Pelaksana', 'jenis_kerja' => 'shift'],
+            'Staf Administrasi' => ['pendidikan' => 'S1 Administrasi', 'jabatan' => 'Staf Administrasi', 'jenis_kerja' => 'non_shift'],
+            'Petugas Keamanan' => ['pendidikan' => 'SMA/SMK', 'jabatan' => 'Anggota Keamanan', 'jenis_kerja' => 'shift'],
+            'Cleaning Service' => ['pendidikan' => 'SMA/SMK', 'jabatan' => 'Petugas Kebersihan', 'jenis_kerja' => 'shift'],
+        ];
+
+        $golonganByMasaKerja = function (string $tanggalMasuk): string {
+            $tahun = now()->diffInYears($tanggalMasuk);
+            return match (true) {
+                $tahun >= 8 => 'III/b',
+                $tahun >= 5 => 'III/a',
+                $tahun >= 2 => 'II/c',
+                default => 'II/b',
+            };
+        };
+
         foreach ($pegawai as $i => $p) {
             $nip = 'PEG-' . str_pad($i + 1, 4, '0', STR_PAD_LEFT);
+            $tambahan = $dataProfesi[$p['profesi']->nama_profesi] ?? [
+                'pendidikan' => 'SMA/SMK',
+                'jabatan' => 'Staf Pelaksana',
+                'jenis_kerja' => 'shift',
+            ];
 
             Pegawai::updateOrCreate(
                 ['nip' => $nip],
                 [
+                    'nik' => '32' . str_pad($i + 1, 14, '0', STR_PAD_LEFT), // NIK dummy 16 digit
                     'nama' => $p['nama'],
                     'profesi_id' => $p['profesi']->id,
                     'unit_kerja_id' => $p['unit']->id,
                     'jenis_kelamin' => $p['jk'],
                     'tanggal_lahir' => null,
+                    'tempat_lahir' => $kotaLahir[$i % count($kotaLahir)],
                     'tanggal_masuk' => $p['masuk'],
                     'status_kepegawaian' => 'tetap',
+                    'pendidikan' => $tambahan['pendidikan'],
+                    'jabatan' => $tambahan['jabatan'],
+                    'golongan' => $golonganByMasaKerja($p['masuk']),
+                    'jenis_kerja' => $tambahan['jenis_kerja'],
                     'no_hp' => '0813' . rand(10000000, 99999999),
                     'aktif' => true,
                 ]
