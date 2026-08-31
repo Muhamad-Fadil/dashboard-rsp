@@ -26,11 +26,15 @@
 <div class="container-fluid px-6 py-6">
     @include('partials.submenu-sdm')
 
-    <div class="page-header d-flex justify-content-between align-items-center flex-wrap mb-6">
+        <div class="page-header d-flex justify-content-between align-items-center flex-wrap mb-6">
         <div>
             <h1 class="font-weight-bolder mb-1"><i class="fas fa-id-card mr-2"></i>Data Pegawai</h1>
             <span class="text-muted-light font-weight-bold">Data induk kepegawaian lengkap, {{ $pegawai->count() }} pegawai aktif</span>
         </div>
+        <a href="{{ route('divisi.sdm.data-pegawai.pdf', array_filter(['division' => $division->slug, 'cari' => $cari])) }}"
+           target="_blank" class="btn btn-dark font-weight-bold">
+            Download PDF
+        </a>
     </div>
 
     <form method="GET" class="filter-card d-flex align-items-end flex-wrap p-4 mb-6">

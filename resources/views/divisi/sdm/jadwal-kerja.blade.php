@@ -31,6 +31,10 @@
             <h1 class="font-weight-bolder mb-1"><i class="fas fa-clock mr-2"></i>Jadwal Kerja</h1>
             <span class="text-muted-light font-weight-bold">Jam kerja & jenis shift pegawai per tanggal</span>
         </div>
+        <a href="{{ route('divisi.sdm.jadwal-kerja.pdf', ['division' => $division->slug, 'tanggal' => $tanggal->format('Y-m-d')]) }}"
+           target="_blank" class="btn btn-dark font-weight-bold">
+            Download PDF
+        </a>
     </div>
 
     <form method="GET" class="filter-card d-flex align-items-end flex-wrap p-4 mb-6">

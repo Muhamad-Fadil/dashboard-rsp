@@ -115,16 +115,32 @@ Route::middleware('auth')->group(function () {
         ->name('divisi.sdm.data-pegawai')
         ->middleware(['role:direktur,manajer,operator', 'division.access']);
 
+    Route::get('/divisi/{division:slug}/data-pegawai/pdf', [DataPegawaiController::class, 'exportPdf'])
+        ->name('divisi.sdm.data-pegawai.pdf')
+        ->middleware(['role:direktur,manajer,operator', 'division.access']);
+
     Route::get('/divisi/{division:slug}/jadwal-kerja', [JadwalKerjaController::class, 'index'])
         ->name('divisi.sdm.jadwal-kerja')
+        ->middleware(['role:direktur,manajer,operator', 'division.access']);
+
+    Route::get('/divisi/{division:slug}/jadwal-kerja/pdf', [JadwalKerjaController::class, 'exportPdf'])
+        ->name('divisi.sdm.jadwal-kerja.pdf')
         ->middleware(['role:direktur,manajer,operator', 'division.access']);
 
     Route::get('/divisi/{division:slug}/kehadiran', [KehadiranController::class, 'index'])
         ->name('divisi.sdm.kehadiran')
         ->middleware(['role:direktur,manajer,operator', 'division.access']);
 
+    Route::get('/divisi/{division:slug}/kehadiran/pdf', [KehadiranController::class, 'exportPdf'])
+        ->name('divisi.sdm.kehadiran.pdf')
+        ->middleware(['role:direktur,manajer,operator', 'division.access']);
+
     Route::get('/divisi/{division:slug}/cuti-izin', [CutiIzinController::class, 'index'])
         ->name('divisi.sdm.cuti-izin')
+        ->middleware(['role:direktur,manajer,operator', 'division.access']);
+
+    Route::get('/divisi/{division:slug}/cuti-izin/pdf', [CutiIzinController::class, 'exportPdf'])
+        ->name('divisi.sdm.cuti-izin.pdf')
         ->middleware(['role:direktur,manajer,operator', 'division.access']);
 
     Route::get('/divisi/{division:slug}/distribusi', [DistribusiPegawaiController::class, 'index'])

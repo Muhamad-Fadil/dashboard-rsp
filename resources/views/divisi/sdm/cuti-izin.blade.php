@@ -35,6 +35,7 @@
             <h1 class="font-weight-bolder mb-1"><i class="fas fa-plane-departure mr-2"></i>Cuti & Izin Pegawai</h1>
             <span class="text-muted-light font-weight-bold">Daftar pengajuan cuti dan izin harian pegawai</span>
         </div>
+        <x-modal-pdf id="modalPdfCutiIzin" title="Cuti & Izin Pegawai" :action="route('divisi.sdm.cuti-izin.pdf', $division->slug)" />
     </div>
 
     <form method="GET" class="filter-card d-flex align-items-end flex-wrap p-4 mb-6">

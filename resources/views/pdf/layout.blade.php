@@ -26,7 +26,13 @@
     </div>
 
     <div class="meta">
-        <div class="kiri">Periode: {{ $awal->format('d M Y') }} - {{ $akhir->format('d M Y') }}</div>
+        <div class="kiri">
+            @if (isset($awal) && isset($akhir))
+                Periode: {{ $awal->format('d M Y') }} - {{ $akhir->format('d M Y') }}
+            @else
+                Data per tanggal cetak
+            @endif
+        </div>
         <div class="kanan">Dicetak: {{ now()->format('d M Y, H:i') }} WIB oleh {{ auth()->user()->name }}</div>
     </div>
 
