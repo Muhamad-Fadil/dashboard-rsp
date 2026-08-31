@@ -87,14 +87,26 @@
     @include('partials.submenu-keuangan')
 
     {{-- Header --}}
-    <div class="page-header mb-6">
-        <h1 class="font-weight-bolder mb-1">
-            Klaim BPJS
-        </h1>
+    <div class="page-header d-flex justify-content-between align-items-center mb-6">
 
-        <span class="text-muted-light font-weight-bold">
-            Data pengajuan dan persetujuan klaim BPJS rumah sakit
-        </span>
+        <div>
+            <h1 class="font-weight-bolder mb-1">
+                Klaim BPJS
+            </h1>
+
+            <span class="text-muted-light font-weight-bold">
+                Data pengajuan dan persetujuan klaim BPJS rumah sakit
+            </span>
+        </div>
+
+        <a
+            href="{{ route('divisi.keuangan.klaim-bpjs.pdf', $division->slug) }}"
+            class="btn font-weight-bold px-5"
+            target="_blank"
+            style="background-color: #000; color: #fff; border: none;">
+            Download PDF
+        </a>
+
     </div>
 
     {{-- Filter --}}
