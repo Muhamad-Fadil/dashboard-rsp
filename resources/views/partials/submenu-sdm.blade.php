@@ -1,9 +1,11 @@
 @php
     $menuSdm = [
         ['label' => 'Ringkasan', 'route' => 'divisi.dashboard'],
+        ['label' => 'Data Pegawai', 'route' => 'divisi.sdm.data-pegawai'],
         ['label' => 'Komposisi Pegawai', 'route' => 'divisi.sdm.komposisi'],
         ['label' => 'Kehadiran', 'route' => 'divisi.sdm.kehadiran'],
         ['label' => 'Cuti & Izin', 'route' => 'divisi.sdm.cuti-izin'],
+        ['label' => 'Jadwal Kerja', 'route' => 'divisi.sdm.jadwal-kerja'],
         ['label' => 'Distribusi Pegawai', 'route' => 'divisi.sdm.distribusi'],
         ['label' => 'Pelatihan', 'route' => 'divisi.sdm.pelatihan'],
         ['label' => 'Produktivitas', 'route' => 'divisi.sdm.produktivitas'],

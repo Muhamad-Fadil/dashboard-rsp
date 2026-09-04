@@ -35,6 +35,7 @@
             <h1 class="font-weight-bolder mb-1"><i class="fas fa-user-check mr-2"></i>Kehadiran Pegawai</h1>
             <span class="text-muted-light font-weight-bold">Rekap dan detail kehadiran harian pegawai</span>
         </div>
+        <x-modal-pdf id="modalPdfKehadiran" title="Kehadiran Pegawai" :action="route('divisi.sdm.kehadiran.pdf', $division->slug)" />
     </div>
 
     <form method="GET" class="filter-card d-flex align-items-end flex-wrap p-4 mb-6">

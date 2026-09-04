@@ -314,6 +314,75 @@ class SdmIndikatorService
             ->values();
     }
 
+    /**
+     * Tabel 1: Data Pegawai lengkap (NIK, NIP, Nama, Tanggal & Tempat Lahir, JK, Pendidikan,
+     * Jabatan, Golongan, Unit Kerja). Dipakai di sub-menu "Data Pegawai".
+     */
+    public function daftarLengkapPegawai(?string $cari = null)
+    {
+        $query = Pegawai::where('aktif', true)->with(['unitKerja']);
+
+        if ($cari) {
+            $query->where(function ($q) use ($cari) {
+                $q->where('nama', 'like', "%{$cari}%")
+                    ->orWhere('nip', 'like', "%{$cari}%")
+                    ->orWhere('nik', 'like', "%{$cari}%");
+            });
+        }
+
+        return $query->orderBy('nama')->get();
+    }
+
+    /**
+     * Jam kerja standar buat pegawai non-shift (staf administrasi, dsb).
+     */
+    protected function jamKerjaNonShift(): array
+    {
+        return ['jam_masuk' => '08:00', 'jam_keluar' => '16:00'];
+    }
+
+    /**
+     * Tabel 2: Jadwal Kerja per tanggal (NIP, Jam Masuk, Jam Keluar, Unit Kerja, Jenis Shift).
+     * Pegawai non-shift (staf tetap/administrasi) selalu tampil dengan jam kerja standar dan
+     * label "Non-Shift". Pegawai shift ikut jadwal_shift pada tanggal terpilih — kalau nggak
+     * ada jadwal di tanggal itu (libur), ditandai "Libur".
+     */
+    public function jadwalKerja(Carbon $tanggal)
+    {
+        $jamNonShift = $this->jamKerjaNonShift();
+
+        $pegawaiList = Pegawai::where('aktif', true)
+            ->with(['unitKerja', 'jadwalShift' => function ($q) use ($tanggal) {
+                $q->whereDate('tanggal', $tanggal)->with('shift');
+            }])
+            ->orderBy('nama')
+            ->get();
+
+        return $pegawaiList->map(function ($p) use ($jamNonShift) {
+            if ($p->jenis_kerja === 'non_shift') {
+                return [
+                    'nip' => $p->nip,
+                    'nama' => $p->nama,
+                    'unit_kerja' => $p->unitKerja->nama_unit ?? '-',
+                    'jenis_shift' => 'Non-Shift',
+                    'jam_masuk' => $jamNonShift['jam_masuk'],
+                    'jam_keluar' => $jamNonShift['jam_keluar'],
+                ];
+            }
+
+            $jadwalHariIni = $p->jadwalShift->first();
+
+            return [
+                'nip' => $p->nip,
+                'nama' => $p->nama,
+                'unit_kerja' => $p->unitKerja->nama_unit ?? '-',
+                'jenis_shift' => $jadwalHariIni->shift->nama_shift ?? 'Libur',
+                'jam_masuk' => $jadwalHariIni->shift->jam_mulai ?? '-',
+                'jam_keluar' => $jadwalHariIni->shift->jam_selesai ?? '-',
+            ];
+        });
+    }
+
     public function produktivitasPerUnit(Carbon $awal, Carbon $akhir)
     {
         $pegawaiPerUnit = Pegawai::where('pegawai.aktif', true)

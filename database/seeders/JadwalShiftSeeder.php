@@ -12,7 +12,7 @@ class JadwalShiftSeeder extends Seeder
 {
     public function run(): void
     {
-        $pegawaiList = Pegawai::where('aktif', true)->get();
+        $pegawaiList = Pegawai::where('aktif', true)->where('jenis_kerja', 'shift')->get();
         $shiftIds = Shift::pluck('id')->all();
 
         // jadwal buat 14 hari terakhir sampai hari ini
