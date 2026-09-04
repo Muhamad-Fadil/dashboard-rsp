@@ -3,11 +3,9 @@
 @section('title', 'Dashboard Layanan')
 
 @push('styles')
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+@include('partials.dashboard-styles')
 <style>
-    body { font-family: 'Poppins', sans-serif; }
-
-    .page-header {
+        .page-header {
         background: linear-gradient(135deg, #6993FF 0%, #4D6FE0 100%);
         border-radius: 18px;
         padding: 28px 32px;
@@ -16,80 +14,6 @@
     }
     .page-header h1 { color: #fff; }
     .page-header .text-muted-light { color: rgba(255,255,255,.8) !important; }
-
-    .filter-card {
-        background: #fff;
-        border-radius: 14px;
-        box-shadow: 0 4px 18px rgba(0,0,0,.06);
-        border: none;
-    }
-
-    .section-title {
-        font-weight: 800; color: #181c32; font-size: 16px;
-        margin-bottom: 16px; margin-top: 4px;
-        text-transform: uppercase; letter-spacing: .4px;
-    }
-
-    .stat-card {
-        background: #fff;
-        border-radius: 16px;
-        border: none;
-        box-shadow: 0 4px 18px rgba(0,0,0,.06);
-        transition: transform .2s ease, box-shadow .2s ease;
-        height: 100%;
-    }
-    .stat-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 12px 28px rgba(0,0,0,.1);
-    }
-    .stat-value { font-size: 26px; font-weight: 800; line-height: 1.1; }
-    .stat-label { font-size: 13px; font-weight: 600; color: #7e8299; margin-top: 4px; }
-
-    .modern-card {
-        background: #fff;
-        border-radius: 16px;
-        border: none;
-        box-shadow: 0 4px 18px rgba(0,0,0,.06);
-    }
-    .modern-card .card-title {
-        font-weight: 700; font-size: 17px; color: #181c32;
-    }
-
-    .table-modern thead th {
-        border: none; color: #a1a5b7; font-size: 12px; text-transform: uppercase; letter-spacing: .5px;
-    }
-    .table-modern td { border-color: #f1f1f4; vertical-align: middle; }
-    .table-modern tbody tr:hover { background: #f9f9fb; }
-
-    .badge-modern {
-        border-radius: 20px; padding: 6px 14px; font-weight: 600; font-size: 12px;
-    }
-
-    .poli-bar-bg { background: #f1f1f4; border-radius: 10px; height: 6px; overflow: hidden; margin-top: 6px; }
-    .poli-bar-fill { height: 100%; border-radius: 10px; background: linear-gradient(90deg,#6993FF,#4D6FE0); }
-
-    /* --- Kartu akses cepat sub-menu --- */
-    .quickmenu-card {
-        background: #fff;
-        border-radius: 16px;
-        border: none;
-        box-shadow: 0 4px 18px rgba(0,0,0,.06);
-        padding: 20px;
-        text-decoration: none;
-        display: block;
-        transition: transform .15s ease, box-shadow .15s ease;
-        height: 100%;
-    }
-    .quickmenu-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 10px 24px rgba(0,0,0,.1);
-        text-decoration: none;
-    }
-    .quickmenu-label { font-size: 13px; font-weight: 700; color: #7e8299; text-transform: uppercase; letter-spacing: .4px; }
-    .quickmenu-value { font-size: 24px; font-weight: 800; color: #181c32; margin: 6px 0 2px; }
-    .quickmenu-sub { font-size: 12px; color: #a1a5b7; }
-
-    .dashboard-section { margin-bottom: 40px; }
 </style>
 @endpush
 
@@ -202,6 +126,7 @@
                 <div class="card stat-card"><div class="card-body">
                     <div class="stat-value text-dark">{{ $data['pasien_rawat_inap_aktif'] }}</div>
                     <div class="stat-label">Rawat Inap Aktif</div>
+                    <div class="text-muted" style="font-size: 10px;">per {{ $akhir->format('d M Y') }}</div>
                 </div></div>
             </div>
             <div class="col-xl-3 col-md-6 mb-4">
@@ -220,6 +145,7 @@
                 <div class="card stat-card"><div class="card-body">
                     <div class="stat-value text-dark">{{ $data['ketersediaan_bed']['tersedia'] }}<span class="font-size-lg text-muted">/{{ $data['ketersediaan_bed']['total'] }}</span></div>
                     <div class="stat-label">Bed Tersedia</div>
+                    <div class="text-muted" style="font-size: 10px;">per {{ $akhir->format('d M Y') }}</div>
                 </div></div>
             </div>
             <div class="col-xl-3 col-md-6 mb-4">

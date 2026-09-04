@@ -3,19 +3,8 @@
 @section('title', 'Laboratorium')
 
 @push('styles')
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+@include('partials.dashboard-styles')
 <style>
-    body { font-family: 'Poppins', sans-serif; }
-    .modern-card { background: #fff; border-radius: 16px; border: none; box-shadow: 0 4px 18px rgba(0,0,0,.06); }
-    .stat-card { background: #fff; border-radius: 16px; border: none; box-shadow: 0 4px 18px rgba(0,0,0,.06); height: 100%; }
-    .stat-value { font-size: 26px; font-weight: 800; line-height: 1.1; }
-    .stat-label { font-size: 13px; font-weight: 600; color: #7e8299; margin-top: 4px; }
-    .table-modern thead th { border: none; color: #a1a5b7; font-size: 12px; text-transform: uppercase; letter-spacing: .5px; }
-    .table-modern td { border-color: #f1f1f4; vertical-align: middle; }
-    .table-modern tbody tr:hover { background: #f9f9fb; }
-    .badge-modern { border-radius: 20px; padding: 6px 14px; font-weight: 600; font-size: 12px; }
-    nav[role="navigation"] svg { width: 16px !important; height: 16px !important; }
-
     .page-header {
         background: linear-gradient(135deg, #fafafa 0%, #646565 100%);
         width: 100%;
@@ -24,9 +13,11 @@
         color: #000;
         box-shadow: 0 10px 30px rgba(105,147,255,.25);
     }
+    .page-header h1 { color: #000; }
     .page-header .text-muted-light { color: rgba(255,255,255,.8) !important; }
 </style>
 @endpush
+
 
 @section('content')
 <div class="container-fluid px-6 py-6">
