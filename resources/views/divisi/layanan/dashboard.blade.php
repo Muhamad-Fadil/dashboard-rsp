@@ -5,7 +5,7 @@
 @push('styles')
 @include('partials.dashboard-styles')
 <style>
-        .page-header {
+    .page-header {
         background: linear-gradient(135deg, #6993FF 0%, #4D6FE0 100%);
         border-radius: 18px;
         padding: 28px 32px;
@@ -18,7 +18,7 @@
 @endpush
 
 @section('content')
-<div class="container-fluid px-6 py-6">
+<div class="container-fluid px-10 py-6">
 
     @include('partials.submenu-layanan')
 
@@ -53,46 +53,46 @@
 
     {{-- Akses Cepat ke Semua Sub-Menu --}}
     <div class="dashboard-section">
-        <div class="section-title">Akses Cepat</div>
-        <div class="row">
+        <div class="section-title font-size-h1">Akses Cepat</div>
+        <div class="row justify-content-center">
             <div class="col-xl-3 col-md-6 mb-4">
-                <a href="{{ route('divisi.layanan.pasien', $division->slug) }}" class="quickmenu-card">
-                    <div class="quickmenu-label">Data Pasien</div>
+                <a href="{{ route('divisi.layanan.pasien', $division->slug) }}" class="quickmenu-card text-center">
+                    <div class="quickmenu-label font-size-h4">Data Pasien</div>
                     <div class="quickmenu-value">{{ number_format($ringkasanSubMenu['pasien']['total']) }}</div>
                     <div class="quickmenu-sub">Total pasien terdaftar</div>
                 </a>
             </div>
             <div class="col-xl-3 col-md-6 mb-4">
-                <a href="{{ route('divisi.layanan.kunjungan', $division->slug) }}" class="quickmenu-card">
-                    <div class="quickmenu-label">Kunjungan</div>
+                <a href="{{ route('divisi.layanan.kunjungan', $division->slug) }}" class="quickmenu-card text-center">
+                    <div class="quickmenu-label font-size-h4">Kunjungan</div>
                     <div class="quickmenu-value">{{ number_format($ringkasanSubMenu['kunjungan']['total']) }}</div>
                     <div class="quickmenu-sub">{{ $ringkasanSubMenu['kunjungan']['menunggu'] }} sedang menunggu</div>
                 </a>
             </div>
             <div class="col-xl-3 col-md-6 mb-4">
-                <a href="{{ route('divisi.layanan.rawat-inap', $division->slug) }}" class="quickmenu-card">
-                    <div class="quickmenu-label">Rawat Inap</div>
+                <a href="{{ route('divisi.layanan.rawat-inap', $division->slug) }}" class="quickmenu-card text-center">
+                    <div class="quickmenu-label font-size-h4">Rawat Inap</div>
                     <div class="quickmenu-value">{{ $ringkasanSubMenu['rawat_inap']['dirawat'] }}</div>
                     <div class="quickmenu-sub">Pasien sedang dirawat</div>
                 </a>
             </div>
             <div class="col-xl-3 col-md-6 mb-4">
-                <a href="{{ route('divisi.layanan.operasi', $division->slug) }}" class="quickmenu-card">
-                    <div class="quickmenu-label">Operasi</div>
+                <a href="{{ route('divisi.layanan.operasi', $division->slug) }}" class="quickmenu-card text-center">
+                    <div class="quickmenu-label font-size-h4">Operasi</div>
                     <div class="quickmenu-value">{{ $ringkasanSubMenu['operasi']['aktif'] }}</div>
                     <div class="quickmenu-sub">Dijadwalkan / berlangsung</div>
                 </a>
             </div>
             <div class="col-xl-3 col-md-6 mb-4">
-                <a href="{{ route('divisi.layanan.laboratorium', $division->slug) }}" class="quickmenu-card">
-                    <div class="quickmenu-label">Laboratorium</div>
+                <a href="{{ route('divisi.layanan.laboratorium', $division->slug) }}" class="quickmenu-card text-center">
+                    <div class="quickmenu-label font-size-h4">Laboratorium</div>
                     <div class="quickmenu-value">{{ $ringkasanSubMenu['laboratorium']['aktif'] }}</div>
                     <div class="quickmenu-sub">Menunggu / diproses</div>
                 </a>
             </div>
             <div class="col-xl-3 col-md-6 mb-4">
-                <a href="{{ route('divisi.layanan.radiologi', $division->slug) }}" class="quickmenu-card">
-                    <div class="quickmenu-label">Radiologi</div>
+                <a href="{{ route('divisi.layanan.radiologi', $division->slug) }}" class="quickmenu-card text-center">
+                    <div class="quickmenu-label font-size-h4">Radiologi</div>
                     <div class="quickmenu-value">{{ $ringkasanSubMenu['radiologi']['aktif'] }}</div>
                     <div class="quickmenu-sub">Menunggu / diproses</div>
                 </a>
@@ -102,54 +102,54 @@
 
     {{-- 8 Indikator Utama --}}
     <div class="dashboard-section">
-        <div class="section-title">Indikator Layanan</div>
-        <div class="row">
+        <div class="section-title font-size-h1">Indikator Layanan</div>
+        <div class="row justify-content-center">
             <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card stat-card"><div class="card-body">
+                <div class="card stat-card"><div class="card-body text-center">
                     <div class="stat-value text-dark">{{ number_format($data['jumlah_kunjungan']) }}</div>
                     <div class="stat-label">Jumlah Kunjungan</div>
                 </div></div>
             </div>
             <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card stat-card"><div class="card-body">
+                <div class="card stat-card"><div class="card-body text-center">
                     <div class="stat-value text-dark">{{ $data['bor'] }}%</div>
                     <div class="stat-label">BOR (Bed Occupancy Rate)</div>
                 </div></div>
             </div>
             <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card stat-card"><div class="card-body">
+                <div class="card stat-card"><div class="card-body text-center">
                     <div class="stat-value text-dark">{{ $data['alos'] }} <span class="font-size-sm">hr</span></div>
                     <div class="stat-label">ALOS (Avg Length of Stay)</div>
                 </div></div>
             </div>
             <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card stat-card"><div class="card-body">
+                <div class="card stat-card"><div class="card-body text-center">
                     <div class="stat-value text-dark">{{ $data['pasien_rawat_inap_aktif'] }}</div>
                     <div class="stat-label">Rawat Inap Aktif</div>
                     <div class="text-muted" style="font-size: 10px;">per {{ $akhir->format('d M Y') }}</div>
                 </div></div>
             </div>
             <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card stat-card"><div class="card-body">
+                <div class="card stat-card"><div class="card-body text-center">
                     <div class="stat-value text-dark">{{ $data['toi'] }} <span class="font-size-sm">hr</span></div>
                     <div class="stat-label">TOI (Turn Over Interval)</div>
                 </div></div>
             </div>
             <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card stat-card"><div class="card-body">
+                <div class="card stat-card"><div class="card-body text-center">
                     <div class="stat-value text-dark">{{ $data['bto'] }}</div>
                     <div class="stat-label">BTO (Bed Turn Over)</div>
                 </div></div>
             </div>
             <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card stat-card"><div class="card-body">
+                <div class="card stat-card"><div class="card-body text-center">
                     <div class="stat-value text-dark">{{ $data['ketersediaan_bed']['tersedia'] }}<span class="font-size-lg text-muted">/{{ $data['ketersediaan_bed']['total'] }}</span></div>
                     <div class="stat-label">Bed Tersedia</div>
                     <div class="text-muted" style="font-size: 10px;">per {{ $akhir->format('d M Y') }}</div>
                 </div></div>
             </div>
             <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card stat-card"><div class="card-body">
+                <div class="card stat-card"><div class="card-body text-center">
                     <div class="stat-value text-dark">{{ $data['waktu_tunggu_rata_rata'] }} <span class="font-size-sm">mnt</span></div>
                     <div class="stat-label">Waktu Tunggu Rata-rata</div>
                 </div></div>
@@ -167,9 +167,9 @@
         ];
     @endphp
     <div class="dashboard-section">
+        <h3 class="mb-5 section-title font-size-h1">Ringkasan Target vs Realisasi</h3>
         <div class="card modern-card">
             <div class="card-body p-5">
-                <h3 class="card-title mb-4">Ringkasan Target vs Realisasi</h3>
                 <table class="table table-modern">
                     <thead><tr><th>Indikator</th><th>Target</th><th>Realisasi</th><th>Status</th></tr></thead>
                     <tbody>
@@ -197,14 +197,14 @@
     <div class="dashboard-section">
         <div class="row">
             <div class="col-lg-7 mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-5">
+                    <h3 class="section-title font-size-h1 mb-0" id="judulGrafikKunjungan">Tren Kunjungan per Bulan</h3>
+                    <button type="button" id="btnKembaliBulanan" class="btn btn-sm btn-light-primary font-weight-bold" style="display:none;">
+                        Kembali ke Bulanan
+                    </button>
+                </div>
                 <div class="card modern-card h-100">
                     <div class="card-body p-5">
-                        <div class="d-flex justify-content-between align-items-center mb-4">
-                            <h3 class="card-title mb-0" id="judulGrafikKunjungan">Tren Kunjungan per Bulan</h3>
-                            <button type="button" id="btnKembaliBulanan" class="btn btn-sm btn-light-primary font-weight-bold" style="display:none;">
-                                Kembali ke Bulanan
-                            </button>
-                        </div>
                         <p class="text-muted font-size-sm mb-3">Klik salah satu bar bulan untuk lihat rincian per hari</p>
                         <canvas id="chartKunjungan" height="120"></canvas>
                     </div>
@@ -212,9 +212,9 @@
             </div>
 
             <div class="col-lg-5 mb-4">
+                <h3 class="mb-5 section-title font-size-h1">Kunjungan per Poliklinik</h3>
                 <div class="card modern-card h-100">
                     <div class="card-body p-5">
-                        <h3 class="card-title mb-4">Kunjungan per Poliklinik</h3>
                         @php $maxPoli = $data['kunjungan_per_poli']->max('total') ?: 1; @endphp
                         @forelse ($data['kunjungan_per_poli'] as $poli)
                         <div class="mb-3">
@@ -236,10 +236,10 @@
     </div>
 
     {{-- Trend Penyakit --}}
-    <div class="dashboard-section">
+    <div class="dashboard-section pt-4">
+        <h3 class="mb-5 section-title font-size-h1">Trend Penyakit Pasien</h3>
         <div class="card modern-card">
             <div class="card-body p-5">
-                <h3 class="card-title mb-1">Trend Penyakit Pasien</h3>
                 <p class="text-muted font-size-sm mb-4">8 diagnosa terbanyak pada periode yang dipilih</p>
                 @php $maxPenyakit = $data['trend_penyakit']->max('total') ?: 1; @endphp
                 @forelse ($data['trend_penyakit'] as $penyakit)
@@ -261,9 +261,9 @@
 
     {{-- Trend Daerah Asal Pasien --}}
     <div class="dashboard-section">
+        <h3 class="mb-5 section-title font-size-h1">Trend Daerah Asal Pasien</h3>
         <div class="card modern-card">
             <div class="card-body p-5">
-                <h3 class="card-title mb-1">Trend Daerah Asal Pasien</h3>
                 <p class="text-muted font-size-sm mb-4">10 kecamatan asal pasien terbanyak (Kabupaten/Kota Bogor)</p>
                 <div class="table-responsive">
                     <table class="table table-modern">
