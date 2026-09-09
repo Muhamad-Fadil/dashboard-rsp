@@ -36,26 +36,41 @@ class LayananIndikatorService
             ]);
     }
 
+
     /**
-     * Jumlah pasien yang SEDANG dirawat sekarang (belum keluar).
+     * Jumlah pasien yang sedang dirawat PADA AKHIR periode yang dipilih (bukan selalu hari ini).
      */
-    public function pasienRawatInapAktif(): int
+    public function pasienRawatInapAktif(Carbon $akhir): int
     {
-        return RawatInap::whereNull('tanggal_keluar')->count();
+        return RawatInap::where('tanggal_masuk', '<=', $akhir)
+            ->where(function ($q) use ($akhir) {
+                $q->whereNull('tanggal_keluar')->orWhere('tanggal_keluar', '>', $akhir);
+            })
+            ->count();
     }
 
     /**
      * Ketersediaan tempat tidur saat ini.
      */
-    public function ketersediaanBed(): array
+    /**
+     * Ketersediaan bed PADA AKHIR periode yang dipilih, dihitung dari data rawat_inap
+     * (bukan dari kolom status bed, karena itu cuma nyimpen kondisi hari ini).
+     */
+    public function ketersediaanBed(Carbon $akhir): array
     {
         $total = Bed::count();
-        $tersedia = Bed::where('status', 'tersedia')->count();
+
+        $terisi = RawatInap::where('tanggal_masuk', '<=', $akhir)
+            ->where(function ($q) use ($akhir) {
+                $q->whereNull('tanggal_keluar')->orWhere('tanggal_keluar', '>', $akhir);
+            })
+            ->distinct('bed_id')
+            ->count('bed_id');
 
         return [
             'total' => $total,
-            'tersedia' => $tersedia,
-            'terisi' => $total - $tersedia,
+            'tersedia' => $total - $terisi,
+            'terisi' => $terisi,
         ];
     }
 
@@ -259,8 +274,8 @@ class LayananIndikatorService
         return [
             'jumlah_kunjungan' => $this->jumlahKunjungan($awal, $akhir),
             'kunjungan_per_poli' => $this->kunjunganPerPoli($awal, $akhir),
-            'pasien_rawat_inap_aktif' => $this->pasienRawatInapAktif(),
-            'ketersediaan_bed' => $this->ketersediaanBed(),
+            'pasien_rawat_inap_aktif' => $this->pasienRawatInapAktif($akhir),
+            'ketersediaan_bed' => $this->ketersediaanBed($akhir),
             'bor' => $this->bor($awal, $akhir),
             'alos' => $this->alos($awal, $akhir),
             'toi' => $this->toi($awal, $akhir),

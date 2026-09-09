@@ -3,10 +3,8 @@
 @section('title', 'Dashboard Layanan')
 
 @push('styles')
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+@include('partials.dashboard-styles')
 <style>
-    body { font-family: 'Poppins', sans-serif; }
-
     .page-header {
         background: linear-gradient(135deg, #6993FF 0%, #4D6FE0 100%);
         border-radius: 18px;
@@ -16,85 +14,11 @@
     }
     .page-header h1 { color: #fff; }
     .page-header .text-muted-light { color: rgba(255,255,255,.8) !important; }
-
-    .filter-card {
-        background: #fff;
-        border-radius: 14px;
-        box-shadow: 0 4px 18px rgba(0,0,0,.06);
-        border: none;
-    }
-
-    .section-title {
-        font-weight: 800; color: #181c32; font-size: 16px;
-        margin-bottom: 16px; margin-top: 4px;
-        text-transform: uppercase; letter-spacing: .4px;
-    }
-
-    .stat-card {
-        background: #fff;
-        border-radius: 16px;
-        border: none;
-        box-shadow: 0 4px 18px rgba(0,0,0,.06);
-        transition: transform .2s ease, box-shadow .2s ease;
-        height: 100%;
-    }
-    .stat-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 12px 28px rgba(0,0,0,.1);
-    }
-    .stat-value { font-size: 26px; font-weight: 800; line-height: 1.1; }
-    .stat-label { font-size: 13px; font-weight: 600; color: #7e8299; margin-top: 4px; }
-
-    .modern-card {
-        background: #fff;
-        border-radius: 16px;
-        border: none;
-        box-shadow: 0 4px 18px rgba(0,0,0,.06);
-    }
-    .modern-card .card-title {
-        font-weight: 700; font-size: 17px; color: #181c32;
-    }
-
-    .table-modern thead th {
-        border: none; color: #a1a5b7; font-size: 12px; text-transform: uppercase; letter-spacing: .5px;
-    }
-    .table-modern td { border-color: #f1f1f4; vertical-align: middle; }
-    .table-modern tbody tr:hover { background: #f9f9fb; }
-
-    .badge-modern {
-        border-radius: 20px; padding: 6px 14px; font-weight: 600; font-size: 12px;
-    }
-
-    .poli-bar-bg { background: #f1f1f4; border-radius: 10px; height: 6px; overflow: hidden; margin-top: 6px; }
-    .poli-bar-fill { height: 100%; border-radius: 10px; background: linear-gradient(90deg,#6993FF,#4D6FE0); }
-
-    /* --- Kartu akses cepat sub-menu --- */
-    .quickmenu-card {
-        background: #fff;
-        border-radius: 16px;
-        border: none;
-        box-shadow: 0 4px 18px rgba(0,0,0,.06);
-        padding: 20px;
-        text-decoration: none;
-        display: block;
-        transition: transform .15s ease, box-shadow .15s ease;
-        height: 100%;
-    }
-    .quickmenu-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 10px 24px rgba(0,0,0,.1);
-        text-decoration: none;
-    }
-    .quickmenu-label { font-size: 13px; font-weight: 700; color: #7e8299; text-transform: uppercase; letter-spacing: .4px; }
-    .quickmenu-value { font-size: 24px; font-weight: 800; color: #181c32; margin: 6px 0 2px; }
-    .quickmenu-sub { font-size: 12px; color: #a1a5b7; }
-
-    .dashboard-section { margin-bottom: 40px; }
 </style>
 @endpush
 
 @section('content')
-<div class="container-fluid px-6 py-6">
+<div class="container-fluid px-10 py-6">
 
     @include('partials.submenu-layanan')
 
@@ -129,46 +53,46 @@
 
     {{-- Akses Cepat ke Semua Sub-Menu --}}
     <div class="dashboard-section">
-        <div class="section-title">Akses Cepat</div>
-        <div class="row">
+        <div class="section-title font-size-h1">Akses Cepat</div>
+        <div class="row justify-content-center">
             <div class="col-xl-3 col-md-6 mb-4">
-                <a href="{{ route('divisi.layanan.pasien', $division->slug) }}" class="quickmenu-card">
-                    <div class="quickmenu-label">Data Pasien</div>
+                <a href="{{ route('divisi.layanan.pasien', $division->slug) }}" class="quickmenu-card text-center">
+                    <div class="quickmenu-label font-size-h4">Data Pasien</div>
                     <div class="quickmenu-value">{{ number_format($ringkasanSubMenu['pasien']['total']) }}</div>
                     <div class="quickmenu-sub">Total pasien terdaftar</div>
                 </a>
             </div>
             <div class="col-xl-3 col-md-6 mb-4">
-                <a href="{{ route('divisi.layanan.kunjungan', $division->slug) }}" class="quickmenu-card">
-                    <div class="quickmenu-label">Kunjungan</div>
+                <a href="{{ route('divisi.layanan.kunjungan', $division->slug) }}" class="quickmenu-card text-center">
+                    <div class="quickmenu-label font-size-h4">Kunjungan</div>
                     <div class="quickmenu-value">{{ number_format($ringkasanSubMenu['kunjungan']['total']) }}</div>
                     <div class="quickmenu-sub">{{ $ringkasanSubMenu['kunjungan']['menunggu'] }} sedang menunggu</div>
                 </a>
             </div>
             <div class="col-xl-3 col-md-6 mb-4">
-                <a href="{{ route('divisi.layanan.rawat-inap', $division->slug) }}" class="quickmenu-card">
-                    <div class="quickmenu-label">Rawat Inap</div>
+                <a href="{{ route('divisi.layanan.rawat-inap', $division->slug) }}" class="quickmenu-card text-center">
+                    <div class="quickmenu-label font-size-h4">Rawat Inap</div>
                     <div class="quickmenu-value">{{ $ringkasanSubMenu['rawat_inap']['dirawat'] }}</div>
                     <div class="quickmenu-sub">Pasien sedang dirawat</div>
                 </a>
             </div>
             <div class="col-xl-3 col-md-6 mb-4">
-                <a href="{{ route('divisi.layanan.operasi', $division->slug) }}" class="quickmenu-card">
-                    <div class="quickmenu-label">Operasi</div>
+                <a href="{{ route('divisi.layanan.operasi', $division->slug) }}" class="quickmenu-card text-center">
+                    <div class="quickmenu-label font-size-h4">Operasi</div>
                     <div class="quickmenu-value">{{ $ringkasanSubMenu['operasi']['aktif'] }}</div>
                     <div class="quickmenu-sub">Dijadwalkan / berlangsung</div>
                 </a>
             </div>
             <div class="col-xl-3 col-md-6 mb-4">
-                <a href="{{ route('divisi.layanan.laboratorium', $division->slug) }}" class="quickmenu-card">
-                    <div class="quickmenu-label">Laboratorium</div>
+                <a href="{{ route('divisi.layanan.laboratorium', $division->slug) }}" class="quickmenu-card text-center">
+                    <div class="quickmenu-label font-size-h4">Laboratorium</div>
                     <div class="quickmenu-value">{{ $ringkasanSubMenu['laboratorium']['aktif'] }}</div>
                     <div class="quickmenu-sub">Menunggu / diproses</div>
                 </a>
             </div>
             <div class="col-xl-3 col-md-6 mb-4">
-                <a href="{{ route('divisi.layanan.radiologi', $division->slug) }}" class="quickmenu-card">
-                    <div class="quickmenu-label">Radiologi</div>
+                <a href="{{ route('divisi.layanan.radiologi', $division->slug) }}" class="quickmenu-card text-center">
+                    <div class="quickmenu-label font-size-h4">Radiologi</div>
                     <div class="quickmenu-value">{{ $ringkasanSubMenu['radiologi']['aktif'] }}</div>
                     <div class="quickmenu-sub">Menunggu / diproses</div>
                 </a>
@@ -178,52 +102,54 @@
 
     {{-- 8 Indikator Utama --}}
     <div class="dashboard-section">
-        <div class="section-title">Indikator Layanan</div>
-        <div class="row">
+        <div class="section-title font-size-h1">Indikator Layanan</div>
+        <div class="row justify-content-center">
             <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card stat-card"><div class="card-body">
+                <div class="card stat-card"><div class="card-body text-center">
                     <div class="stat-value text-dark">{{ number_format($data['jumlah_kunjungan']) }}</div>
                     <div class="stat-label">Jumlah Kunjungan</div>
                 </div></div>
             </div>
             <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card stat-card"><div class="card-body">
+                <div class="card stat-card"><div class="card-body text-center">
                     <div class="stat-value text-dark">{{ $data['bor'] }}%</div>
                     <div class="stat-label">BOR (Bed Occupancy Rate)</div>
                 </div></div>
             </div>
             <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card stat-card"><div class="card-body">
+                <div class="card stat-card"><div class="card-body text-center">
                     <div class="stat-value text-dark">{{ $data['alos'] }} <span class="font-size-sm">hr</span></div>
                     <div class="stat-label">ALOS (Avg Length of Stay)</div>
                 </div></div>
             </div>
             <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card stat-card"><div class="card-body">
+                <div class="card stat-card"><div class="card-body text-center">
                     <div class="stat-value text-dark">{{ $data['pasien_rawat_inap_aktif'] }}</div>
                     <div class="stat-label">Rawat Inap Aktif</div>
+                    <div class="text-muted" style="font-size: 10px;">per {{ $akhir->format('d M Y') }}</div>
                 </div></div>
             </div>
             <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card stat-card"><div class="card-body">
+                <div class="card stat-card"><div class="card-body text-center">
                     <div class="stat-value text-dark">{{ $data['toi'] }} <span class="font-size-sm">hr</span></div>
                     <div class="stat-label">TOI (Turn Over Interval)</div>
                 </div></div>
             </div>
             <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card stat-card"><div class="card-body">
+                <div class="card stat-card"><div class="card-body text-center">
                     <div class="stat-value text-dark">{{ $data['bto'] }}</div>
                     <div class="stat-label">BTO (Bed Turn Over)</div>
                 </div></div>
             </div>
             <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card stat-card"><div class="card-body">
+                <div class="card stat-card"><div class="card-body text-center">
                     <div class="stat-value text-dark">{{ $data['ketersediaan_bed']['tersedia'] }}<span class="font-size-lg text-muted">/{{ $data['ketersediaan_bed']['total'] }}</span></div>
                     <div class="stat-label">Bed Tersedia</div>
+                    <div class="text-muted" style="font-size: 10px;">per {{ $akhir->format('d M Y') }}</div>
                 </div></div>
             </div>
             <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card stat-card"><div class="card-body">
+                <div class="card stat-card"><div class="card-body text-center">
                     <div class="stat-value text-dark">{{ $data['waktu_tunggu_rata_rata'] }} <span class="font-size-sm">mnt</span></div>
                     <div class="stat-label">Waktu Tunggu Rata-rata</div>
                 </div></div>
@@ -241,9 +167,9 @@
         ];
     @endphp
     <div class="dashboard-section">
+        <h3 class="mb-5 section-title font-size-h1">Ringkasan Target vs Realisasi</h3>
         <div class="card modern-card">
             <div class="card-body p-5">
-                <h3 class="card-title mb-4">Ringkasan Target vs Realisasi</h3>
                 <table class="table table-modern">
                     <thead><tr><th>Indikator</th><th>Target</th><th>Realisasi</th><th>Status</th></tr></thead>
                     <tbody>
@@ -271,14 +197,14 @@
     <div class="dashboard-section">
         <div class="row">
             <div class="col-lg-7 mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-5">
+                    <h3 class="section-title font-size-h1 mb-0" id="judulGrafikKunjungan">Tren Kunjungan per Bulan</h3>
+                    <button type="button" id="btnKembaliBulanan" class="btn btn-sm btn-light-primary font-weight-bold" style="display:none;">
+                        Kembali ke Bulanan
+                    </button>
+                </div>
                 <div class="card modern-card h-100">
                     <div class="card-body p-5">
-                        <div class="d-flex justify-content-between align-items-center mb-4">
-                            <h3 class="card-title mb-0" id="judulGrafikKunjungan">Tren Kunjungan per Bulan</h3>
-                            <button type="button" id="btnKembaliBulanan" class="btn btn-sm btn-light-primary font-weight-bold" style="display:none;">
-                                Kembali ke Bulanan
-                            </button>
-                        </div>
                         <p class="text-muted font-size-sm mb-3">Klik salah satu bar bulan untuk lihat rincian per hari</p>
                         <canvas id="chartKunjungan" height="120"></canvas>
                     </div>
@@ -286,9 +212,9 @@
             </div>
 
             <div class="col-lg-5 mb-4">
+                <h3 class="mb-5 section-title font-size-h1">Kunjungan per Poliklinik</h3>
                 <div class="card modern-card h-100">
                     <div class="card-body p-5">
-                        <h3 class="card-title mb-4">Kunjungan per Poliklinik</h3>
                         @php $maxPoli = $data['kunjungan_per_poli']->max('total') ?: 1; @endphp
                         @forelse ($data['kunjungan_per_poli'] as $poli)
                         <div class="mb-3">
@@ -310,10 +236,10 @@
     </div>
 
     {{-- Trend Penyakit --}}
-    <div class="dashboard-section">
+    <div class="dashboard-section pt-4">
+        <h3 class="mb-5 section-title font-size-h1">Trend Penyakit Pasien</h3>
         <div class="card modern-card">
             <div class="card-body p-5">
-                <h3 class="card-title mb-1">Trend Penyakit Pasien</h3>
                 <p class="text-muted font-size-sm mb-4">8 diagnosa terbanyak pada periode yang dipilih</p>
                 @php $maxPenyakit = $data['trend_penyakit']->max('total') ?: 1; @endphp
                 @forelse ($data['trend_penyakit'] as $penyakit)
@@ -335,9 +261,9 @@
 
     {{-- Trend Daerah Asal Pasien --}}
     <div class="dashboard-section">
+        <h3 class="mb-5 section-title font-size-h1">Trend Daerah Asal Pasien</h3>
         <div class="card modern-card">
             <div class="card-body p-5">
-                <h3 class="card-title mb-1">Trend Daerah Asal Pasien</h3>
                 <p class="text-muted font-size-sm mb-4">10 kecamatan asal pasien terbanyak (Kabupaten/Kota Bogor)</p>
                 <div class="table-responsive">
                     <table class="table table-modern">

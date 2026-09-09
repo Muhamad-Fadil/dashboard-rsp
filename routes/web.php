@@ -155,13 +155,22 @@ Route::middleware('auth')->group(function () {
         ->name('divisi.sdm.produktivitas')
         ->middleware(['role:direktur,manajer,operator', 'division.access']);
 
-    // ---- Sub-menu Keuangan: Pendapatan, Pengeluaran, Cashflow ----
+   // ---- Sub-menu Keuangan: Pendapatan, Pengeluaran, Cashflow ----
+
     Route::get('/divisi/{division:slug}/pendapatan', [PendapatanController::class, 'index'])
         ->name('divisi.keuangan.pendapatan')
         ->middleware(['role:direktur,manajer,operator', 'division.access']);
 
+    Route::get('/divisi/{division:slug}/pendapatan/pdf', [PendapatanController::class, 'exportPdf'])
+        ->name('divisi.keuangan.pendapatan.pdf')
+        ->middleware(['role:direktur,manajer,operator', 'division.access']);
+
     Route::get('/divisi/{division:slug}/pengeluaran', [PengeluaranController::class, 'index'])
         ->name('divisi.keuangan.pengeluaran')
+        ->middleware(['role:direktur,manajer,operator', 'division.access']);
+
+    Route::get('/divisi/{division:slug}/pengeluaran/pdf', [PengeluaranController::class, 'exportPdf'])
+        ->name('divisi.keuangan.pengeluaran.pdf')
         ->middleware(['role:direktur,manajer,operator', 'division.access']);
 
     Route::get('/divisi/{division:slug}/cash-flow', [CashFlowController::class, 'index'])
@@ -170,6 +179,10 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/divisi/{division:slug}/klaim-bpjs', [KlaimBpjsController::class, 'index'])
         ->name('divisi.keuangan.klaim-bpjs')
+        ->middleware(['role:direktur,manajer,operator', 'division.access']);
+
+    Route::get('/divisi/{division:slug}/klaim-bpjs/pdf', [KlaimBpjsController::class, 'exportPdf'])
+        ->name('divisi.keuangan.klaim-bpjs.pdf')
         ->middleware(['role:direktur,manajer,operator', 'division.access']);
 });
 

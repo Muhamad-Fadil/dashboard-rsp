@@ -3,38 +3,8 @@
 @section('title', 'Data Pasien')
 
 @push('styles')
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+@include('partials.dashboard-styles')
 <style>
-    body { font-family: 'Poppins', sans-serif; }
-    .modern-card { background: #fff; border-radius: 16px; border: none; box-shadow: 0 4px 18px rgba(0,0,0,.06); }
-    .table-modern thead th { border: none; color: #a1a5b7; font-size: 12px; text-transform: uppercase; letter-spacing: .5px; }
-    .table-modern td { border-color: #f1f1f4; vertical-align: middle; }
-    .table-modern tbody tr:hover { background: #f9f9fb; }
-    .badge-modern { border-radius: 20px; padding: 6px 14px; font-weight: 600; font-size: 12px; }
-    .avatar-circle {
-        width: 40px; height: 40px; border-radius: 50%;
-        background: #EEF3FF; color: #6993FF;
-        display: flex; align-items: center; justify-content: center;
-        font-weight: 700; font-size: 15px;
-    }
-
-        .table-modern th { white-space: nowrap; }
-    .table-modern td.nowrap { white-space: nowrap; }
-    .pasien-cell { max-width: 220px; }
-    .pasien-alamat {
-        font-size: 12px; color: #a1a5b7;
-        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-        max-width: 220px; display: block;
-    }
-
-    .btn-expand { background: #f4f6f9; border: none; border-radius: 8px; padding: 6px 12px; font-weight: 600; font-size: 12px; color: #6993FF; cursor: pointer; }
-    .btn-expand:hover { background: #EEF3FF; }
-    .row-detail { display: none; background: #f9f9fb; }
-    .row-detail.show { display: table-row; }
-    .table-obat { width: 100%; font-size: 13px; }
-    .table-obat th { text-align: left; color: #a1a5b7; font-weight: 600; padding: 4px 12px; }
-    .table-obat td { padding: 6px 12px; }
-
     .page-header {
         background: linear-gradient(135deg, #005d21 0%, #09c5e6 100%);
         width: 100%;
@@ -69,7 +39,11 @@
             <form method="GET" class="mb-5">
                 <div class="input-group" style="max-width: 420px;">
                     <div class="input-group-prepend">
-                        <span class="input-group-text bg-light border-0 text-muted">🔍</span>
+                        <span class="input-group-text search-icon-wrap">
+                            <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="10.5" cy="10.5" r="6.5"/><path d="M20 20l-4.5-4.5"/>
+                            </svg>
+                        </span>
                     </div>
                     <input type="text" name="cari" value="{{ $cari }}" class="form-control border-0 bg-light"
                            placeholder="Cari nama, no RM, no registrasi, atau NIK...">

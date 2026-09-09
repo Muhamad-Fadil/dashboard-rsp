@@ -48,7 +48,7 @@ class PasienController extends Controller
         $awal = Carbon::parse($request->query('awal', now()->subDays(30)))->startOfDay();
         $akhir = Carbon::parse($request->query('akhir', now()))->endOfDay();
 
-        $pasien = Pasien::with('jenisPembayaran')
+        $pasien = Pasien::with(['jenisPembayaran', 'wilayah', 'kunjungan'])
             ->whereBetween('tanggal_registrasi', [$awal, $akhir])
             ->orderBy('nama')
             ->get();

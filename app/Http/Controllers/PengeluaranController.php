@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Division;
 use App\Models\Pengeluaran;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 
 class PengeluaranController extends Controller
@@ -32,5 +33,29 @@ class PengeluaranController extends Controller
             'awal',
             'akhir'
         ));
+    }
+
+    public function exportPdf(Request $request, Division $division)
+    {
+        $awal = $request->filled('awal')
+            ? $request->awal
+            : now()->startOfMonth()->toDateString();
+
+        $akhir = $request->filled('akhir')
+            ? $request->akhir
+            : now()->toDateString();
+
+        $pengeluaran = Pengeluaran::with(['kategori', 'unitKerja'])
+            ->whereBetween('tanggal', [$awal, $akhir])
+            ->latest('tanggal')
+            ->get();
+
+        $pdf = Pdf::loadView('pdf.keuangan.pengeluaran', [
+            'pengeluaran' => $pengeluaran,
+            'awal' => $awal,
+            'akhir' => $akhir,
+        ])->setPaper('a4', 'landscape');
+
+        return $pdf->stream('data-pengeluaran.pdf');
     }
 }
