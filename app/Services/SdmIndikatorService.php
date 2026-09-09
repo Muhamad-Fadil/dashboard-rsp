@@ -18,6 +18,24 @@ class SdmIndikatorService
     }
 
     /**
+     * Jumlah pegawai per status kepegawaian: PNS, PPPK, Kontrak BLU.
+     * Dipakai buat kartu ringkasan di halaman utama Dashboard SDM.
+     */
+    public function jumlahPerStatusKepegawaian(): array
+    {
+        $hasil = Pegawai::where('aktif', true)
+            ->selectRaw('status_kepegawaian, count(*) as total')
+            ->groupBy('status_kepegawaian')
+            ->pluck('total', 'status_kepegawaian');
+
+        return [
+            'pns' => (int) ($hasil['pns'] ?? 0),
+            'pppk' => (int) ($hasil['pppk'] ?? 0),
+            'kontrak_blu' => (int) ($hasil['kontrak_blu'] ?? 0),
+        ];
+    }
+
+    /**
      * Klasifikasi 1 profesi ke salah satu dari 5 kelompok SDM (dokter, perawat, nakes_lain,
      * administrasi, pendukung). Dipakai bareng oleh komposisiSdm() dan daftarPegawai() biar
      * logic pengelompokannya konsisten di satu tempat.
@@ -420,6 +438,7 @@ class SdmIndikatorService
     {
         return [
             'total_pegawai' => $this->totalPegawai(),
+            'status_kepegawaian' => $this->jumlahPerStatusKepegawaian(),
             'komposisi_sdm' => $this->komposisiSdm(),
             'persentase_kehadiran' => $this->persentaseKehadiran($awal, $akhir),
             'rekap_status_absensi' => $this->rekapStatusAbsensi($awal, $akhir),
