@@ -268,6 +268,62 @@ class LayananIndikatorService
         /**
          * Ambil semua indikator sekaligus dalam 1 array — ini yang dipanggil dari Controller.
          */
+    
+        /**
+     * Breakdown status kunjungan dalam periode: berapa yang selesai berobat vs batal.
+     */
+    public function statusKunjungan(Carbon $awal, Carbon $akhir): array
+    {
+        $query = Kunjungan::whereBetween('waktu_daftar', [$awal, $akhir]);
+
+        return [
+            'selesai' => (clone $query)->where('status', 'selesai')->count(),
+            'batal' => (clone $query)->where('status', 'batal')->count(),
+        ];
+    }
+
+    /**
+     * Trend kunjungan harian untuk 5 poliklinik paling sibuk, 30 hari terakhir (tetap, tidak ikut filter periode dashboard).
+     */
+    public function trendPoliklinikHarian(int $limit = 5)
+    {
+        $awal = now()->subDays(29)->startOfDay();
+        $akhir = now()->endOfDay();
+
+        $topPoliIds = Kunjungan::whereBetween('waktu_daftar', [$awal, $akhir])
+            ->whereNotNull('poli_id')
+            ->selectRaw('poli_id, count(*) as total')
+            ->groupBy('poli_id')
+            ->orderByDesc('total')
+            ->limit($limit)
+            ->pluck('poli_id');
+
+        $labelTanggal = [];
+        $dataPerPoli = [];
+
+        foreach (Poli::whereIn('id', $topPoliIds)->get() as $poli) {
+            $dataPerPoli[$poli->nama_poli] = [];
+        }
+
+        $tanggal = $awal->copy();
+        while ($tanggal->lte($akhir)) {
+            $labelTanggal[] = $tanggal->format('d M');
+
+            foreach ($topPoliIds as $poliId) {
+                $namaPoli = Poli::find($poliId)->nama_poli;
+                $dataPerPoli[$namaPoli][] = Kunjungan::where('poli_id', $poliId)
+                    ->whereDate('waktu_daftar', $tanggal->format('Y-m-d'))
+                    ->count();
+            }
+
+            $tanggal->addDay();
+        }
+
+        return [
+            'labels' => $labelTanggal,
+            'series' => $dataPerPoli,
+        ];
+    }    
         
     public function ringkasan(Carbon $awal, Carbon $akhir): array
     {
@@ -284,6 +340,8 @@ class LayananIndikatorService
             'kunjungan_per_bulan' => $this->kunjunganPerBulan(6),
             'trend_penyakit' => $this->trendPenyakit($awal, $akhir),
             'trend_daerah' => $this->trendDaerah($awal, $akhir),
+            'status_kunjungan' => $this->statusKunjungan($awal, $akhir),
+            'trend_poliklinik_harian' => $this->trendPoliklinikHarian(5),
         ];
     }
 }

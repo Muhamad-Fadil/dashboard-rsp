@@ -108,6 +108,10 @@
                 <div class="card stat-card"><div class="card-body text-center">
                     <div class="stat-value text-dark">{{ number_format($data['jumlah_kunjungan']) }}</div>
                     <div class="stat-label">Jumlah Kunjungan</div>
+                    <div class="d-flex justify-content-center mt-2" style="gap:8px;">
+                        <span class="badge-modern" style="background:#E8FFF3; color:#1BC5BD; font-size:10px;">{{ $data['status_kunjungan']['selesai'] }} Selesai</span>
+                        <span class="badge-modern" style="background:#FFE9EA; color:#F64E60; font-size:10px;">{{ $data['status_kunjungan']['batal'] }} Batal</span>
+                    </div>
                 </div></div>
             </div>
             <div class="col-xl-3 col-md-6 mb-4">
@@ -211,7 +215,7 @@
                 </div>
             </div>
 
-            <div class="col-lg-5 mb-4">
+            {{-- <div class="col-lg-5 mb-4">
                 <h3 class="mb-5 section-title font-size-h1">Kunjungan per Poliklinik</h3>
                 <div class="card modern-card h-100">
                     <div class="card-body p-5">
@@ -229,6 +233,19 @@
                         @empty
                         <p class="text-muted">Belum ada data</p>
                         @endforelse
+                    </div>
+                </div>
+            </div> --}}
+
+            {{-- Trend per Poliklinik (30 hari terakhir) --}}
+            <div class="col-lg-5 mb-4">
+                <div class="section-heading">
+                    <h3 class="section-title font-size-h1">Trend Kunjungan per Poliklinik</h3>
+                </div>
+                <div class="card modern-card h-100">
+                    <div class="card-body p-5">
+                        <p class="text-muted font-size-sm mb-4">5 poliklinik tersibuk, 30 hari terakhir (tidak dipengaruhi filter tanggal di atas)</p>
+                        <canvas id="chartTrendPoli" height="150"></canvas>
                     </div>
                 </div>
             </div>
@@ -328,6 +345,33 @@
                 const index = elements[0].index;
                 const bulanDipilih = dataBulanan[index];
                 tampilkanGrafikHarian(bulanDipilih);
+            }
+        }
+    });
+
+    const trendPoli = {!! json_encode($data['trend_poliklinik_harian']) !!};
+    const warnaGaris = ['#6993FF', '#1BC5BD', '#FFA800', '#F64E60', '#8950FC'];
+
+    new Chart(document.getElementById('chartTrendPoli'), {
+        type: 'line',
+        data: {
+            labels: trendPoli.labels,
+            datasets: Object.keys(trendPoli.series).map((nama, i) => ({
+                label: nama,
+                data: trendPoli.series[nama],
+                borderColor: warnaGaris[i % warnaGaris.length],
+                backgroundColor: warnaGaris[i % warnaGaris.length],
+                tension: 0.5,
+                pointRadius: 2,
+                fill: false,
+            }))
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { position: 'bottom' } },
+            scales: {
+                y: { beginAtZero: true, grid: { color: '#f1f1f4' } },
+                x: { grid: { display: false } }
             }
         }
     });
