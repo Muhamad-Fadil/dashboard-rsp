@@ -94,34 +94,70 @@
         <button type="submit" class="btn btn-primary font-weight-bold px-6"><i class="fas fa-filter mr-2"></i>Terapkan</button>
     </form>
 
-    {{-- 4 Indikator Utama --}}
+        {{-- 8 Kartu Ringkasan: Jumlah & Komposisi Pegawai + Status Kepegawaian --}}
+    @php
+        // Ambil dari komposisi_sdm yang udah dihitung service (dokter/perawat/nakes_lain/administrasi/pendukung)
+        $totalPerKelompok = $data['komposisi_sdm']->pluck('total', 'kelompok');
+        $jumlahDokter = $totalPerKelompok['dokter'] ?? 0;
+        $jumlahPerawat = $totalPerKelompok['perawat'] ?? 0;
+        $jumlahPenunjang = $totalPerKelompok['nakes_lain'] ?? 0;
+        $jumlahAdministrasi = ($totalPerKelompok['administrasi'] ?? 0) + ($totalPerKelompok['pendukung'] ?? 0);
+    @endphp
     <div class="row">
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card stat-card"><div class="card-body">
                 <div class="stat-icon" style="background:#F1E9FF; color:#8950FC;"><i class="fas fa-user-friends"></i></div>
                 <div class="stat-value text-dark">{{ number_format($data['total_pegawai']) }}</div>
-                <div class="stat-label">Total Pegawai Aktif</div>
+                <div class="stat-label">Jumlah Pegawai</div>
             </div></div>
         </div>
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card stat-card"><div class="card-body">
-                <div class="stat-icon" style="background:#E8FFF3; color:#1BC5BD;"><i class="fas fa-user-check"></i></div>
-                <div class="stat-value text-dark">{{ $data['persentase_kehadiran'] }}%</div>
-                <div class="stat-label">Persentase Kehadiran</div>
+                <div class="stat-icon" style="background:#EEF3FF; color:#6993FF;"><i class="fas fa-user-doctor fa-user-md"></i></div>
+                <div class="stat-value text-dark">{{ number_format($jumlahDokter) }}</div>
+                <div class="stat-label">Dokter</div>
             </div></div>
         </div>
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card stat-card"><div class="card-body">
-                <div class="stat-icon" style="background:#FFF6E0; color:#FFA800;"><i class="fas fa-plane-departure"></i></div>
-                <div class="stat-value text-dark">{{ $data['jumlah_cuti_aktif'] }}</div>
-                <div class="stat-label">Pegawai Cuti/Izin Hari Ini</div>
+                <div class="stat-icon" style="background:#E8FFF3; color:#1BC5BD;"><i class="fas fa-user-nurse"></i></div>
+                <div class="stat-value text-dark">{{ number_format($jumlahPerawat) }}</div>
+                <div class="stat-label">Perawat</div>
             </div></div>
         </div>
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card stat-card"><div class="card-body">
-                <div class="stat-icon" style="background:#FFE9EA; color:#F64E60;"><i class="fas fa-graduation-cap"></i></div>
-                <div class="stat-value text-dark">{{ $data['jumlah_ikut_pelatihan'] }}</div>
-                <div class="stat-label">Mengikuti Pelatihan (Periode)</div>
+                <div class="stat-icon" style="background:#FFF0E6; color:#FF8A3D;"><i class="fas fa-flask"></i></div>
+                <div class="stat-value text-dark">{{ number_format($jumlahPenunjang) }}</div>
+                <div class="stat-label">Penunjang</div>
+            </div></div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card stat-card"><div class="card-body">
+                <div class="stat-icon" style="background:#FFF6E0; color:#FFA800;"><i class="fas fa-briefcase"></i></div>
+                <div class="stat-value text-dark">{{ number_format($jumlahAdministrasi) }}</div>
+                <div class="stat-label">Administrasi</div>
+            </div></div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card stat-card"><div class="card-body">
+                <div class="stat-icon" style="background:#F1E9FF; color:#8950FC;"><i class="fas fa-landmark"></i></div>
+                <div class="stat-value text-dark">{{ number_format($data['status_kepegawaian']['pns']) }}</div>
+                <div class="stat-label">PNS</div>
+            </div></div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card stat-card"><div class="card-body">
+                <div class="stat-icon" style="background:#EEF3FF; color:#6993FF;"><i class="fas fa-file-signature"></i></div>
+                <div class="stat-value text-dark">{{ number_format($data['status_kepegawaian']['pppk']) }}</div>
+                <div class="stat-label">PPPK</div>
+            </div></div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card stat-card"><div class="card-body">
+                <div class="stat-icon" style="background:#FFE9EA; color:#F64E60;"><i class="fas fa-file-contract"></i></div>
+                <div class="stat-value text-dark">{{ number_format($data['status_kepegawaian']['kontrak_blu']) }}</div>
+                <div class="stat-label">Kontrak BLU</div>
             </div></div>
         </div>
     </div>

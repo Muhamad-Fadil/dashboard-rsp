@@ -11,6 +11,13 @@ class PegawaiSeeder extends Seeder
 {
     public function run(): void
     {
+        $dokterUmum = Profesi::where('nama_profesi', 'Dokter Umum')->first();
+        $dokterAnak = Profesi::where('nama_profesi', 'Dokter Spesialis Anak')->first();
+        $dokterKandungan = Profesi::where('nama_profesi', 'Dokter Spesialis Kandungan')->first();
+        $dokterBedah = Profesi::where('nama_profesi', 'Dokter Spesialis Bedah')->first();
+        $dokterPenyakitDalam = Profesi::where('nama_profesi', 'Dokter Spesialis Penyakit Dalam')->first();
+        $dokterJantung = Profesi::where('nama_profesi', 'Dokter Spesialis Jantung')->first();
+        $dokterGigi = Profesi::where('nama_profesi', 'Dokter Gigi')->first();
         $perawat = Profesi::where('nama_profesi', 'Perawat')->first();
         $bidan = Profesi::where('nama_profesi', 'Bidan')->first();
         $apoteker = Profesi::where('nama_profesi', 'Apoteker')->first();
@@ -34,6 +41,16 @@ class PegawaiSeeder extends Seeder
         $unitKeu3 = UnitKerja::where('kode_unit', 'KEU-03')->first();
 
         $pegawai = [
+            // Dokter
+            ['nama' => 'dr. Budi Santoso', 'profesi' => $dokterUmum, 'unit' => $unitIgd, 'jk' => 'L', 'masuk' => '2015-02-01'],
+            ['nama' => 'dr. Siti Nurhaliza', 'profesi' => $dokterUmum, 'unit' => $unitPoli, 'jk' => 'P', 'masuk' => '2017-06-10'],
+            ['nama' => 'dr. Andi Prasetya, Sp.A', 'profesi' => $dokterAnak, 'unit' => $unitPoli, 'jk' => 'L', 'masuk' => '2014-09-01'],
+            ['nama' => 'dr. Ratna Dewi, Sp.OG', 'profesi' => $dokterKandungan, 'unit' => $unitPoli, 'jk' => 'P', 'masuk' => '2016-03-15'],
+            ['nama' => 'dr. Hadi Wijaya, Sp.B', 'profesi' => $dokterBedah, 'unit' => $unitIbs, 'jk' => 'L', 'masuk' => '2013-11-01'],
+            ['nama' => 'dr. Lestari Handayani, Sp.PD', 'profesi' => $dokterPenyakitDalam, 'unit' => $unitRanap, 'jk' => 'P', 'masuk' => '2018-01-20'],
+            ['nama' => 'dr. Bambang Kurniawan, Sp.JP', 'profesi' => $dokterJantung, 'unit' => $unitRanap, 'jk' => 'L', 'masuk' => '2015-07-01'],
+            ['nama' => 'drg. Maya Anggraeni', 'profesi' => $dokterGigi, 'unit' => $unitPoli, 'jk' => 'P', 'masuk' => '2019-04-01'],
+
             // Perawat - IGD
             ['nama' => 'Rina Marlina', 'profesi' => $perawat, 'unit' => $unitIgd, 'jk' => 'P', 'masuk' => '2019-03-01'],
             ['nama' => 'Agus Setiawan', 'profesi' => $perawat, 'unit' => $unitIgd, 'jk' => 'L', 'masuk' => '2020-06-15'],
@@ -79,12 +96,24 @@ class PegawaiSeeder extends Seeder
             ['nama' => 'Joko Susilo', 'profesi' => $keamanan, 'unit' => $unitIgd, 'jk' => 'L', 'masuk' => '2018-01-01'],
             ['nama' => 'Wahyu Hidayat', 'profesi' => $keamanan, 'unit' => $unitRanap, 'jk' => 'L', 'masuk' => '2020-03-01'],
             ['nama' => 'Sumiati', 'profesi' => $cleaning, 'unit' => $unitRanap, 'jk' => 'P', 'masuk' => '2019-06-01'],
+
+            // Pegawai baru (Kontrak BLU) — masuk 2024-2025
+            ['nama' => 'Putri Ayu Lestari', 'profesi' => $perawat, 'unit' => $unitIgd, 'jk' => 'P', 'masuk' => '2024-08-01'],
+            ['nama' => 'Reza Firmansyah', 'profesi' => $radiografer, 'unit' => $unitRad, 'jk' => 'L', 'masuk' => '2025-01-15'],
+            ['nama' => 'Salsabila Putri', 'profesi' => $admin, 'unit' => $unitKeu2, 'jk' => 'P', 'masuk' => '2025-06-01'],
         ];
 
         $kotaLahir = ['Bogor', 'Cianjur', 'Sukabumi', 'Bandung', 'Depok', 'Jakarta', 'Cimahi', 'Cirebon'];
 
         // Pendidikan & jabatan default per nama profesi — dipakai buat isi Tabel 1
         $dataProfesi = [
+            'Dokter Umum' => ['pendidikan' => 'S1 Kedokteran - Profesi Dokter', 'jabatan' => 'Dokter Umum', 'jenis_kerja' => 'shift'],
+            'Dokter Spesialis Anak' => ['pendidikan' => 'Sp.A', 'jabatan' => 'Dokter Spesialis Anak', 'jenis_kerja' => 'shift'],
+            'Dokter Spesialis Kandungan' => ['pendidikan' => 'Sp.OG', 'jabatan' => 'Dokter Spesialis Kandungan', 'jenis_kerja' => 'shift'],
+            'Dokter Spesialis Bedah' => ['pendidikan' => 'Sp.B', 'jabatan' => 'Dokter Spesialis Bedah', 'jenis_kerja' => 'shift'],
+            'Dokter Spesialis Penyakit Dalam' => ['pendidikan' => 'Sp.PD', 'jabatan' => 'Dokter Spesialis Penyakit Dalam', 'jenis_kerja' => 'shift'],
+            'Dokter Spesialis Jantung' => ['pendidikan' => 'Sp.JP', 'jabatan' => 'Dokter Spesialis Jantung', 'jenis_kerja' => 'shift'],
+            'Dokter Gigi' => ['pendidikan' => 'S1 Kedokteran Gigi - Profesi Dokter Gigi', 'jabatan' => 'Dokter Gigi', 'jenis_kerja' => 'shift'],
             'Perawat' => ['pendidikan' => 'D3 Keperawatan', 'jabatan' => 'Perawat Pelaksana', 'jenis_kerja' => 'shift'],
             'Bidan' => ['pendidikan' => 'D3 Kebidanan', 'jabatan' => 'Bidan Pelaksana', 'jenis_kerja' => 'shift'],
             'Apoteker' => ['pendidikan' => 'S1 Farmasi - Apoteker', 'jabatan' => 'Apoteker Pelaksana', 'jenis_kerja' => 'shift'],
@@ -96,12 +125,25 @@ class PegawaiSeeder extends Seeder
         ];
 
         $golonganByMasaKerja = function (string $tanggalMasuk): string {
-            $tahun = now()->diffInYears($tanggalMasuk);
+            // abs() penting! Carbon 3 balikin nilai negatif kalau $tanggalMasuk di masa lalu
+            $tahun = abs(now()->diffInYears($tanggalMasuk));
             return match (true) {
                 $tahun >= 8 => 'III/b',
                 $tahun >= 5 => 'III/a',
                 $tahun >= 2 => 'II/c',
                 default => 'II/b',
+            };
+        };
+
+        // Status kepegawaian rumah sakit pemerintah: pegawai senior cenderung PNS,
+        // pegawai menengah PPPK, pegawai baru Kontrak BLU.
+        $statusKepegawaianByMasaKerja = function (string $tanggalMasuk): string {
+            // abs() penting! Carbon 3 balikin nilai negatif kalau $tanggalMasuk di masa lalu
+            $tahun = abs(now()->diffInYears($tanggalMasuk));
+            return match (true) {
+                $tahun >= 6 => 'pns',
+                $tahun >= 3 => 'pppk',
+                default => 'kontrak_blu',
             };
         };
 
@@ -124,7 +166,7 @@ class PegawaiSeeder extends Seeder
                     'tanggal_lahir' => null,
                     'tempat_lahir' => $kotaLahir[$i % count($kotaLahir)],
                     'tanggal_masuk' => $p['masuk'],
-                    'status_kepegawaian' => 'tetap',
+                    'status_kepegawaian' => $statusKepegawaianByMasaKerja($p['masuk']),
                     'pendidikan' => $tambahan['pendidikan'],
                     'jabatan' => $tambahan['jabatan'],
                     'golongan' => $golonganByMasaKerja($p['masuk']),
