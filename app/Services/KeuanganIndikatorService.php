@@ -75,6 +75,16 @@ class KeuanganIndikatorService
     }
 
     /**
+     * Total anggaran (RKA) yang ditetapkan untuk tahun & bulan tertentu, dari seluruh kategori pengeluaran.
+     */
+    public function totalAnggaran(int $tahun, int $bulan): float
+    {
+        return (float) Anggaran::where('tahun', $tahun)
+            ->where('bulan', $bulan)
+            ->sum('jumlah_anggaran');
+    }
+
+    /**
      * Realisasi anggaran per kategori pengeluaran dalam periode (tahun+bulan tertentu).
      * Return: collection [ ['kategori' => ..., 'anggaran' => ..., 'realisasi' => ..., 'persentase' => ...], ... ]
      */
@@ -144,6 +154,7 @@ class KeuanganIndikatorService
             'pendapatan_per_kategori' => $this->pendapatanPerKategori($awal, $akhir),
             'pendapatan_per_unit' => $this->pendapatanPerUnit($awal, $akhir),
             'total_belanja' => $this->totalBelanja($awal, $akhir),
+            'total_anggaran' => $this->totalAnggaran($awal->year, $awal->month),
             'belanja_pegawai' => $this->belanjaPegawai($awal, $akhir),
             'belanja_operasional' => $this->belanjaOperasional($awal, $akhir),
             'realisasi_anggaran' => $this->realisasiAnggaran($awal->year, $awal->month),

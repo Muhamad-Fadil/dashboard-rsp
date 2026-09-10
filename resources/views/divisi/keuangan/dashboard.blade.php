@@ -100,7 +100,7 @@
     {{-- Indikator Utama --}}
     <div class="row">
 
-        <div class="col-xl-3 col-md-6 mb-4">
+        <div class="col-xl-4 col-md-6 mb-4">
             <div class="card stat-card">
                 <div class="card-body">
                     <div class="stat-value text-dark">
@@ -111,34 +111,18 @@
             </div>
         </div>
 
-        <div class="col-xl-3 col-md-6 mb-4">
+        <div class="col-xl-4 col-md-6 mb-4">
             <div class="card stat-card">
                 <div class="card-body">
                     <div class="stat-value text-dark">
-                        Rp {{ number_format($data['total_belanja'], 0, ',', '.') }}
+                        Rp {{ number_format($data['total_anggaran'], 0, ',', '.') }}
                     </div>
-                    <div class="stat-label">Total Belanja</div>
+                    <div class="stat-label">Total Anggaran</div>
                 </div>
             </div>
         </div>
 
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card stat-card">
-                <div class="card-body">
-                    @php
-                        $selisih = $data['total_pendapatan'] - $data['total_belanja'];
-                    @endphp
-
-                    <div class="stat-value {{ $selisih >= 0 ? 'text-dark' : 'text-danger' }}">
-                        Rp {{ number_format($selisih, 0, ',', '.') }}
-                    </div>
-
-                    <div class="stat-label">Selisih (Pendapatan - Belanja)</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6 mb-4">
+        <div class="col-xl-4 col-md-6 mb-4">
             <div class="card stat-card">
                 <div class="card-body">
                     <div class="stat-value text-dark">
