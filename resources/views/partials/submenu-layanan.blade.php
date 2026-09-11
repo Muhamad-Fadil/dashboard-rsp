@@ -2,8 +2,9 @@
     $menuLayanan = [
         ['label' => 'Ringkasan', 'route' => 'divisi.dashboard', 'aktif' => true, 'submenu' => null],
         ['label' => 'Data Pasien', 'route' => 'divisi.layanan.pasien', 'aktif' => true, 'submenu' => 'pasien'],
-        ['label' => 'Kunjungan', 'route' => 'divisi.layanan.kunjungan', 'aktif' => true, 'submenu' => 'kunjungan'],
+        ['label' => 'Rawat Jalan', 'route' => 'divisi.layanan.rawat-jalan', 'aktif' => true, 'submenu' => 'rawat-jalan'],
         ['label' => 'Rawat Inap', 'route' => 'divisi.layanan.rawat-inap', 'aktif' => true, 'submenu' => 'rawat-inap'],
+        ['label' => 'IGD', 'route' => 'divisi.layanan.igd', 'aktif' => true, 'submenu' => 'igd'],
         ['label' => 'Operasi', 'route' => 'divisi.layanan.operasi', 'aktif' => true, 'submenu' => 'operasi'],
         ['label' => 'Laboratorium', 'route' => 'divisi.layanan.laboratorium', 'aktif' => true, 'submenu' => 'laboratorium'],
         ['label' => 'Radiologi', 'route' => 'divisi.layanan.radiologi', 'aktif' => true, 'submenu' => 'radiologi'],

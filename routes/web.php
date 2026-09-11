@@ -6,7 +6,8 @@ use App\Http\Controllers\DirekturController;
 use App\Http\Controllers\DivisiController;
 use App\Http\Controllers\PasienController;
 use App\Http\Controllers\RawatInapController;
-use App\Http\Controllers\KunjunganController;
+use App\Http\Controllers\RawatJalanController;
+use App\Http\Controllers\IgdController;
 use App\Http\Controllers\OperasiController;
 use App\Http\Controllers\LaboratoriumController;
 use App\Http\Controllers\RadiologiController;
@@ -78,13 +79,21 @@ Route::middleware('auth')->group(function () {
         ->name('divisi.layanan.pasien.pdf')
         ->middleware(['role:direktur,manajer,operator', 'division.access', 'submenu:pasien']);
 
-    Route::get('/divisi/{division:slug}/kunjungan', [KunjunganController::class, 'index'])
-        ->name('divisi.layanan.kunjungan')
-        ->middleware(['role:direktur,manajer,operator', 'division.access', 'submenu:kunjungan']);
+    Route::get('/divisi/{division:slug}/rawat-jalan', [RawatJalanController::class, 'index'])
+        ->name('divisi.layanan.rawat-jalan')
+        ->middleware(['role:direktur,manajer,operator', 'division.access', 'submenu:rawat-jalan']);
 
-    Route::get('/divisi/{division:slug}/kunjungan/pdf', [KunjunganController::class, 'exportPdf'])
-        ->name('divisi.layanan.kunjungan.pdf')
-        ->middleware(['role:direktur,manajer,operator', 'division.access', 'submenu:kunjungan']);
+    Route::get('/divisi/{division:slug}/rawat-jalan/pdf', [RawatJalanController::class, 'exportPdf'])
+        ->name('divisi.layanan.rawat-jalan.pdf')
+        ->middleware(['role:direktur,manajer,operator', 'division.access', 'submenu:rawat-jalan']);
+
+    Route::get('/divisi/{division:slug}/igd', [IgdController::class, 'index'])
+        ->name('divisi.layanan.igd')
+        ->middleware(['role:direktur,manajer,operator', 'division.access', 'submenu:igd']);
+
+    Route::get('/divisi/{division:slug}/igd/pdf', [IgdController::class, 'exportPdf'])
+        ->name('divisi.layanan.igd.pdf')
+        ->middleware(['role:direktur,manajer,operator', 'division.access', 'submenu:igd']);
 
     Route::get('/divisi/{division:slug}/rawat-inap', [RawatInapController::class, 'index'])
         ->name('divisi.layanan.rawat-inap')

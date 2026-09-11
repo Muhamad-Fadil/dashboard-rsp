@@ -62,13 +62,13 @@
                     <div class="quickmenu-sub">Total pasien terdaftar</div>
                 </a>
             </div>
-            <div class="col-xl-3 col-md-6 mb-4">
+            {{-- <div class="col-xl-3 col-md-6 mb-4">
                 <a href="{{ route('divisi.layanan.kunjungan', $division->slug) }}" class="quickmenu-card text-center">
                     <div class="quickmenu-label font-size-h4">Kunjungan</div>
                     <div class="quickmenu-value">{{ number_format($ringkasanSubMenu['kunjungan']['total']) }}</div>
                     <div class="quickmenu-sub">{{ $ringkasanSubMenu['kunjungan']['menunggu'] }} sedang menunggu</div>
                 </a>
-            </div>
+            </div> --}}
             <div class="col-xl-3 col-md-6 mb-4">
                 <a href="{{ route('divisi.layanan.rawat-inap', $division->slug) }}" class="quickmenu-card text-center">
                     <div class="quickmenu-label font-size-h4">Rawat Inap</div>

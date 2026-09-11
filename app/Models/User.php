@@ -88,7 +88,8 @@ class User extends Authenticatable
     {
         return [
             'pasien' => 'Data Pasien',
-            'kunjungan' => 'Kunjungan',
+            'rawat-jalan' => 'Rawat Jalan',
+            'igd' => 'IGD',
             'rawat-inap' => 'Rawat Inap',
             'operasi' => 'Operasi',
             'laboratorium' => 'Laboratorium',
@@ -103,7 +104,8 @@ class User extends Authenticatable
     {
         return [
             'pasien' => 'divisi.layanan.pasien',
-            'kunjungan' => 'divisi.layanan.kunjungan',
+            'rawat-jalan' => 'divisi.layanan.rawat-jalan',
+            'igd' => 'divisi.layanan.igd',
             'rawat-inap' => 'divisi.layanan.rawat-inap',
             'operasi' => 'divisi.layanan.operasi',
             'laboratorium' => 'divisi.layanan.laboratorium',
