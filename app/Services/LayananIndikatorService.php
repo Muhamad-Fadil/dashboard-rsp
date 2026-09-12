@@ -189,12 +189,40 @@ class LayananIndikatorService
     }
 
     /**
-     * Tren jumlah kunjungan per bulan, untuk N bulan terakhir — dipakai buat grafik.
+     * Tren jumlah kunjungan per bulan yang benar-benar ada di database,
+     * melalui tanggal minimum dan maksimum kunjungan.
      */
-    public function kunjunganPerBulan(int $jumlahBulan = 6)
+    public function kunjunganPerBulan(int $jumlahBulan = 3)
     {
-        $hasil = collect();
+        $minTanggal = Kunjungan::min('waktu_daftar');
+        $maxTanggal = Kunjungan::max('waktu_daftar');
 
+        if ($minTanggal && $maxTanggal) {
+            $bulanMulai = Carbon::parse($minTanggal)->startOfMonth();
+            $bulanAkhir = Carbon::parse($maxTanggal)->startOfMonth();
+
+            $hasil = collect();
+            $bulan = $bulanMulai->copy();
+
+            while ($bulan->lte($bulanAkhir)) {
+                $awal = $bulan->copy()->startOfMonth();
+                $akhir = $bulan->copy()->endOfMonth();
+
+                $hasil->push([
+                    'bulan' => $bulan->translatedFormat('F Y'),
+                    'tahun_angka' => $bulan->year,
+                    'bulan_angka' => $bulan->month,
+                    'total' => Kunjungan::whereBetween('waktu_daftar', [$awal, $akhir])->count(),
+                ]);
+
+                $bulan->addMonth();
+            }
+
+            return $hasil;
+        }
+
+        // fallback aman bila data belum ada
+        $hasil = collect();
         for ($i = $jumlahBulan - 1; $i >= 0; $i--) {
             $bulanAcuan = now()->subMonths($i);
             $awal = $bulanAcuan->copy()->startOfMonth();
@@ -209,7 +237,6 @@ class LayananIndikatorService
         }
 
         return $hasil;
-        
     }
 
     /**
@@ -287,8 +314,9 @@ class LayananIndikatorService
      */
     public function trendPoliklinikHarian(int $limit = 5)
     {
-        $awal = now()->subDays(29)->startOfDay();
-        $akhir = now()->endOfDay();
+        $tanggalTerakhirData = Kunjungan::max('waktu_daftar');
+        $akhir = $tanggalTerakhirData ? Carbon::parse($tanggalTerakhirData)->endOfDay() : now()->endOfDay();
+        $awal = $akhir->copy()->subDays(29)->startOfDay();
 
         $topPoliIds = Kunjungan::whereBetween('waktu_daftar', [$awal, $akhir])
             ->whereNotNull('poli_id')
@@ -337,7 +365,7 @@ class LayananIndikatorService
             'toi' => $this->toi($awal, $akhir),
             'bto' => $this->bto($awal, $akhir),
             'waktu_tunggu_rata_rata' => $this->waktuTungguRataRata($awal, $akhir),
-            'kunjungan_per_bulan' => $this->kunjunganPerBulan(6),
+            'kunjungan_per_bulan' => $this->kunjunganPerBulan(3),
             'status_kunjungan' => $this->statusKunjungan($awal, $akhir),
             'trend_poliklinik_harian' => $this->trendPoliklinikHarian(5),
         ];

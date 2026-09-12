@@ -5,9 +5,9 @@
         ['label' => 'Rawat Jalan', 'route' => 'divisi.layanan.rawat-jalan', 'aktif' => true, 'submenu' => 'rawat-jalan'],
         ['label' => 'Rawat Inap', 'route' => 'divisi.layanan.rawat-inap', 'aktif' => true, 'submenu' => 'rawat-inap'],
         ['label' => 'IGD', 'route' => 'divisi.layanan.igd', 'aktif' => true, 'submenu' => 'igd'],
-        ['label' => 'Operasi', 'route' => 'divisi.layanan.operasi', 'aktif' => true, 'submenu' => 'operasi'],
-        ['label' => 'Laboratorium', 'route' => 'divisi.layanan.laboratorium', 'aktif' => true, 'submenu' => 'laboratorium'],
-        ['label' => 'Radiologi', 'route' => 'divisi.layanan.radiologi', 'aktif' => true, 'submenu' => 'radiologi'],
+        ['label' => 'Operasi', 'route' => null, 'aktif' => false, 'submenu' => 'operasi'],
+        ['label' => 'Laboratorium', 'route' => null, 'aktif' => false, 'submenu' => 'laboratorium'],
+        ['label' => 'Radiologi', 'route' => null, 'aktif' => false, 'submenu' => 'radiologi'],
     ];
 
     // Kalau yang login Operator, saring cuma tab yang diizinkan (Ringkasan otomatis ke-skip karena submenu=null)

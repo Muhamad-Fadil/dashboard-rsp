@@ -103,17 +103,17 @@ Route::middleware('auth')->group(function () {
         ->name('divisi.layanan.rawat-inap.pdf')
         ->middleware(['role:direktur,manajer,operator', 'division.access', 'submenu:rawat-inap']);
 
-    Route::get('/divisi/{division:slug}/operasi', [OperasiController::class, 'index'])
-        ->name('divisi.layanan.operasi')
-        ->middleware(['role:direktur,manajer,operator', 'division.access', 'submenu:operasi']);
+    // Route::get('/divisi/{division:slug}/operasi', [OperasiController::class, 'index'])
+    //     ->name('divisi.layanan.operasi')
+    //     ->middleware(['role:direktur,manajer,operator', 'division.access', 'submenu:operasi']);
 
-    Route::get('/divisi/{division:slug}/laboratorium', [LaboratoriumController::class, 'index'])
-        ->name('divisi.layanan.laboratorium')
-        ->middleware(['role:direktur,manajer,operator', 'division.access', 'submenu:laboratorium']);
+    // Route::get('/divisi/{division:slug}/laboratorium', [LaboratoriumController::class, 'index'])
+    //     ->name('divisi.layanan.laboratorium')
+    //     ->middleware(['role:direktur,manajer,operator', 'division.access', 'submenu:laboratorium']);
 
-    Route::get('/divisi/{division:slug}/radiologi', [RadiologiController::class, 'index'])
-        ->name('divisi.layanan.radiologi')
-        ->middleware(['role:direktur,manajer,operator', 'division.access', 'submenu:radiologi']);
+    // Route::get('/divisi/{division:slug}/radiologi', [RadiologiController::class, 'index'])
+    //     ->name('divisi.layanan.radiologi')
+    //     ->middleware(['role:direktur,manajer,operator', 'division.access', 'submenu:radiologi']);
 
     // ---- Sub-menu SDM: Komposisi Pegawai, Kehadiran, Cuti & Izin, Distribusi Pegawai, Pelatihan, Produktivitas, Data Pegawai, Jadwal Kerja ----
     Route::get('/divisi/{division:slug}/komposisi', [KomposisiPegawaiController::class, 'index'])

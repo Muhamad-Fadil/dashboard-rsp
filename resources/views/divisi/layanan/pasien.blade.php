@@ -63,66 +63,52 @@
                         <tr>
                             <th>Pasien</th>
                             <th>No. RM</th>
-                            <th>No. Registrasi</th>
                             <th>L/P</th>
                             <th>Usia</th>
-                            <th>Tipe Pasien</th>
+                            <th>Tipe Pembayaran</th>
                             <th>Riwayat Kunjungan</th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
-                        @php
-                            $labelJenis = ['rawat_jalan' => 'Rawat Jalan', 'rawat_inap' => 'Rawat Inap', 'igd' => 'IGD'];
-                            $warnaJenis = [
-                                'rawat_jalan' => ['bg' => '#EEF3FF', 'text' => '#6993FF'],
-                                'rawat_inap' => ['bg' => '#FFE9EA', 'text' => '#F64E60'],
-                                'igd' => ['bg' => '#FFF6E0', 'text' => '#FFA800'],
-                            ];
-                        @endphp
                         @forelse ($pasien as $p)
-                        @php
-                            $kodePembayaran = $p->jenisPembayaran?->kode;
-                            $warnaTipe = match($kodePembayaran) {
-                                'bpjs' => ['bg' => '#E8FFF3', 'text' => '#1BC5BD'],
-                                'tunai' => ['bg' => '#EEF3FF', 'text' => '#6993FF'],
-                                default => ['bg' => '#FFF6E0', 'text' => '#FFA800'],
-                            };
-                        @endphp
                         <tr>
                             <td>
                                 <div class="d-flex align-items-center">
                                     <div class="avatar-circle mr-3">{{ strtoupper(substr($p->nama, 0, 1)) }}</div>
-                                    <div>
-                                        <div class="font-weight-bold text-dark">{{ $p->nama }}</div>
-                                        <div class="text-muted font-size-sm">{{ $p->no_hp ?? '-' }}</div>
-                                        <span class="pasien-alamat" title="{{ $p->alamat }}">{{ $p->alamat ?? '-' }}</span>
-                                    </div>
+                                    <div class="font-weight-bold text-dark">{{ $p->nama }}</div>
                                 </div>
                             </td>
                             <td class="font-weight-bold nowrap">{{ $p->no_rm }}</td>
-                            <td class="nowrap">{{ $p->no_registrasi ?? '-' }}</td>
                             <td class="nowrap">{{ $p->jenis_kelamin }}</td>
-                            <td class="nowrap">{{ $p->tanggal_lahir ? \Carbon\Carbon::parse($p->tanggal_lahir)->age . ' th' : '-' }}</td>
+                            <td class="nowrap" title="Usia estimasi, dihitung dari data kunjungan">~{{ $p->tanggal_lahir ? \Carbon\Carbon::parse($p->tanggal_lahir)->age : '-' }} th</td>
                             <td>
+                                @php
+                                    $warnaTipe = match($p->jenisPembayaran->kode ?? null) {
+                                        'bpjs' => ['bg' => '#E8FFF3', 'text' => '#1BC5BD'],
+                                        'tunai' => ['bg' => '#EEF3FF', 'text' => '#6993FF'],
+                                        default => ['bg' => '#FFF6E0', 'text' => '#FFA800'],
+                                    };
+                                @endphp
                                 <span class="badge-modern" style="background:{{ $warnaTipe['bg'] }}; color:{{ $warnaTipe['text'] }};">
                                     {{ $p->jenisPembayaran?->nilai ?? 'Belum diisi' }}
                                 </span>
-                            </td>
-                            <td>
-                                @if (($kodePembayaran === 'lainnya') && $p->keterangan_pembayaran)
+                                @if (($p->jenisPembayaran->kode ?? null) === 'lainnya' && $p->keterangan_pembayaran)
                                     <div class="text-muted" style="font-size: 10px;">({{ $p->keterangan_pembayaran }})</div>
                                 @endif
                             </td>
                             <td class="nowrap">
                                 @if ($p->kunjungan->isNotEmpty())
                                     <button type="button" class="btn-expand" onclick="toggleRiwayat({{ $p->id }})">Lihat Riwayat</button>
+                                @else
+                                    <span class="text-muted">-</span>
                                 @endif
                             </td>
                         </tr>
+
                         @if ($p->kunjungan->isNotEmpty())
                         <tr class="row-detail" id="riwayat-{{ $p->id }}">
-                            <td colspan="8">
+                            <td colspan="7">
                                 <table class="table-obat">
                                     <thead>
                                         <tr>
@@ -162,7 +148,7 @@
                         </tr>
                         @endif
                         @empty
-                        <tr><td colspan="8" class="text-center text-muted py-6">Tidak ada data pasien ditemukan</td></tr>
+                        <tr><td colspan="7" class="text-center text-muted py-6">Tidak ada data pasien ditemukan</td></tr>
                         @endforelse
                     </tbody>
                 </table>

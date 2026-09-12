@@ -14,6 +14,240 @@
     }
     .page-header h1 { color: #fff; }
     .page-header .text-muted-light { color: rgba(255,255,255,.8) !important; }
+
+    .summary-card {
+        background: #fff;
+        border-radius: 16px;
+        padding: 20px 22px;
+        border: 1px solid rgba(105,147,255,.08);
+        box-shadow: 0 8px 22px rgba(0,0,0,.06);
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+    }
+    .summary-card::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 4px;
+        height: 100%;
+        background: linear-gradient(180deg, #6993FF, #1BC5BD);
+    }
+    .summary-card .summary-label {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: .7px;
+        text-transform: uppercase;
+        color: #7e8299;
+    }
+    .summary-card .summary-value {
+        font-size: 30px;
+        font-weight: 800;
+        color: #181c32;
+        margin: 12px 0 4px;
+    }
+    .summary-card .summary-meta {
+        font-size: 11px;
+        color: #a1a5b7;
+        font-weight: 600;
+    }
+    .summary-card .summary-meta span {
+        color: #1BC5BD;
+    }
+
+    /* --- UI polish for chart and top poliklinik --- */
+    .modern-card {
+        border-radius: 18px;
+        border: 1px solid rgba(105,147,255,.14);
+        box-shadow: 0 10px 30px rgba(0,0,0,.05);
+        background: #ffffff;
+    }
+
+    .section-title {
+        font-size: clamp(1.1rem, 2vw, 1.6rem);
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        color: #181c32;
+    }
+
+    .chart-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin-bottom: 16px;
+    }
+
+    .chart-head-left {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .chart-head .chart-eyebrow {
+        font-size: 11px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: .12em;
+        color: #6993FF;
+    }
+
+    .chart-head .section-title {
+        margin: 0;
+    }
+
+    .chart-head-tools {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .chart-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #eef4ff;
+        color: #4D6FE0;
+        font-size: 11px;
+        font-weight: 800;
+        padding: 6px 12px;
+        border-radius: 999px;
+    }
+
+    #btnKembaliBulanan {
+        border: none;
+        border-radius: 10px;
+        padding: 8px 14px;
+        box-shadow: none;
+        font-weight: 700;
+        color: #4D6FE0;
+        background: #eef4ff;
+    }
+
+    #btnKembaliBulanan:hover {
+        background: #dce8ff;
+    }
+
+    .chart-note {
+        font-size: 12px;
+        color: #6f7389;
+        font-weight: 600;
+        margin: 0 0 16px;
+    }
+
+    .chart-frame {
+        position: relative;
+        min-height: 300px;
+        height: clamp(280px, 34vw, 360px);
+        width: 100%;
+    }
+
+    .top-poli-section {
+        background: linear-gradient(180deg, #ffffff 0%, #eef4ff 100%);
+    }
+
+    .top-poli-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+        border-bottom: 1px solid rgba(105,147,255,.12);
+        padding-bottom: 12px;
+    }
+
+    .top-poli-head .section-title {
+        margin: 0;
+    }
+
+    .top-poli-date {
+        font-size: 11px;
+        color: #7e8299;
+        font-weight: 700;
+    }
+
+    .top-poli-list {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        margin-top: 16px;
+    }
+
+    .top-poli-item {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+    }
+
+    .top-poli-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        font-size: 12px;
+    }
+
+    .top-poli-name {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #181c32;
+        font-weight: 800;
+        font-size: clamp(11px, 1.7vw, 13px);
+    }
+
+    .top-poli-rank {
+        color: #6993FF;
+        font-weight: 900;
+        font-size: 11px;
+    }
+
+    .top-poli-total {
+        min-width: 46px;
+        text-align: right;
+        color: #4D6FE0;
+        font-weight: 900;
+        font-size: clamp(11px, 1.7vw, 13px);
+    }
+
+    .top-poli-bar {
+        height: 8px;
+        background: #eef1f8;
+        border-radius: 999px;
+        overflow: hidden;
+        width: 100%;
+    }
+
+    .top-poli-bar-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #6993FF, #1BC5BD);
+        border-radius: inherit;
+    }
+
+    @media (max-width: 767px) {
+        .chart-head {
+            align-items: flex-start;
+        }
+
+        .chart-frame {
+            min-height: 260px;
+            height: 280px;
+        }
+
+        .top-poli-head {
+            align-items: flex-start;
+        }
+
+        .top-poli-total {
+            min-width: 40px;
+        }
+    }
 </style>
 @endpush
 
@@ -27,6 +261,7 @@
         <div>
             <h1 class="font-weight-bolder mb-1">Dashboard Layanan</h1>
             <span class="text-muted-light font-weight-bold">Statistik pelayanan pasien & fasilitas rumah sakit</span>
+                        <div class="text-muted-light font-size-sm mt-1">Menampilkan data periode {{ $awal->format('d M Y') }} — {{ $akhir->format('d M Y') }}</div>
         </div>
     </div>
 
@@ -34,218 +269,198 @@
     <form method="GET" class="filter-card d-flex align-items-end flex-wrap p-4 mb-8">
         <div class="form-group mb-0 mr-4">
             <label class="font-weight-bold mb-1 font-size-sm text-muted">Dari Tanggal</label>
-            <input type="date" name="awal" value="{{ $awal->format('Y-m-d') }}" class="form-control form-control-solid" style="width: 170px;">
+            <input type="date" name="awal" value="2026-04-01" class="form-control form-control-solid" style="width: 170px;">
         </div>
         <div class="form-group mb-0 mr-4">
             <label class="font-weight-bold mb-1 font-size-sm text-muted">Sampai Tanggal</label>
-            <input type="date" name="akhir" value="{{ $akhir->format('Y-m-d') }}" class="form-control form-control-solid" style="width: 170px;">
-        </div>
-        <div class="form-group mb-0 mr-4">
-            <label class="font-weight-bold mb-1 font-size-sm text-muted">Grafik Tren</label>
-            <select name="bulan_chart" class="form-control form-control-solid" style="width: 160px;">
-                <option value="3" @selected($jumlahBulanChart == 3)>3 Bulan Terakhir</option>
-                <option value="6" @selected($jumlahBulanChart == 6)>6 Bulan Terakhir</option>
-                <option value="12" @selected($jumlahBulanChart == 12)>12 Bulan Terakhir</option>
-            </select>
+            <input type="date" name="akhir" value="2026-07-30" class="form-control form-control-solid" style="width: 170px;">
         </div>
         <button type="submit" class="btn btn-primary font-weight-bold px-6">Terapkan</button>
+        <a href="{{ route('divisi.dashboard', $division->slug) }}" class="btn btn-light font-weight-bold px-6 ml-2">
+            Reset
+        </a>
     </form>
 
-    {{-- Akses Cepat ke Semua Sub-Menu --}}
+    {{-- Ringkasan Layanan Lengkap --}}
     <div class="dashboard-section">
-        <div class="section-title font-size-h1">Akses Cepat</div>
-        <div class="row justify-content-center">
-            <div class="col-xl-3 col-md-6 mb-4">
-                <a href="{{ route('divisi.layanan.pasien', $division->slug) }}" class="quickmenu-card text-center">
-                    <div class="quickmenu-label font-size-h4">Data Pasien</div>
-                    <div class="quickmenu-value">{{ number_format($ringkasanSubMenu['pasien']['total']) }}</div>
-                    <div class="quickmenu-sub">Total pasien terdaftar</div>
-                </a>
+        <div class="d-flex justify-content-between align-items-center flex-wrap mb-4">
+            <div>
+                <div class="section-title font-size-h1 mb-0">Ringkasan Indikator Layanan</div>
+                <div class="text-muted font-size-sm">Periode {{ $awal->format('d M Y') }} — {{ $akhir->format('d M Y') }}</div>
             </div>
-            {{-- <div class="col-xl-3 col-md-6 mb-4">
-                <a href="{{ route('divisi.layanan.kunjungan', $division->slug) }}" class="quickmenu-card text-center">
-                    <div class="quickmenu-label font-size-h4">Kunjungan</div>
-                    <div class="quickmenu-value">{{ number_format($ringkasanSubMenu['kunjungan']['total']) }}</div>
-                    <div class="quickmenu-sub">{{ $ringkasanSubMenu['kunjungan']['menunggu'] }} sedang menunggu</div>
-                </a>
-            </div> --}}
-            <div class="col-xl-3 col-md-6 mb-4">
-                <a href="{{ route('divisi.layanan.rawat-inap', $division->slug) }}" class="quickmenu-card text-center">
-                    <div class="quickmenu-label font-size-h4">Rawat Inap</div>
-                    <div class="quickmenu-value">{{ $ringkasanSubMenu['rawat_inap']['dirawat'] }}</div>
-                    <div class="quickmenu-sub">Pasien sedang dirawat</div>
-                </a>
-            </div>
-            <div class="col-xl-3 col-md-6 mb-4">
-                <a href="{{ route('divisi.layanan.operasi', $division->slug) }}" class="quickmenu-card text-center">
-                    <div class="quickmenu-label font-size-h4">Operasi</div>
-                    <div class="quickmenu-value">{{ $ringkasanSubMenu['operasi']['aktif'] }}</div>
-                    <div class="quickmenu-sub">Dijadwalkan / berlangsung</div>
-                </a>
-            </div>
-            <div class="col-xl-3 col-md-6 mb-4">
-                <a href="{{ route('divisi.layanan.laboratorium', $division->slug) }}" class="quickmenu-card text-center">
-                    <div class="quickmenu-label font-size-h4">Laboratorium</div>
-                    <div class="quickmenu-value">{{ $ringkasanSubMenu['laboratorium']['aktif'] }}</div>
-                    <div class="quickmenu-sub">Menunggu / diproses</div>
-                </a>
-            </div>
-            <div class="col-xl-3 col-md-6 mb-4">
-                <a href="{{ route('divisi.layanan.radiologi', $division->slug) }}" class="quickmenu-card text-center">
-                    <div class="quickmenu-label font-size-h4">Radiologi</div>
-                    <div class="quickmenu-value">{{ $ringkasanSubMenu['radiologi']['aktif'] }}</div>
-                    <div class="quickmenu-sub">Menunggu / diproses</div>
-                </a>
+            <div class="data-freshness">
+                <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 6L9 17l-5-5"/>
+                </svg>
+                Data terkini
             </div>
         </div>
-    </div>
 
-    {{-- 8 Indikator Utama --}}
-    <div class="dashboard-section">
-        <div class="section-title font-size-h1">Indikator Layanan</div>
-        <div class="row justify-content-center">
+        <div class="row">
             <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card stat-card"><div class="card-body text-center">
-                    <div class="stat-value text-dark">{{ number_format($data['jumlah_kunjungan']) }}</div>
-                    <div class="stat-label">Jumlah Kunjungan</div>
-                    <div class="d-flex justify-content-center mt-2" style="gap:8px;">
-                        <span class="badge-modern" style="background:#E8FFF3; color:#1BC5BD; font-size:10px;">{{ $data['status_kunjungan']['selesai'] }} Selesai</span>
-                        <span class="badge-modern" style="background:#FFE9EA; color:#F64E60; font-size:10px;">{{ $data['status_kunjungan']['batal'] }} Batal</span>
+                <div class="summary-card">
+                    <div class="summary-label">
+                        <span>Jumlah Kunjungan</span>
+                        <span class="badge badge-primary">Total</span>
                     </div>
-                </div></div>
+                    <div class="summary-value">{{ number_format($data['jumlah_kunjungan']) }}</div>
+                    <div class="summary-meta">
+                        <span>{{ $data['status_kunjungan']['selesai'] }}</span> selesai ·
+                        <span style="color:#F64E60;">{{ $data['status_kunjungan']['batal'] }}</span> batal
+                    </div>
+                </div>
             </div>
+
             <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card stat-card"><div class="card-body text-center">
-                    <div class="stat-value text-dark">{{ $data['bor'] }}%</div>
-                    <div class="stat-label">BOR (Bed Occupancy Rate)</div>
-                </div></div>
+                <div class="summary-card">
+                    <div class="summary-label">
+                        <span>BOR</span>
+                        <span class="badge badge-warning">Utilisasi</span>
+                    </div>
+                    <div class="summary-value">{{ $data['bor'] }}%</div>
+                    <div class="summary-meta">Bed Occupancy Rate</div>
+                </div>
             </div>
+
             <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card stat-card"><div class="card-body text-center">
-                    <div class="stat-value text-dark">{{ $data['alos'] }} <span class="font-size-sm">hr</span></div>
-                    <div class="stat-label">ALOS (Avg Length of Stay)</div>
-                </div></div>
+                <div class="summary-card">
+                    <div class="summary-label">
+                        <span>ALOS</span>
+                        <span class="badge badge-info">Hari</span>
+                    </div>
+                    <div class="summary-value">{{ $data['alos'] }}</div>
+                    <div class="summary-meta">Avg Length of Stay</div>
+                </div>
             </div>
+
             <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card stat-card"><div class="card-body text-center">
-                    <div class="stat-value text-dark">{{ $data['pasien_rawat_inap_aktif'] }}</div>
-                    <div class="stat-label">Rawat Inap Aktif</div>
-                    <div class="text-muted" style="font-size: 10px;">per {{ $akhir->format('d M Y') }}</div>
-                </div></div>
+                <div class="summary-card">
+                    <div class="summary-label">
+                        <span>Rawat Inap Aktif</span>
+                        <span class="badge badge-success">Aktif</span>
+                    </div>
+                    <div class="summary-value">{{ number_format($data['pasien_rawat_inap_aktif']) }}</div>
+                    <div class="summary-meta">Pasien dirawat saat ini</div>
+                </div>
             </div>
+
             <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card stat-card"><div class="card-body text-center">
-                    <div class="stat-value text-dark">{{ $data['toi'] }} <span class="font-size-sm">hr</span></div>
-                    <div class="stat-label">TOI (Turn Over Interval)</div>
-                </div></div>
+                <div class="summary-card">
+                    <div class="summary-label">
+                        <span>TOI</span>
+                        <span class="badge badge-secondary">Hari</span>
+                    </div>
+                    <div class="summary-value">{{ $data['toi'] }}</div>
+                    <div class="summary-meta">Turn Over Interval</div>
+                </div>
             </div>
+
             <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card stat-card"><div class="card-body text-center">
-                    <div class="stat-value text-dark">{{ $data['bto'] }}</div>
-                    <div class="stat-label">BTO (Bed Turn Over)</div>
-                </div></div>
+                <div class="summary-card">
+                    <div class="summary-label">
+                        <span>BTO</span>
+                        <span class="badge badge-secondary">Frek.</span>
+                    </div>
+                    <div class="summary-value">{{ $data['bto'] }}</div>
+                    <div class="summary-meta">Bed Turn Over</div>
+                </div>
             </div>
+
             <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card stat-card"><div class="card-body text-center">
-                    <div class="stat-value text-dark">{{ $data['ketersediaan_bed']['tersedia'] }}<span class="font-size-lg text-muted">/{{ $data['ketersediaan_bed']['total'] }}</span></div>
-                    <div class="stat-label">Bed Tersedia</div>
-                    <div class="text-muted" style="font-size: 10px;">per {{ $akhir->format('d M Y') }}</div>
-                </div></div>
+                <div class="summary-card">
+                    <div class="summary-label">
+                        <span>Bed Tersedia</span>
+                        <span class="badge badge-info">Kamar</span>
+                    </div>
+                    <div class="summary-value">{{ number_format($data['ketersediaan_bed']['tersedia']) }}/{{ number_format($data['ketersediaan_bed']['total']) }}</div>
+                    <div class="summary-meta">tersedia / total</div>
+                </div>
             </div>
+
             <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card stat-card"><div class="card-body text-center">
-                    <div class="stat-value text-dark">{{ $data['waktu_tunggu_rata_rata'] }} <span class="font-size-sm">mnt</span></div>
-                    <div class="stat-label">Waktu Tunggu Rata-rata</div>
-                </div></div>
+                <div class="summary-card">
+                    <div class="summary-label">
+                        <span>Waktu Tunggu</span>
+                        <span class="badge badge-primary">Rata-rata</span>
+                    </div>
+                    <div class="summary-value">{{ $data['waktu_tunggu_rata_rata'] }}</div>
+                    <div class="summary-meta">Menit per kunjungan</div>
+                </div>
             </div>
         </div>
     </div>
 
-    {{-- Tabel Target vs Realisasi --}}
-    @php
-        $targetRealisasi = [
-            ['indikator' => 'Kunjungan pasien', 'target' => '12.000', 'realisasi' => number_format($data['jumlah_kunjungan']), 'ok' => $data['jumlah_kunjungan'] >= 12000],
-            ['indikator' => 'BOR', 'target' => '70-85%', 'realisasi' => $data['bor'] . '%', 'ok' => $data['bor'] >= 70 && $data['bor'] <= 85],
-            ['indikator' => 'ALOS', 'target' => '4-6 hari', 'realisasi' => $data['alos'] . ' hari', 'ok' => $data['alos'] >= 4 && $data['alos'] <= 6],
-            ['indikator' => 'Waktu tunggu', 'target' => '≤ 60 menit', 'realisasi' => $data['waktu_tunggu_rata_rata'] . ' menit', 'ok' => $data['waktu_tunggu_rata_rata'] <= 60],
-        ];
-    @endphp
-    <div class="dashboard-section">
-        <h3 class="mb-5 section-title font-size-h1">Ringkasan Target vs Realisasi</h3>
-        <div class="card modern-card">
-            <div class="card-body p-5">
-                <table class="table table-modern">
-                    <thead><tr><th>Indikator</th><th>Target</th><th>Realisasi</th><th>Status</th></tr></thead>
-                    <tbody>
-                        @foreach ($targetRealisasi as $row)
-                        <tr>
-                            <td class="font-weight-bold text-dark">{{ $row['indikator'] }}</td>
-                            <td>{{ $row['target'] }}</td>
-                            <td class="font-weight-bold">{{ $row['realisasi'] }}</td>
-                            <td>
-                                @if ($row['ok'])
-                                    <span class="badge badge-modern" style="background:#E8FFF3; color:#1BC5BD;">Baik</span>
-                                @else
-                                    <span class="badge badge-modern" style="background:#FFF6E0; color:#FFA800;">Perlu perhatian</span>
-                                @endif
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    {{-- Grafik Tren Kunjungan + Kunjungan per Poli --}}
+    {{-- Grafik Tren Kunjungan Bulanan --}}
     <div class="dashboard-section">
         <div class="row">
-            <div class="col-lg-7 mb-4">
-                <div class="d-flex justify-content-between align-items-center mb-5">
-                    <h3 class="section-title font-size-h1 mb-0" id="judulGrafikKunjungan">Tren Kunjungan per Bulan</h3>
-                    <button type="button" id="btnKembaliBulanan" class="btn btn-sm btn-light-primary font-weight-bold" style="display:none;">
-                        Kembali ke Bulanan
-                    </button>
-                </div>
+            <div class="col-lg-12 mb-4">
                 <div class="card modern-card h-100">
-                    <div class="card-body p-5">
-                        <p class="text-muted font-size-sm mb-3">Klik salah satu bar bulan untuk lihat rincian per hari</p>
-                        <canvas id="chartKunjungan" height="120"></canvas>
+                    <div class="card-body p-4">
+                        <div class="chart-head">
+                            <div class="chart-head-left">
+                                <span class="chart-eyebrow">Tren Kunjungan</span>
+                                <h3 class="section-title font-size-h1 mb-0" id="judulGrafikKunjungan">Tren Kunjungan Bulanan</h3>
+                            </div>
+                            <div class="chart-head-tools">
+                                <span class="chart-chip"><i class="fas fa-calendar-alt mr-2"></i>Apr – Jun 2026</span>
+                                <button type="button" id="btnKembaliBulanan" class="btn btn-sm btn-light-primary font-weight-bold" style="display:none;">
+                                    Kembali ke Bulanan
+                                </button>
+                            </div>
+                        </div>
+
+                        <p class="chart-note">Klik salah satu bulan untuk melihat rincian harian</p>
+
+                        <div class="chart-frame">
+                            <canvas id="chartKunjungan"></canvas>
+                        </div>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
 
-            {{-- <div class="col-lg-5 mb-4">
-                <h3 class="mb-5 section-title font-size-h1">Kunjungan per Poliklinik</h3>
+    {{-- Top 10 Poliklinik --}}
+    <div class="dashboard-section top-poli-section">
+        <div class="row">
+            <div class="col-lg-12 mb-4">
                 <div class="card modern-card h-100">
-                    <div class="card-body p-5">
-                        @php $maxPoli = $data['kunjungan_per_poli']->max('total') ?: 1; @endphp
-                        @forelse ($data['kunjungan_per_poli'] as $poli)
-                        <div class="mb-3">
-                            <div class="d-flex justify-content-between">
-                                <span class="font-weight-bold text-dark font-size-sm">{{ $poli['nama_poli'] }}</span>
-                                <span class="font-weight-bolder text-primary font-size-sm">{{ $poli['total'] }}</span>
-                            </div>
-                            <div class="poli-bar-bg">
-                                <div class="poli-bar-fill" style="width: {{ ($poli['total'] / $maxPoli) * 100 }}%;"></div>
-                            </div>
+                    <div class="card-body p-4">
+                        <div class="top-poli-head">
+                            <h3 class="section-title font-size-h1 mb-0">10 Top Poliklinik</h3>
+                            <span class="top-poli-date">Periode {{ $awal->format('d M Y') }} — {{ $akhir->format('d M Y') }}</span>
                         </div>
-                        @empty
-                        <p class="text-muted">Belum ada data</p>
-                        @endforelse
-                    </div>
-                </div>
-            </div> --}}
 
-            {{-- Trend per Poliklinik (30 hari terakhir) --}}
-            <div class="col-lg-5 mb-4">
-                <div class="section-heading">
-                    <h3 class="section-title font-size-h1">Trend Kunjungan per Poliklinik</h3>
-                </div>
-                <div class="card modern-card h-100">
-                    <div class="card-body p-5">
-                        <p class="text-muted font-size-sm mb-4">5 poliklinik tersibuk, 30 hari terakhir (tidak dipengaruhi filter tanggal di atas)</p>
-                        <canvas id="chartTrendPoli" height="150"></canvas>
+                        @php
+                            $topPoli = collect($data['kunjungan_per_poli'])
+                                ->sortByDesc('total')
+                                ->take(10);
+                            $maxTopPoli = $topPoli->max('total') ?: 1;
+                        @endphp
+
+                        @if ($topPoli->isEmpty())
+                            <p class="text-muted mb-0">Belum ada data poliklinik.</p>
+                        @else
+                            <div class="top-poli-list">
+                                @foreach ($topPoli as $index => $poli)
+                                    @php
+                                        $width = max((($poli['total'] / $maxTopPoli) * 100), 3);
+                                    @endphp
+                                    <div class="top-poli-item">
+                                        <div class="top-poli-top">
+                                            <span class="top-poli-name">
+                                                <span class="top-poli-rank">{{ $index + 1 }}.</span>
+                                                {{ $poli['nama_poli'] }}
+                                            </span>
+                                            <span class="top-poli-total">{{ number_format($poli['total']) }}</span>
+                                        </div>
+                                        <div class="top-poli-bar">
+                                            <div class="top-poli-bar-fill" style="width: {{ $width }}%;"></div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -289,33 +504,6 @@
                 const index = elements[0].index;
                 const bulanDipilih = dataBulanan[index];
                 tampilkanGrafikHarian(bulanDipilih);
-            }
-        }
-    });
-
-    const trendPoli = {!! json_encode($data['trend_poliklinik_harian']) !!};
-    const warnaGaris = ['#6993FF', '#1BC5BD', '#FFA800', '#F64E60', '#8950FC'];
-
-    new Chart(document.getElementById('chartTrendPoli'), {
-        type: 'line',
-        data: {
-            labels: trendPoli.labels,
-            datasets: Object.keys(trendPoli.series).map((nama, i) => ({
-                label: nama,
-                data: trendPoli.series[nama],
-                borderColor: warnaGaris[i % warnaGaris.length],
-                backgroundColor: warnaGaris[i % warnaGaris.length],
-                tension: 0.5,
-                pointRadius: 2,
-                fill: false,
-            }))
-        },
-        options: {
-            responsive: true,
-            plugins: { legend: { position: 'bottom' } },
-            scales: {
-                y: { beginAtZero: true, grid: { color: '#f1f1f4' } },
-                x: { grid: { display: false } }
             }
         }
     });
