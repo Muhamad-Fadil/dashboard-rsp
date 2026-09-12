@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\Pasien;
 use App\Models\Referensi;
-use App\Models\WilayahBogor;
 use Illuminate\Database\Seeder;
 
 class PasienSeeder extends Seeder
@@ -14,12 +13,15 @@ class PasienSeeder extends Seeder
         // ambil id referensi jenis_pembayaran, dengan bobot: BPJS paling banyak (mayoritas pasien RS)
         $jenisPembayaranIds = Referensi::where('kategori', 'jenis_pembayaran')->pluck('id', 'kode');
 
-        $wilayahIds = WilayahBogor::pluck('id')->all();
-
         $pilihanBobot = [
-            ...array_fill(0, 55, $jenisPembayaranIds['bpjs']),
-            ...array_fill(0, 35, $jenisPembayaranIds['umum']),
-            ...array_fill(0, 10, $jenisPembayaranIds['asuransi']),
+            ...array_fill(0, 25, $jenisPembayaranIds['bpjs']),
+            ...array_fill(0, 65, $jenisPembayaranIds['tunai']),
+            ...array_fill(0, 10, $jenisPembayaranIds['lainnya']),
+        ];
+
+        $daftarKeteranganLainnya = [
+            'Jamkesmas', 'Jasa Raharja', 'Askes Sosial', 'Admedika',
+            'In Health', 'Jaminan Perusahaan', 'CSW',
         ];
 
             for ($i = 1; $i <= 40; $i++) {
@@ -39,8 +41,10 @@ class PasienSeeder extends Seeder
                     'alamat' => fake('id_ID')->address(),
                     'no_hp' => '08' . fake()->numerify('##########'),
                     'nik' => fake()->numerify('################'),
-                    'jenis_pembayaran_id' => fake()->randomElement($pilihanBobot),
-                    'wilayah_bogor_id' => fake()->randomElement($wilayahIds),
+                    'jenis_pembayaran_id' => $jenisPembayaranTerpilih = fake()->randomElement($pilihanBobot),
+                    'keterangan_pembayaran' => $jenisPembayaranTerpilih === $jenisPembayaranIds['lainnya']
+                        ? fake()->randomElement($daftarKeteranganLainnya)
+                        : null,
                 ]
             );
         }

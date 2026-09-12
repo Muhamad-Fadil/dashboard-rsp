@@ -20,7 +20,7 @@ class Pasien extends Model
         'no_hp',
         'nik',
         'jenis_pembayaran_id',
-        'wilayah_bogor_id',
+        'keterangan_pembayaran',
     ];
 
     protected function casts(): array
@@ -39,11 +39,6 @@ class Pasien extends Model
     public function jenisPembayaran(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Referensi::class, 'jenis_pembayaran_id');
-    }
-
-        public function wilayah(): \Illuminate\Database\Eloquent\Relations\BelongsTo
-    {
-        return $this->belongsTo(WilayahBogor::class, 'wilayah_bogor_id');
     }
 
     /**

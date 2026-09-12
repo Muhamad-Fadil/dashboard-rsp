@@ -11,7 +11,7 @@
             <th>No. Registrasi</th>
             <th>L/P</th>
             <th>Usia</th>
-            <th>Kecamatan</th>
+            <th>No. HP</th>
             <th>Tipe Pasien</th>
             <th>Riwayat Kunjungan</th>
         </tr>
@@ -28,13 +28,7 @@
             <td>{{ $p->no_registrasi ?? '-' }}</td>
             <td>{{ $p->jenis_kelamin }}</td>
             <td>{{ $p->tanggal_lahir ? \Carbon\Carbon::parse($p->tanggal_lahir)->age . ' th' : '-' }}</td>
-            <td>
-                @if ($p->wilayah)
-                    {{ $p->wilayah->nama_kecamatan }} ({{ $p->wilayah->kabupaten_kota === 'kota' ? 'Kota' : 'Kab.' }})
-                @else
-                    -
-                @endif
-            </td>
+            <td>{{ $p->no_hp ?? '-' }}</td>
             <td>{{ $p->jenisPembayaran->nilai ?? '-' }}</td>
             <td>
                 @forelse ($jumlahPerJenis as $jenis => $jumlah)

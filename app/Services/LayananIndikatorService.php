@@ -338,8 +338,6 @@ class LayananIndikatorService
             'bto' => $this->bto($awal, $akhir),
             'waktu_tunggu_rata_rata' => $this->waktuTungguRataRata($awal, $akhir),
             'kunjungan_per_bulan' => $this->kunjunganPerBulan(6),
-            'trend_penyakit' => $this->trendPenyakit($awal, $akhir),
-            'trend_daerah' => $this->trendDaerah($awal, $akhir),
             'status_kunjungan' => $this->statusKunjungan($awal, $akhir),
             'trend_poliklinik_harian' => $this->trendPoliklinikHarian(5),
         ];

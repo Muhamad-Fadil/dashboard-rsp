@@ -72,15 +72,22 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($pasien as $p)
                         @php
-                            $jumlahPerJenis = $p->kunjungan->groupBy('jenis_kunjungan')->map->count();
                             $labelJenis = ['rawat_jalan' => 'Rawat Jalan', 'rawat_inap' => 'Rawat Inap', 'igd' => 'IGD'];
                             $warnaJenis = [
                                 'rawat_jalan' => ['bg' => '#EEF3FF', 'text' => '#6993FF'],
                                 'rawat_inap' => ['bg' => '#FFE9EA', 'text' => '#F64E60'],
                                 'igd' => ['bg' => '#FFF6E0', 'text' => '#FFA800'],
                             ];
+                        @endphp
+                        @forelse ($pasien as $p)
+                        @php
+                            $kodePembayaran = $p->jenisPembayaran?->kode;
+                            $warnaTipe = match($kodePembayaran) {
+                                'bpjs' => ['bg' => '#E8FFF3', 'text' => '#1BC5BD'],
+                                'tunai' => ['bg' => '#EEF3FF', 'text' => '#6993FF'],
+                                default => ['bg' => '#FFF6E0', 'text' => '#FFA800'],
+                            };
                         @endphp
                         <tr>
                             <td>
@@ -89,13 +96,7 @@
                                     <div>
                                         <div class="font-weight-bold text-dark">{{ $p->nama }}</div>
                                         <div class="text-muted font-size-sm">{{ $p->no_hp ?? '-' }}</div>
-                                        <span class="pasien-alamat" title="{{ $p->alamat }}">
-                                            @if ($p->wilayah)
-                                                Kec. {{ $p->wilayah->nama_kecamatan }} ({{ $p->wilayah->kabupaten_kota === 'kota' ? 'Kota' : 'Kab.' }} Bogor)
-                                            @else
-                                                {{ $p->alamat ?? '-' }}
-                                            @endif
-                                        </span>
+                                        <span class="pasien-alamat" title="{{ $p->alamat }}">{{ $p->alamat ?? '-' }}</span>
                                     </div>
                                 </div>
                             </td>
@@ -104,25 +105,14 @@
                             <td class="nowrap">{{ $p->jenis_kelamin }}</td>
                             <td class="nowrap">{{ $p->tanggal_lahir ? \Carbon\Carbon::parse($p->tanggal_lahir)->age . ' th' : '-' }}</td>
                             <td>
-                                @php
-                                    $warnaTipe = match($p->jenisPembayaran->kode ?? null) {
-                                        'bpjs' => ['bg' => '#E8FFF3', 'text' => '#1BC5BD'],
-                                        'asuransi' => ['bg' => '#F1E9FF', 'text' => '#8950FC'],
-                                        default => ['bg' => '#FFF6E0', 'text' => '#FFA800'],
-                                    };
-                                @endphp
                                 <span class="badge-modern" style="background:{{ $warnaTipe['bg'] }}; color:{{ $warnaTipe['text'] }};">
-                                    {{ $p->jenisPembayaran->nilai ?? 'Belum diisi' }}
+                                    {{ $p->jenisPembayaran?->nilai ?? 'Belum diisi' }}
                                 </span>
                             </td>
                             <td>
-                                @forelse ($jumlahPerJenis as $jenis => $jumlah)
-                                    <span class="badge-modern mr-1" style="background:{{ $warnaJenis[$jenis]['bg'] }}; color:{{ $warnaJenis[$jenis]['text'] }};">
-                                        {{ $jumlah }}x {{ $labelJenis[$jenis] }}
-                                    </span>
-                                @empty
-                                    <span class="text-muted font-size-sm">Belum pernah berobat</span>
-                                @endforelse
+                                @if (($kodePembayaran === 'lainnya') && $p->keterangan_pembayaran)
+                                    <div class="text-muted" style="font-size: 10px;">({{ $p->keterangan_pembayaran }})</div>
+                                @endif
                             </td>
                             <td class="nowrap">
                                 @if ($p->kunjungan->isNotEmpty())
@@ -150,15 +140,20 @@
                                         <tr>
                                             <td class="font-weight-bold">{{ $k->no_kunjungan }}</td>
                                             <td>
-                                                <span class="badge-modern" style="background:{{ $warnaJenis[$k->jenis_kunjungan]['bg'] }}; color:{{ $warnaJenis[$k->jenis_kunjungan]['text'] }};">
-                                                    {{ $labelJenis[$k->jenis_kunjungan] }}
+                                                @php
+                                                    $jenisKunjungan = $k->jenis_kunjungan ?? null;
+                                                    $warnaJenisKunjungan = $warnaJenis[$jenisKunjungan] ?? ['bg' => '#F3F6F9', 'text' => '#464E5F'];
+                                                    $labelKunjungan = $labelJenis[$jenisKunjungan] ?? 'Lainnya';
+                                                @endphp
+                                                <span class="badge-modern" style="background:{{ $warnaJenisKunjungan['bg'] }}; color:{{ $warnaJenisKunjungan['text'] }};">
+                                                    {{ $labelKunjungan }}
                                                 </span>
                                             </td>
                                             <td>{{ $k->poli->nama_poli ?? '-' }}</td>
                                             <td>{{ $k->dokter->nama ?? '-' }}</td>
                                             <td>{{ $k->diagnosa ?? '-' }}</td>
-                                            <td>{{ $k->waktu_daftar->format('d M Y, H:i') }}</td>
-                                            <td>{{ ucfirst($k->status) }}</td>
+                                            <td>{{ optional($k->waktu_daftar)->format('d M Y, H:i') ?? '-' }}</td>
+                                            <td>{{ ucfirst($k->status ?? '-') }}</td>
                                         </tr>
                                         @endforeach
                                     </tbody>
@@ -184,7 +179,10 @@
 @push('scripts')
 <script>
     function toggleRiwayat(id) {
-        document.getElementById('riwayat-' + id).classList.toggle('show');
+        const el = document.getElementById('riwayat-' + id);
+        if (el) {
+            el.classList.toggle('show');
+        }
     }
 </script>
 @endpush

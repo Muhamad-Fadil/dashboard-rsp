@@ -96,10 +96,10 @@
                             <td>{{ $k->dokter->nama ?? '-' }}</td>
                             <td>
                                 @php
-                                    $warnaTipe = match($k->pasien->jenisPembayaran->kode ?? null) {
+                                    $warnaTipe = match($k->pasien->kode ?? null) {
                                         'bpjs' => ['bg' => '#E8FFF3', 'text' => '#1BC5BD'],
-                                        'asuransi' => ['bg' => '#F1E9FF', 'text' => '#8950FC'],
-                                        default => ['bg' => '#FFF6E0', 'text' => '#FFA800'],
+                                        'tunai' => ['bg' => '#EEF3FF', 'text' => '#6993FF'],
+                                        default => ['bg' => '#FFF6E0', 'text' => '#FFA800'], // lainnya
                                     };
                                 @endphp
                                 <span class="badge-modern" style="background:{{ $warnaTipe['bg'] }}; color:{{ $warnaTipe['text'] }};">

@@ -11,9 +11,9 @@ class ReferensiSeeder extends Seeder
     {
         $referensi = [
             // jenis_pembayaran
-            ['kategori' => 'jenis_pembayaran', 'kode' => 'umum', 'nilai' => 'Umum', 'urutan' => 1],
-            ['kategori' => 'jenis_pembayaran', 'kode' => 'bpjs', 'nilai' => 'BPJS', 'urutan' => 2],
-            ['kategori' => 'jenis_pembayaran', 'kode' => 'asuransi', 'nilai' => 'Asuransi Swasta', 'urutan' => 3],
+            ['kategori' => 'jenis_pembayaran', 'kode' => 'bpjs', 'nilai' => 'BPJS', 'urutan' => 1],
+            ['kategori' => 'jenis_pembayaran', 'kode' => 'tunai', 'nilai' => 'Tunai', 'urutan' => 2],
+            ['kategori' => 'jenis_pembayaran', 'kode' => 'lainnya', 'nilai' => 'Lain-lain', 'urutan' => 3],
 
             // golongan_darah
             ['kategori' => 'golongan_darah', 'kode' => 'a', 'nilai' => 'A', 'urutan' => 1],

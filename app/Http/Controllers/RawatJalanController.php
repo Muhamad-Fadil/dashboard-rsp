@@ -21,7 +21,7 @@ class RawatJalanController extends Controller
         $akhir = $request->filled('akhir') ? Carbon::parse($request->query('akhir'))->endOfDay() : now();
 
         $kunjungan = Kunjungan::with(['pasien.jenisPembayaran', 'poli', 'dokter', 'operator'])
-            ->where('jenis_kunjungan', 'igd')
+            ->where('jenis_kunjungan', 'rawat_jalan')
             ->whereBetween('waktu_daftar', [$awal, $akhir])
             ->when($cari, function ($query, $cari) {
                 $query->where('no_kunjungan', 'like', "%{$cari}%")
@@ -33,9 +33,9 @@ class RawatJalanController extends Controller
             ->withQueryString();
 
         $ringkasan = [
-            'total' => Kunjungan::where('jenis_kunjungan', 'igd')->whereBetween('waktu_daftar', [$awal, $akhir])->count(),
-            'selesai' => Kunjungan::where('jenis_kunjungan', 'igd')->whereBetween('waktu_daftar', [$awal, $akhir])->where('status', 'selesai')->count(),
-            'batal' => Kunjungan::where('jenis_kunjungan', 'igd')->whereBetween('waktu_daftar', [$awal, $akhir])->where('status', 'batal')->count(),
+            'total' => Kunjungan::where('jenis_kunjungan', 'rawat_jalan')->whereBetween('waktu_daftar', [$awal, $akhir])->count(),
+            'selesai' => Kunjungan::where('jenis_kunjungan', 'rawat_jalan')->whereBetween('waktu_daftar', [$awal, $akhir])->where('status', 'selesai')->count(),
+            'batal' => Kunjungan::where('jenis_kunjungan', 'rawat_jalan')->whereBetween('waktu_daftar', [$awal, $akhir])->where('status', 'batal')->count(),
         ];
 
         return view('divisi.layanan.rawat-jalan', compact('division', 'kunjungan', 'ringkasan', 'cari', 'status', 'awal', 'akhir'));
@@ -49,7 +49,7 @@ class RawatJalanController extends Controller
         $akhir = Carbon::parse($request->query('akhir', now()))->endOfDay();
 
         $kunjungan = Kunjungan::with(['pasien.jenisPembayaran', 'poli', 'dokter'])
-            ->where('jenis_kunjungan', 'igd')
+            ->where('jenis_kunjungan', 'rawat_jalan')
             ->whereBetween('waktu_daftar', [$awal, $akhir])
             ->orderBy('waktu_daftar')
             ->get();

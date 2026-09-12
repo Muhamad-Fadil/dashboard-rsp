@@ -96,14 +96,15 @@
                             <td>{{ $k->dokter->nama ?? '-' }}</td>
                             <td>
                                 @php
-                                    $warnaTipe = match($k->pasien->jenisPembayaran->kode ?? null) {
+                                    $kodePembayaran = $k->pasien?->jenisPembayaran?->kode;
+                                    $warnaTipe = match($kodePembayaran) {
                                         'bpjs' => ['bg' => '#E8FFF3', 'text' => '#1BC5BD'],
-                                        'asuransi' => ['bg' => '#F1E9FF', 'text' => '#8950FC'],
+                                        'tunai' => ['bg' => '#EEF3FF', 'text' => '#6993FF'],
                                         default => ['bg' => '#FFF6E0', 'text' => '#FFA800'],
                                     };
                                 @endphp
                                 <span class="badge-modern" style="background:{{ $warnaTipe['bg'] }}; color:{{ $warnaTipe['text'] }};">
-                                    {{ $k->pasien->jenisPembayaran->nilai ?? '-' }}
+                                    {{ $k->pasien?->jenisPembayaran?->nilai ?? '-' }}
                                 </span>
                             </td>
                             <td class="nowrap">{{ $k->waktu_daftar->format('d M Y, H:i') }}</td>

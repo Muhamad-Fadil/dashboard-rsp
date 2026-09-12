@@ -23,7 +23,6 @@ class DatabaseSeeder extends Seeder
             ReferensiSeeder::class,
             KategoriPendapatanSeeder::class,
             KategoriPengeluaranSeeder::class,
-            WilayahBogorSeeder::class,
             PasienSeeder::class,
             KunjunganSeeder::class,
             RawatInapSeeder::class,
