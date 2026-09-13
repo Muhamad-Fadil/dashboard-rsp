@@ -17,10 +17,36 @@ class PasienController extends Controller
 
         $cari = $request->query('cari');
 
+        $awal = $request->filled('awal')
+            ? Carbon::parse($request->query('awal'))->startOfDay()
+            : Carbon::parse('2026-04-01')->startOfDay();
+
+        $akhir = $request->filled('akhir')
+            ? Carbon::parse($request->query('akhir'))->endOfDay()
+            : Carbon::parse('2026-07-30')->endOfDay();
+
+        $baseQuery = Pasien::query()
+            ->whereBetween('tanggal_registrasi', [$awal, $akhir])
+            ->when($cari, function ($query, $cari) {
+                $query->where(function ($q) use ($cari) {
+                    $q->where('nama', 'like', "%{$cari}%")
+                        ->orWhere('no_rm', 'like', "%{$cari}%")
+                        ->orWhere('no_registrasi', 'like', "%{$cari}%")
+                        ->orWhere('nik', 'like', "%{$cari}%");
+                });
+            });
+
+        $ringkasan = [
+            'total' => (clone $baseQuery)->count(),
+            'lakilaki' => (clone $baseQuery)->where('jenis_kelamin', 'L')->count(),
+            'perempuan' => (clone $baseQuery)->where('jenis_kelamin', 'P')->count(),
+        ];
+
         $pasien = Pasien::with([
                 'jenisPembayaran',
-                'kunjungan' => fn ($q) => $q->with(['poli', 'dokter'])->orderByDesc('waktu_daftar'),
+                'kunjungan' => fn ($q) => $q->with(['poli', 'dokter', 'rawatInap.bed.kamar'])->orderByDesc('waktu_daftar'),
             ])
+            ->whereBetween('tanggal_registrasi', [$awal, $akhir])
             ->when($cari, function ($query, $cari) {
                 $query->where(function ($q) use ($cari) {
                     $q->where('nama', 'like', "%{$cari}%")
@@ -36,7 +62,10 @@ class PasienController extends Controller
         return view('divisi.layanan.pasien', [
             'division' => $division,
             'pasien' => $pasien,
+            'ringkasan' => $ringkasan,
             'cari' => $cari,
+            'awal' => $awal,
+            'akhir' => $akhir,
         ]);
     }
 

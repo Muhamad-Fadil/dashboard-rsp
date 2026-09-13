@@ -17,8 +17,12 @@ class RawatJalanController extends Controller
 
         $cari = $request->query('cari');
         $status = $request->query('status');
-        $awal = $request->filled('awal') ? Carbon::parse($request->query('awal'))->startOfDay() : now()->subDays(30);
-        $akhir = $request->filled('akhir') ? Carbon::parse($request->query('akhir'))->endOfDay() : now();
+        $tanggalTerakhir = Kunjungan::where('jenis_kunjungan', 'rawat_jalan')->max('waktu_daftar');
+        $defaultAkhir = $tanggalTerakhir ? Carbon::parse($tanggalTerakhir)->endOfDay() : now()->endOfDay();
+        $defaultAwal = $defaultAkhir->copy()->subDays(29)->startOfDay();
+
+        $awal = $request->filled('awal') ? Carbon::parse($request->query('awal'))->startOfDay() : $defaultAwal;
+        $akhir = $request->filled('akhir') ? Carbon::parse($request->query('akhir'))->endOfDay() : $defaultAkhir;
 
         $kunjungan = Kunjungan::with(['pasien.jenisPembayaran', 'poli', 'dokter', 'operator'])
             ->where('jenis_kunjungan', 'rawat_jalan')
