@@ -3,61 +3,117 @@
 namespace Database\Seeders;
 
 use App\Models\KategoriPendapatan;
-use App\Models\Pendapatan;
 use App\Models\UnitKerja;
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class PendapatanSeeder extends Seeder
 {
+    /**
+     * Sumber data: dump SQL billing pasien asli (sudah dimasking pihak RS)
+     * periode April-Juni 2026. Taruh file itu di:
+     * database/seeders/data/pas_apr_jun_26_masking.sql
+     *
+     * Tiap baris INSERT dipetakan ke kategori & unit kerja:
+     * - inap = 'Y'                              -> Rawat Inap (PDT-02) / unit RANAP
+     * - inap = 'N' & departemen = IGD           -> Gawat Darurat (PDT-08) / unit IGD
+     * - inap = 'N' & departemen mulai POLIKLINIK -> Rawat Jalan (PDT-01) / unit POLI
+     *
+     * Tabel milik divisi Layanan/SDM tidak disentuh sama sekali oleh seeder ini.
+     */
     public function run(): void
     {
+        $sqlPath = database_path('seeders/data/pas_apr_jun_26_masking.sql');
+
+        if (! file_exists($sqlPath)) {
+            $this->command?->warn("File data mentah tidak ditemukan: {$sqlPath}");
+            return;
+        }
+
         $operatorId = User::where('email', 'operator.keuangan@rspgoenawan.co.id')->first()?->id;
-        $kategoriList = KategoriPendapatan::all();
-        $unitLayananIds = UnitKerja::whereHas('division', fn ($q) => $q->where('slug', 'layanan'))->pluck('id')->all();
 
-        // rentang nominal per kategori (per transaksi), disesuaikan skala rumah sakit kecil-menengah
-        $rentangNominal = [
-            'PDT-01' => [800_000, 3_000_000],   // Rawat Jalan
-            'PDT-02' => [2_000_000, 8_000_000], // Rawat Inap
-            'PDT-03' => [200_000, 1_000_000],   // Laboratorium
-            'PDT-04' => [300_000, 1_500_000],   // Radiologi
-            'PDT-05' => [100_000, 800_000],     // Farmasi
-            'PDT-06' => [3_000_000, 15_000_000], // Operasi
-            'PDT-07' => [1_500_000, 6_000_000], // Klaim BPJS
-        ];
+        $kategoriId = KategoriPendapatan::pluck('id', 'kode');
+        $unitId = UnitKerja::pluck('id', 'kode_unit');
 
-        for ($bulanKe = 5; $bulanKe >= 0; $bulanKe--) {
-            $bulanAcuan = Carbon::now()->subMonths($bulanKe);
-            // faktor pertumbuhan kecil tiap bulan mendekati sekarang, biar grafik trennya naik
-            $faktorTumbuh = 1 + ((5 - $bulanKe) * 0.06);
+        $kategoriRawatJalan   = $kategoriId['PDT-01'] ?? null;
+        $kategoriRawatInap    = $kategoriId['PDT-02'] ?? null;
+        $kategoriGawatDarurat = $kategoriId['PDT-08'] ?? null;
 
-            foreach ($kategoriList as $kategori) {
-                [$min, $max] = $rentangNominal[$kategori->kode] ?? [500_000, 2_000_000];
+        if (! $kategoriRawatJalan || ! $kategoriRawatInap || ! $kategoriGawatDarurat) {
+            $this->command?->warn('Kategori PDT-01/PDT-02/PDT-08 belum lengkap. Jalankan KategoriPendapatanSeeder dulu.');
+            return;
+        }
 
-                // 4-6 transaksi per kategori per bulan
-                $jumlahTransaksi = fake()->numberBetween(4, 6);
+        $unitPoli  = $unitId['POLI']  ?? null;
+        $unitRanap = $unitId['RANAP'] ?? null;
+        $unitIgd   = $unitId['IGD']   ?? null;
 
-                for ($i = 0; $i < $jumlahTransaksi; $i++) {
-                    $tanggal = fake()->dateTimeBetween(
-                        $bulanAcuan->copy()->startOfMonth(),
-                        $bulanAcuan->copy()->endOfMonth()->min(Carbon::now())
-                    );
+        // Hapus data pendapatan dummy lama. Tabel lain tidak disentuh.
+        DB::table('pendapatan')->delete();
 
-                    $nominal = fake()->numberBetween($min, $max) * $faktorTumbuh;
+        $pattern = '/VALUES \(\'([^\']*)\', \'([^\']*)\', \'([^\']*)\', \'([^\']*)\', \'([^\']*)\', \'([^\']*)\', \'([^\']*)\', \'([^\']*)\', \'([^\']*)\', \'([^\']*)\', \'([^\']*)\', \'([^\']*)\'\)/';
 
-                    Pendapatan::create([
-                        'kategori_pendapatan_id' => $kategori->id,
-                        'unit_kerja_id' => fake()->randomElement($unitLayananIds),
-                        'kunjungan_id' => null,
-                        'tanggal' => $tanggal,
-                        'jumlah' => round($nominal, 2),
-                        'keterangan' => 'Pendapatan ' . $kategori->nama_kategori . ' periode ' . $bulanAcuan->format('F Y'),
-                        'user_id' => $operatorId,
-                    ]);
-                }
+        $handle = fopen($sqlPath, 'r');
+        $now = now();
+        $batch = [];
+        $batchSize = 500;
+        $totalInsert = 0;
+
+        while (($line = fgets($handle)) !== false) {
+            if (! preg_match($pattern, $line, $m)) {
+                continue;
+            }
+
+            // urutan kolom: no_reg, no_mr, tgl_reg, tgl_pulang, nama_pas, umur, lp, ds_dep, ds_pastipe, inap, emg, total_bill
+            $noReg      = $m[1];
+            $tglReg     = $m[3];
+            $dsDep      = $m[8];
+            $dsPastipe  = $m[9];
+            $inap       = $m[10];
+            $totalBill  = $m[12];
+
+            if ($inap === 'Y') {
+                $kategoriPendapatanId = $kategoriRawatInap;
+                $unitKerjaId = $unitRanap;
+                $labelJenis = 'Rawat Inap';
+            } elseif ($dsDep === 'INSTALASI GAWAT DARURAT') {
+                $kategoriPendapatanId = $kategoriGawatDarurat;
+                $unitKerjaId = $unitIgd;
+                $labelJenis = 'Gawat Darurat';
+            } else {
+                $kategoriPendapatanId = $kategoriRawatJalan;
+                $unitKerjaId = $unitPoli;
+                $labelJenis = 'Rawat Jalan';
+            }
+
+            $batch[] = [
+                 'kategori_pendapatan_id' => $kategoriPendapatanId,
+                 'unit_kerja_id' => $unitKerjaId,
+                'kunjungan_id' => null,
+                'ds_dep' => $dsDep,
+                 'tanggal' => $tglReg,
+                  'jumlah' => $totalBill,
+                    'keterangan' => "Pendapatan {$labelJenis} - {$dsDep} ({$dsPastipe}) - No. Reg: {$noReg}",
+                    'user_id' => $operatorId,
+                    'created_at' => $now,
+                    'updated_at' => $now,
+            ];
+
+            if (count($batch) >= $batchSize) {
+                DB::table('pendapatan')->insert($batch);
+                $totalInsert += count($batch);
+                $batch = [];
             }
         }
+
+        if (! empty($batch)) {
+            DB::table('pendapatan')->insert($batch);
+            $totalInsert += count($batch);
+        }
+
+        fclose($handle);
+
+        $this->command?->info("PendapatanSeeder: {$totalInsert} baris data pendapatan asli berhasil dimasukkan.");
     }
 }
