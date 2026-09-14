@@ -16,6 +16,13 @@ class RawatInapController extends Controller
     {
         abort_unless($division->slug === 'layanan', 404);
 
+        $tanggalTerakhir = \App\Models\RawatInap::max('tanggal_masuk');
+        $defaultAkhir = $tanggalTerakhir ? \Illuminate\Support\Carbon::parse($tanggalTerakhir)->endOfDay() : now()->endOfDay();
+        $defaultAwal = $defaultAkhir->copy()->subDays(29)->startOfDay();
+
+        $awal = $request->filled('awal') ? \Illuminate\Support\Carbon::parse($request->query('awal'))->startOfDay() : $defaultAwal;
+        $akhir = $request->filled('akhir') ? \Illuminate\Support\Carbon::parse($request->query('akhir'))->endOfDay() : $defaultAkhir;
+
         $cari = $request->query('cari');
         $status = $request->query('status');
         $bangsal = $request->query('bangsal');
@@ -52,6 +59,8 @@ class RawatInapController extends Controller
             'cari' => $cari,
             'status' => $status,
             'bangsal' => $bangsal,
+            'awal' => $awal,
+            'akhir' => $akhir,
         ]);
     }
 

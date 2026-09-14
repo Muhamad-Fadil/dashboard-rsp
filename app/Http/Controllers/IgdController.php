@@ -21,7 +21,7 @@ class IgdController extends Controller
         $akhir = $request->filled('akhir') ? Carbon::parse($request->query('akhir'))->endOfDay() : now();
 
         $kunjungan = Kunjungan::with(['pasien.jenisPembayaran', 'poli', 'dokter', 'operator'])
-            ->where('jenis_kunjungan', 'rawat_jalan')
+            ->where('jenis_kunjungan', 'igd')
             ->whereBetween('waktu_daftar', [$awal, $akhir])
             ->when($cari, function ($query, $cari) {
                 $query->where('no_kunjungan', 'like', "%{$cari}%")
@@ -33,9 +33,9 @@ class IgdController extends Controller
             ->withQueryString();
 
         $ringkasan = [
-            'total' => Kunjungan::where('jenis_kunjungan', 'rawat_jalan')->whereBetween('waktu_daftar', [$awal, $akhir])->count(),
-            'selesai' => Kunjungan::where('jenis_kunjungan', 'rawat_jalan')->whereBetween('waktu_daftar', [$awal, $akhir])->where('status', 'selesai')->count(),
-            'batal' => Kunjungan::where('jenis_kunjungan', 'rawat_jalan')->whereBetween('waktu_daftar', [$awal, $akhir])->where('status', 'batal')->count(),
+            'total' => Kunjungan::where('jenis_kunjungan', 'igd')->whereBetween('waktu_daftar', [$awal, $akhir])->count(),
+            'selesai' => Kunjungan::where('jenis_kunjungan', 'igd')->whereBetween('waktu_daftar', [$awal, $akhir])->where('status', 'selesai')->count(),
+            'batal' => Kunjungan::where('jenis_kunjungan', 'igd')->whereBetween('waktu_daftar', [$awal, $akhir])->where('status', 'batal')->count(),
         ];
 
         return view('divisi.layanan.igd', compact('division', 'kunjungan', 'ringkasan', 'cari', 'status', 'awal', 'akhir'));
@@ -45,11 +45,15 @@ class IgdController extends Controller
     {
         abort_unless($division->slug === 'layanan', 404);
 
-        $awal = Carbon::parse($request->query('awal', now()->subDays(30)))->startOfDay();
-        $akhir = Carbon::parse($request->query('akhir', now()))->endOfDay();
+        $tanggalTerakhir = Kunjungan::where('jenis_kunjungan', 'igd')->max('waktu_daftar');
+        $defaultAkhir = $tanggalTerakhir ? Carbon::parse($tanggalTerakhir)->endOfDay() : now()->endOfDay();
+        $defaultAwal = $defaultAkhir->copy()->subDays(29)->startOfDay();
+
+        $awal = $request->filled('awal') ? Carbon::parse($request->query('awal'))->startOfDay() : $defaultAwal;
+        $akhir = $request->filled('akhir') ? Carbon::parse($request->query('akhir'))->endOfDay() : $defaultAkhir;
 
         $kunjungan = Kunjungan::with(['pasien.jenisPembayaran', 'poli', 'dokter'])
-            ->where('jenis_kunjungan', 'rawat_jalan')
+            ->where('jenis_kunjungan', 'igd')
             ->whereBetween('waktu_daftar', [$awal, $akhir])
             ->orderBy('waktu_daftar')
             ->get();
