@@ -151,12 +151,12 @@
 
     {{-- Ringkasan: Jumlah Pegawai (hero) + Komposisi Tenaga + Status Kepegawaian --}}
     @php
-        // Ambil dari komposisi_sdm yang udah dihitung service (dokter/perawat/nakes_lain/administrasi/pendukung)
+        // Ambil dari kelompok besar asli pada data db_pegawai.
         $totalPerKelompok = $data['komposisi_sdm']->pluck('total', 'kelompok');
-        $jumlahDokter = $totalPerKelompok['dokter'] ?? 0;
-        $jumlahPerawat = $totalPerKelompok['perawat'] ?? 0;
-        $jumlahPenunjang = $totalPerKelompok['nakes_lain'] ?? 0;
-        $jumlahAdministrasi = ($totalPerKelompok['administrasi'] ?? 0) + ($totalPerKelompok['pendukung'] ?? 0);
+        $jumlahDokter = $totalPerKelompok['Dokter'] ?? 0;
+        $jumlahPerawat = $totalPerKelompok['Perawat dan Bidan'] ?? 0;
+        $jumlahPenunjang = $totalPerKelompok['Nakes Lain'] ?? 0;
+        $jumlahAdministrasi = $totalPerKelompok['Administrasi'] ?? 0;
         $totalPegawai = max($data['total_pegawai'], 1); // hindari divide by zero
 
         $persen = fn($n) => round(($n / $totalPegawai) * 100, 1);
@@ -313,77 +313,6 @@
                     @endforelse
                 </div>
             </div>
-        </div>
-    </div>
-
-    {{-- Rekap Status Absensi --}}
-    <div class="card modern-card mb-6">
-        <div class="card-body p-5">
-            <h3 class="card-title mb-4"><i class="fas fa-calendar-check text-primary mr-2"></i>Rekap Kehadiran per Status (Periode Terpilih)</h3>
-            @php
-                $statusLabel = [
-                    'hadir' => 'Hadir',
-                    'terlambat' => 'Terlambat',
-                    'izin' => 'Izin',
-                    'sakit' => 'Sakit',
-                    'alpha' => 'Alpha',
-                ];
-                $statusColor = [
-                    'hadir' => ['#E8FFF3', '#1BC5BD'],
-                    'terlambat' => ['#FFF6E0', '#FFA800'],
-                    'izin' => ['#EEF3FF', '#6993FF'],
-                    'sakit' => ['#F1E9FF', '#8950FC'],
-                    'alpha' => ['#FFE9EA', '#F64E60'],
-                ];
-            @endphp
-            <table class="table table-modern">
-                <thead><tr><th>Status</th><th>Jumlah</th></tr></thead>
-                <tbody>
-                    @forelse ($data['rekap_status_absensi'] as $status => $total)
-                    <tr>
-                        <td>
-                            <span class="badge badge-modern" style="background:{{ $statusColor[$status][0] ?? '#F3F6F9' }}; color:{{ $statusColor[$status][1] ?? '#464E5F' }};">
-                                {{ $statusLabel[$status] ?? ucfirst($status) }}
-                            </span>
-                        </td>
-                        <td class="font-weight-bold text-dark">{{ $total }}</td>
-                    </tr>
-                    @empty
-                    <tr><td colspan="2" class="text-muted">Belum ada data absensi pada periode ini</td></tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    {{-- Indikator Kehadiran Bulanan: Target vs Realisasi --}}
-    <div class="card modern-card mb-6">
-        <div class="card-body p-5">
-            <h3 class="card-title mb-4"><i class="fas fa-calendar-alt text-primary mr-2"></i>Indikator Kehadiran Bulanan</h3>
-            <p class="text-muted font-size-sm mb-4">Perbandingan target kehadiran dengan realisasi tiap bulan ({{ $data['kehadiran_bulanan']->count() }} bulan terakhir)</p>
-            <table class="table table-modern">
-                <thead><tr><th>Bulan</th><th>Target Kehadiran</th><th>Realisasi</th><th>Status</th></tr></thead>
-                <tbody>
-                    @forelse ($data['kehadiran_bulanan'] as $row)
-                    <tr>
-                        <td class="font-weight-bold text-dark">{{ $row['bulan'] }}</td>
-                        <td>{{ $row['target'] }}%</td>
-                        <td class="font-weight-bold">{{ $row['realisasi'] }}%</td>
-                        <td>
-                            @if ($row['status'] === 'Baik')
-                                <span class="badge badge-modern" style="background:#E8FFF3; color:#1BC5BD;">Baik</span>
-                            @elseif ($row['status'] === 'Sesuai target')
-                                <span class="badge badge-modern" style="background:#EEF3FF; color:#6993FF;">Sesuai target</span>
-                            @else
-                                <span class="badge badge-modern" style="background:#FFF6E0; color:#FFA800;">Perlu perhatian</span>
-                            @endif
-                        </td>
-                    </tr>
-                    @empty
-                    <tr><td colspan="4" class="text-muted">Belum ada data kehadiran</td></tr>
-                    @endforelse
-                </tbody>
-            </table>
         </div>
     </div>
 

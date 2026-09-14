@@ -376,12 +376,9 @@ class SdmIndikatorService
             'total_pegawai' => $this->totalPegawai(),
             'status_kepegawaian' => $this->jumlahPerStatusKepegawaian(),
             'komposisi_sdm' => $this->komposisiSdm(),
-            'persentase_kehadiran' => $this->persentaseKehadiran($awal, $akhir),
-            'rekap_status_absensi' => $this->rekapStatusAbsensi($awal, $akhir),
             'jumlah_cuti_aktif' => $this->jumlahCutiAktif($awal, $akhir),
             'distribusi_per_unit' => $this->distribusiPerUnit(),
             'jumlah_ikut_pelatihan' => $this->jumlahIkutPelatihan($awal, $akhir),
-            'kehadiran_bulanan' => $this->kehadiranBulanan(5),
         ];
     }
 }
