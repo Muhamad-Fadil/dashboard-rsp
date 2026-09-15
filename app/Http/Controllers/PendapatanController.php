@@ -5,220 +5,83 @@ namespace App\Http\Controllers;
 use App\Models\Division;
 use App\Models\Pendapatan;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
 class PendapatanController extends Controller
 {
-    /**
-     * Daftar tab yang tersedia di halaman Pendapatan.
-     */
-    private function daftarTab(): array
+    protected const TAB_VALID = ['semua', 'bpjs', 'tunai', 'igd', 'poliklinik', 'ruangan'];
+
+    protected const TAB_BELUM_TERSEDIA = ['tunai', 'poliklinik', 'ruangan'];
+
+    public function index(Request $request, Division $division)
     {
-        return [
-            'ringkasan'     => [
-                'label' => 'Ringkasan (Semua Kategori)',
-                'kode'  => null,
-            ],
-            'rawat-jalan'   => [
-                'label' => 'Rawat Jalan',
-                'kode'  => 'PDT-01',
-            ],
-            'rawat-inap'    => [
-                'label' => 'Rawat Inap',
-                'kode'  => 'PDT-02',
-            ],
-            'laboratorium'  => [
-                'label' => 'Laboratorium',
-                'kode'  => 'PDT-03',
-            ],
-            'radiologi'     => [
-                'label' => 'Radiologi',
-                'kode'  => 'PDT-04',
-            ],
-            'farmasi'       => [
-                'label' => 'Farmasi',
-                'kode'  => 'PDT-05',
-            ],
-            'operasi'       => [
-                'label' => 'Operasi',
-                'kode'  => 'PDT-06',
-            ],
-            'klaim-bpjs'    => [
-                'label' => 'Klaim BPJS',
-                'kode'  => 'PDT-07',
-            ],
-            'gawat-darurat' => [
-                'label' => 'Gawat Darurat',
-                'kode'  => 'PDT-08',
-            ],
-        ];
-    }
+        [$awal, $akhir, $tab] = $this->ambilFilter($request);
 
-    /**
-     * Mengecek kategori yang belum mempunyai data pendapatan.
-     */
-    private function tabBelumTersedia(): array
-    {
-        $kodeYangAdaData = Pendapatan::join(
-            'kategori_pendapatan',
-            'pendapatan.kategori_pendapatan_id',
-            '=',
-            'kategori_pendapatan.id'
-        )
-            ->distinct()
-            ->pluck('kategori_pendapatan.kode')
-            ->all();
-
-        $belum = [];
-
-        foreach ($this->daftarTab() as $kunci => $tab) {
-            if (
-                $tab['kode'] !== null &&
-                !in_array($tab['kode'], $kodeYangAdaData, true)
-            ) {
-                $belum[] = $kunci;
-            }
+        if (in_array($tab, self::TAB_BELUM_TERSEDIA, true)) {
+            return view('divisi.keuangan.pendapatan', [
+                'division' => $division,
+                'tab' => $tab,
+                'pendapatan' => collect(),
+                'totalPendapatan' => 0,
+                'awal' => $awal,
+                'akhir' => $akhir,
+            ]);
         }
 
-        return $belum;
-    }
-
-    /**
-     * Tanggal awal default berdasarkan data pendapatan.
-     */
-    private function defaultAwal(): string
-    {
-        return Pendapatan::min('tanggal')
-            ?? now()->startOfMonth()->toDateString();
-    }
-
-    /**
-     * Tanggal akhir default berdasarkan data pendapatan.
-     */
-    private function defaultAkhir(): string
-    {
-        return Pendapatan::max('tanggal')
-            ?? now()->toDateString();
-    }
-
-    /**
-     * Query pendapatan berdasarkan tanggal dan tab kategori.
-     */
-    private function queryPendapatan(
-        string $tab,
-        string $awal,
-        string $akhir
-    ) {
-        $daftarTab = $this->daftarTab();
-
-        $kodeKategori = $daftarTab[$tab]['kode'] ?? null;
-
-        return Pendapatan::with([
-            'kategori',
-            'unitKerja',
-        ])
-            ->whereBetween('tanggal', [$awal, $akhir])
-            ->when(
-                $kodeKategori,
-                function ($query, $kodeKategori) {
-                    $query->whereHas(
-                        'kategori',
-                        function ($q) use ($kodeKategori) {
-                            $q->where('kode', $kodeKategori);
-                        }
-                    );
-                }
-            )
-            ->latest('tanggal');
-    }
-
-    /**
-     * Halaman utama Pendapatan.
-     */
-    public function index(
-        Request $request,
-        Division $division
-    ) {
-        $daftarTab = $this->daftarTab();
-
-        $awal = $request->filled('awal')
-            ? $request->awal
-            : $this->defaultAwal();
-
-        $akhir = $request->filled('akhir')
-            ? $request->akhir
-            : $this->defaultAkhir();
-
-        $tab = $request->query('tab', 'ringkasan');
-
-        if (!array_key_exists($tab, $daftarTab)) {
-            $tab = 'ringkasan';
-        }
-
-        $pendapatan = $this
-            ->queryPendapatan($tab, $awal, $akhir)
-            ->get();
-
+        $pendapatan = $this->query($awal, $akhir, $tab)->latest('tanggal')->get();
         $totalPendapatan = $pendapatan->sum('jumlah');
 
-        $tabList = collect($daftarTab)
-            ->map(fn ($t) => $t['label'])
-            ->all();
-
-        $tabBelumTersedia = $this->tabBelumTersedia();
-
-        return view(
-            'divisi.keuangan.pendapatan',
-            compact(
-                'division',
-                'pendapatan',
-                'totalPendapatan',
-                'awal',
-                'akhir',
-                'tab',
-                'tabList',
-                'tabBelumTersedia'
-            )
-        );
+        return view('divisi.keuangan.pendapatan', compact(
+            'division', 'tab', 'pendapatan', 'totalPendapatan', 'awal', 'akhir'
+        ));
     }
 
-    /**
-     * Export data Pendapatan ke PDF.
-     */
-    public function exportPdf(
-        Request $request,
-        Division $division
-    ) {
-        $daftarTab = $this->daftarTab();
+    public function exportPdf(Request $request, Division $division)
+    {
+        [$awal, $akhir, $tab] = $this->ambilFilter($request);
 
+        $pendapatan = in_array($tab, self::TAB_BELUM_TERSEDIA, true)
+            ? collect()
+            : $this->query($awal, $akhir, $tab)->latest('tanggal')->get();
+
+        $pdf = Pdf::loadView('pdf.keuangan.pendapatan', [
+            'pendapatan' => $pendapatan,
+            'awal' => $awal,
+            'akhir' => $akhir,
+        ])->setPaper('a4', 'landscape');
+
+        return $pdf->stream('data-pendapatan.pdf');
+    }
+
+    private function ambilFilter(Request $request): array
+    {
         $awal = $request->filled('awal')
             ? $request->awal
-            : $this->defaultAwal();
+            : now()->startOfMonth()->toDateString();
 
         $akhir = $request->filled('akhir')
             ? $request->akhir
-            : $this->defaultAkhir();
+            : now()->toDateString();
 
-        $tab = $request->query('tab', 'ringkasan');
+        $tab = $request->query('tab', 'semua');
 
-        if (!array_key_exists($tab, $daftarTab)) {
-            $tab = 'ringkasan';
+        if (! in_array($tab, self::TAB_VALID, true)) {
+            $tab = 'semua';
         }
 
-        $pendapatan = $this
-            ->queryPendapatan($tab, $awal, $akhir)
-            ->get();
+        return [$awal, $akhir, $tab];
+    }
 
-        $pdf = Pdf::loadView(
-            'pdf.keuangan.pendapatan',
-            [
-                'pendapatan' => $pendapatan,
-                'awal'       => $awal,
-                'akhir'      => $akhir,
-                'tab'        => $daftarTab[$tab]['label'],
-            ]
-        )->setPaper('a4', 'landscape');
+    private function query(string $awal, string $akhir, string $tab): Builder
+    {
+        $query = Pendapatan::with(['kategori', 'unitKerja'])
+            ->whereBetween('tanggal', [$awal, $akhir]);
 
-        return $pdf->stream('data-pendapatan.pdf');
+        return match ($tab) {
+            'bpjs' => $query->whereHas('kategori', fn ($q) => $q->where('kode', 'PDT-07')),
+            'igd' => $query->whereHas('unitKerja', fn ($q) => $q->where('kode_unit', 'IGD')),
+            default => $query,
+        };
     }
 }

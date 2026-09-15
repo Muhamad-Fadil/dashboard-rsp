@@ -12,23 +12,17 @@
 
     .modern-card {
         background: #fff;
-        border-radius: 18px;
-        border: 1px solid #edf0f5;
-        box-shadow: 0 8px 26px rgba(15, 23, 42, .05);
+        border-radius: 16px;
+        border: none;
+        box-shadow: 0 4px 18px rgba(0,0,0,.06);
     }
 
     .stat-card {
         background: #fff;
-        border-radius: 18px;
-        border: 1px solid #edf0f5;
-        box-shadow: 0 8px 26px rgba(15, 23, 42, .05);
+        border-radius: 16px;
+        border: none;
+        box-shadow: 0 4px 18px rgba(0,0,0,.06);
         height: 100%;
-        transition: transform .2s ease, box-shadow .2s ease;
-    }
-
-    .stat-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 14px 32px rgba(15, 23, 42, .09);
     }
 
     .stat-value {
@@ -45,25 +39,12 @@
     }
 
     .page-header {
-        background: linear-gradient(135deg, #0f766e 0%, #134e4a 100%);
+        background: linear-gradient(135deg, #1BC5BD 0%, #0B806A 100%);
         width: 100%;
         border-radius: 18px;
-        padding: 30px 32px;
+        padding: 28px 32px;
         color: #fff;
-        box-shadow: 0 12px 30px rgba(15, 118, 110, .2);
-        overflow: hidden;
-        position: relative;
-    }
-
-    .page-header::after {
-        content: '';
-        position: absolute;
-        width: 190px;
-        height: 190px;
-        border: 24px solid rgba(255, 255, 255, .08);
-        border-radius: 50%;
-        right: -45px;
-        top: -80px;
+        box-shadow: 0 10px 30px rgba(27,197,189,.25);
     }
 
     .page-header h1 {
@@ -77,33 +58,8 @@
     .filter-card {
         background: #fff;
         border-radius: 14px;
-        box-shadow: 0 8px 26px rgba(15, 23, 42, .05);
-        border: 1px solid #edf0f5;
-    }
-
-    .summary-icon {
-        width: 44px;
-        height: 44px;
-        border-radius: 13px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 18px;
-    }
-
-    .summary-caption,
-    .summary-note {
-        color: #7e8299;
-        font-size: 12px;
-        font-weight: 600;
-    }
-
-    .section-kicker {
-        color: #0f766e;
-        font-size: 11px;
-        font-weight: 800;
-        letter-spacing: .8px;
-        text-transform: uppercase;
+        box-shadow: 0 4px 18px rgba(0,0,0,.06);
+        border: none;
     }
 
     .table-modern thead th {
@@ -122,34 +78,6 @@
     .table-modern tbody tr:hover {
         background: #f9f9fb;
     }
-
-    .status-badge {
-        display: inline-block;
-        border-radius: 8px;
-        font-size: 11px;
-        font-weight: 700;
-        padding: 7px 10px;
-        text-transform: capitalize;
-    }
-
-    .status-approved { background: #d1fae5; color: #047857; }
-    .status-pending { background: #fef3c7; color: #b45309; }
-    .status-rejected { background: #fee2e2; color: #b91c1c; }
-    .status-default { background: #eef2f7; color: #64748b; }
-
-    .empty-state {
-        padding: 58px 20px;
-        text-align: center;
-        color: #7e8299;
-    }
-
-    @media (max-width: 767.98px) {
-        .page-header { padding: 24px; }
-        .page-header .btn { margin-top: 18px; width: 100%; }
-        .filter-card .form-group,
-        .filter-card .form-control { width: 100% !important; margin-right: 0 !important; }
-        .filter-card .btn { width: 100%; margin-top: 12px; }
-    }
 </style>
 @endpush
 
@@ -158,39 +86,31 @@
 
     @include('partials.submenu-keuangan')
 
-    @php
-        $persentaseDisetujui = $totalKlaim > 0 ? ($totalDisetujui / $totalKlaim) * 100 : 0;
-    @endphp
-
     {{-- Header --}}
-    <div class="page-header d-flex justify-content-between align-items-center flex-wrap mb-6">
-        <div class="position-relative" style="z-index: 1;">
-            <div class="text-uppercase font-size-sm font-weight-bold mb-2" style="letter-spacing: 1px; color: #99f6e4;">
-                Ringkasan keuangan
-            </div>
-            <h1 class="font-weight-bolder mb-2">Klaim BPJS</h1>
+    <div class="page-header d-flex justify-content-between align-items-center mb-6">
+
+        <div>
+            <h1 class="font-weight-bolder mb-1">
+                Klaim BPJS
+            </h1>
+
             <span class="text-muted-light font-weight-bold">
-                Ikhtisar pengajuan dan persetujuan klaim BPJS rumah sakit
+                Data pengajuan dan persetujuan klaim BPJS rumah sakit
             </span>
         </div>
 
         <a
             href="{{ route('divisi.keuangan.klaim-bpjs.pdf', $division->slug) }}"
-            class="btn font-weight-bold px-5 position-relative"
+            class="btn font-weight-bold px-5"
             target="_blank"
-            style="background-color: #fff; color: #115e59; border: none; z-index: 1;">
-            <i class="fas fa-file-download mr-2"></i>Download PDF
+            style="background-color: #000; color: #fff; border: none;">
+            Download PDF
         </a>
 
     </div>
 
     {{-- Filter --}}
     <form method="GET" class="filter-card d-flex align-items-end flex-wrap p-4 mb-6">
-
-        <div class="w-100 mb-3">
-            <div class="section-kicker">Periode laporan</div>
-            <div class="summary-note">Atur rentang tanggal untuk memperbarui ringkasan klaim BPJS.</div>
-        </div>
 
         <div class="form-group mb-0 mr-4">
             <label class="font-weight-bold mb-1 font-size-sm text-muted">
@@ -227,78 +147,66 @@
     </form>
 
     {{-- Ringkasan --}}
-    <div class="row mb-2">
+    <div class="row">
 
-        <div class="col-xl-3 col-md-6 mb-4">
+        <div class="col-xl-4 col-md-6 mb-4">
 
             <div class="card stat-card">
+
                 <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-start mb-4">
-                        <div class="summary-icon" style="background: #dbeafe; color: #2563eb;"><i class="fas fa-file-medical"></i></div>
-                        <span class="summary-caption">Pengajuan</span>
-                    </div>
+
                     <div class="stat-value text-dark">
                         Rp {{ number_format($totalKlaim, 0, ',', '.') }}
                     </div>
-                    <div class="stat-label">Total pengajuan klaim</div>
-                    <div class="summary-note mt-3"><i class="fas fa-calendar-alt mr-1"></i>{{ $awal }} s/d {{ $akhir }}</div>
+
+                    <div class="stat-label">
+                        Total Pengajuan Klaim
+                    </div>
+
                 </div>
+
             </div>
 
         </div>
 
-        <div class="col-xl-3 col-md-6 mb-4">
+        <div class="col-xl-4 col-md-6 mb-4">
 
             <div class="card stat-card">
 
                 <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-start mb-4">
-                        <div class="summary-icon" style="background: #d1fae5; color: #047857;"><i class="fas fa-check-circle"></i></div>
-                        <span class="summary-caption">Disetujui</span>
-                    </div>
+
                     <div class="stat-value text-dark">
                         Rp {{ number_format($totalDisetujui, 0, ',', '.') }}
                     </div>
-                    <div class="stat-label">Total klaim disetujui</div>
-                    <div class="summary-note mt-3">Nilai klaim yang diterima</div>
+
+                    <div class="stat-label">
+                        Total Klaim Disetujui
+                    </div>
+
                 </div>
 
             </div>
 
         </div>
 
-        <div class="col-xl-3 col-md-6 mb-4">
+        <div class="col-xl-4 col-md-6 mb-4">
 
             <div class="card stat-card">
 
                 <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-start mb-4">
-                        <div class="summary-icon" style="background: #fef3c7; color: #b45309;"><i class="fas fa-receipt"></i></div>
-                        <span class="summary-caption">Aktivitas</span>
-                    </div>
+
                     <div class="stat-value text-dark">
                         {{ number_format($jumlahPengajuan, 0, ',', '.') }}
                     </div>
-                    <div class="stat-label">Jumlah pengajuan</div>
-                    <div class="summary-note mt-3">Total berkas klaim</div>
-                </div>
 
-            </div>
-
-        </div>
-
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card stat-card">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-start mb-4">
-                        <div class="summary-icon" style="background: #fce7f3; color: #be185d;"><i class="fas fa-percentage"></i></div>
-                        <span class="summary-caption">Rasio</span>
+                    <div class="stat-label">
+                        Jumlah Pengajuan
                     </div>
-                    <div class="stat-value text-dark">{{ number_format($persentaseDisetujui, 1, ',', '.') }}%</div>
-                    <div class="stat-label">Persetujuan klaim</div>
-                    <div class="summary-note mt-3">Dari total nilai pengajuan</div>
+
                 </div>
+
             </div>
+
         </div>
 
     </div>
@@ -308,23 +216,10 @@
 
         <div class="card-body p-5">
 
-            <div class="d-flex justify-content-between align-items-center flex-wrap mb-4">
-                <div>
-                    <div class="section-kicker mb-1">Rincian pengajuan</div>
-                    <h3 class="font-weight-bolder text-dark mb-0">Transaksi Klaim BPJS</h3>
-                </div>
-                <span class="badge badge-light-primary px-3 py-2 mt-2 mt-md-0">
-                    {{ number_format($jumlahPengajuan, 0, ',', '.') }} pengajuan
-                </span>
-            </div>
+            <h3 class="font-weight-bolder text-dark mb-4">
+                Data Klaim BPJS
+            </h3>
 
-            @if ($klaim->isEmpty())
-                <div class="empty-state">
-                    <div class="mb-3"><i class="fas fa-file-medical fa-3x text-muted"></i></div>
-                    <strong>Belum ada klaim BPJS pada periode ini.</strong>
-                    <div class="mt-2">Coba pilih rentang tanggal yang berbeda untuk melihat data klaim.</div>
-                </div>
-            @else
             <div class="table-responsive">
 
                 <table class="table table-modern">
@@ -368,11 +263,7 @@
                                 </td>
 
                                 <td>
-                                    @php
-                                        $status = strtolower((string) ($item->status ?? ''));
-                                        $statusClass = str_contains($status, 'setuju') ? 'status-approved' : (str_contains($status, 'tolak') ? 'status-rejected' : (str_contains($status, 'proses') || str_contains($status, 'pending') ? 'status-pending' : 'status-default'));
-                                    @endphp
-                                    <span class="status-badge {{ $statusClass }}">{{ $item->status ?? 'Belum ada status' }}</span>
+                                    {{ $item->status ?? '-' }}
                                 </td>
 
                                 <td>
@@ -396,7 +287,6 @@
                 </table>
 
             </div>
-            @endif
 
         </div>
 
