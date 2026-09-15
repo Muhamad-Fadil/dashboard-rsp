@@ -11,14 +11,25 @@ use Illuminate\View\View;
 
 class IgdController extends Controller
 {
+    public function resolveDefaultPeriod(?string $latestDate = null): array
+    {
+        $tanggalTerakhir = $latestDate ? Carbon::parse($latestDate) : Kunjungan::where('jenis_kunjungan', 'igd')->max('waktu_daftar');
+        $defaultAkhir = $tanggalTerakhir ? Carbon::parse($tanggalTerakhir)->endOfDay() : now()->endOfDay();
+        $defaultAwal = $defaultAkhir->copy()->subDays(29)->startOfDay();
+
+        return [$defaultAwal, $defaultAkhir];
+    }
+
     public function index(Request $request, Division $division): View
     {
         abort_unless($division->slug === 'layanan', 404);
 
+        [$defaultAwal, $defaultAkhir] = $this->resolveDefaultPeriod();
+
         $cari = $request->query('cari');
         $status = $request->query('status');
-        $awal = $request->filled('awal') ? Carbon::parse($request->query('awal'))->startOfDay() : now()->subDays(30);
-        $akhir = $request->filled('akhir') ? Carbon::parse($request->query('akhir'))->endOfDay() : now();
+        $awal = $request->filled('awal') ? Carbon::parse($request->query('awal'))->startOfDay() : $defaultAwal;
+        $akhir = $request->filled('akhir') ? Carbon::parse($request->query('akhir'))->endOfDay() : $defaultAkhir;
 
         $kunjungan = Kunjungan::with(['pasien.jenisPembayaran', 'poli', 'dokter', 'operator'])
             ->where('jenis_kunjungan', 'igd')
@@ -45,9 +56,7 @@ class IgdController extends Controller
     {
         abort_unless($division->slug === 'layanan', 404);
 
-        $tanggalTerakhir = Kunjungan::where('jenis_kunjungan', 'igd')->max('waktu_daftar');
-        $defaultAkhir = $tanggalTerakhir ? Carbon::parse($tanggalTerakhir)->endOfDay() : now()->endOfDay();
-        $defaultAwal = $defaultAkhir->copy()->subDays(29)->startOfDay();
+        [$defaultAwal, $defaultAkhir] = $this->resolveDefaultPeriod();
 
         $awal = $request->filled('awal') ? Carbon::parse($request->query('awal'))->startOfDay() : $defaultAwal;
         $akhir = $request->filled('akhir') ? Carbon::parse($request->query('akhir'))->endOfDay() : $defaultAkhir;

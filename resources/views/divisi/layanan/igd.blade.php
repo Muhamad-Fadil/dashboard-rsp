@@ -224,7 +224,7 @@
                                     {{ $k->pasien?->jenisPembayaran?->nilai ?? '-' }}
                                 </span>
                             </td>
-                            <td class="nowrap">{{ optional($k->waktu_daftar)->format('d M Y, H:i') ?? '-' }}</td>
+                            <td class="nowrap">{{ optional($k->waktu_daftar)->format('d M Y') ?? '-' }}</td>
                             <td class="nowrap">
                                 @php
                                     $warnaStatus = match($k->status) {

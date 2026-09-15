@@ -231,8 +231,8 @@
                                 <div class="text-muted font-size-sm">Kamar {{ $ri->bed->kamar->nomor_kamar ?? '-' }} / Bed {{ $ri->bed->nomor_bed ?? '-' }}</div>
                             </td>
                             <td class="text-muted">{{ $ri->dokter->nama ?? 'Belum tercatat' }}</td>
-                            <td>{{ $ri->tanggal_masuk ? $ri->tanggal_masuk->format('d M Y, H:i') : '-' }}</td>
-                            <td>{{ $ri->tanggal_keluar ? $ri->tanggal_keluar->format('d M Y, H:i') : '-' }}</td>
+                            <td>{{ $ri->tanggal_masuk ? $ri->tanggal_masuk->format('d M Y') : '-' }}</td>
+                            <td>{{ $ri->tanggal_keluar ? $ri->tanggal_keluar->format('d M Y') : '-' }}</td>
                             <td>
                                 @if ($ri->tanggal_keluar)
                                     {{ $ri->lamaRawatHari() }} hari
