@@ -13,6 +13,7 @@ class Pendapatan extends Model
         'kategori_pendapatan_id',
         'unit_kerja_id',
         'kunjungan_id',
+        'ds_dep',
         'tanggal',
         'jumlah',
         'keterangan',

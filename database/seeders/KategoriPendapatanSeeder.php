@@ -17,6 +17,7 @@ class KategoriPendapatanSeeder extends Seeder
             ['kode' => 'PDT-05', 'nama' => 'Pendapatan Farmasi'],
             ['kode' => 'PDT-06', 'nama' => 'Pendapatan Operasi'],
             ['kode' => 'PDT-07', 'nama' => 'Pendapatan Klaim BPJS'],
+            ['kode' => 'PDT-08', 'nama' => 'Pendapatan Gawat Darurat'],
         ];
 
         foreach ($kategori as $k) {
