@@ -107,6 +107,7 @@ class LayananIndikatorService
     {
         $jumlahBed = Bed::count();
         $jumlahHariPeriode = $awal->diffInDays($akhir) + 1;
+
         if ($jumlahBed === 0 || $jumlahHariPeriode === 0) {
             return 0;
         }
@@ -168,24 +169,6 @@ class LayananIndikatorService
         $jumlahPasienKeluar = RawatInap::whereBetween('tanggal_keluar', [$awal, $akhir])->count();
 
         return round($jumlahPasienKeluar / $jumlahBed, 2);
-    }
-
-    /**
-     * Rata-rata waktu tunggu pelayanan dalam menit (dari daftar sampai mulai dilayani).
-     */
-    public function waktuTungguRataRata(Carbon $awal, Carbon $akhir): float
-    {
-        $kunjungan = Kunjungan::whereBetween('waktu_daftar', [$awal, $akhir])
-            ->whereNotNull('waktu_dilayani')
-            ->get();
-
-        if ($kunjungan->isEmpty()) {
-            return 0;
-        }
-
-        $totalMenit = $kunjungan->sum(fn ($k) => $k->waktuTungguMenit() ?? 0);
-
-        return round($totalMenit / $kunjungan->count(), 1);
     }
 
     /**
@@ -262,40 +245,6 @@ class LayananIndikatorService
     }
 
     
-    /**
-     * Trend penyakit (diagnosa) terbanyak dalam periode — dipakai buat grafik/tabel trend penyakit.
-    */
-
-    public function trendPenyakit(Carbon $awal, Carbon $akhir, int $limit = 8)
-    {
-        return Kunjungan::whereBetween('waktu_daftar', [$awal, $akhir])
-        ->whereNotNull('diagnosa')
-        ->selectRaw('diagnosa, count(*) as total')
-        ->groupBy('diagnosa')
-        ->orderByDesc('total')
-        ->limit($limit)
-        ->get();
-    }
-
-        /**
-     * Trend jumlah kunjungan berdasarkan asal daerah pasien (Kabupaten/Kota Bogor).
-     */
-    public function trendDaerah(Carbon $awal, Carbon $akhir, int $limit = 10)
-    {
-        return Kunjungan::whereBetween('kunjungan.waktu_daftar', [$awal, $akhir])
-            ->join('pasien', 'kunjungan.pasien_id', '=', 'pasien.id')
-            ->join('wilayah_bogor', 'pasien.wilayah_bogor_id', '=', 'wilayah_bogor.id')
-            ->selectRaw('wilayah_bogor.nama_kecamatan, wilayah_bogor.kabupaten_kota, count(*) as total')
-            ->groupBy('wilayah_bogor.nama_kecamatan', 'wilayah_bogor.kabupaten_kota')
-            ->orderByDesc('total')
-            ->limit($limit)
-            ->get();
-    }
-
-        /**
-         * Ambil semua indikator sekaligus dalam 1 array — ini yang dipanggil dari Controller.
-         */
-    
         /**
      * Breakdown status kunjungan dalam periode: berapa yang selesai berobat vs batal.
      */
@@ -364,7 +313,6 @@ class LayananIndikatorService
             'alos' => $this->alos($awal, $akhir),
             'toi' => $this->toi($awal, $akhir),
             'bto' => $this->bto($awal, $akhir),
-            'waktu_tunggu_rata_rata' => $this->waktuTungguRataRata($awal, $akhir),
             'kunjungan_per_bulan' => $this->kunjunganPerBulan(3),
             'status_kunjungan' => $this->statusKunjungan($awal, $akhir),
             'trend_poliklinik_harian' => $this->trendPoliklinikHarian(5),

@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Bed;
 use App\Models\Division;
+use App\Models\Kamar;
 use App\Models\RawatInap;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\View\View;
@@ -16,18 +16,19 @@ class RawatInapController extends Controller
     {
         abort_unless($division->slug === 'layanan', 404);
 
-        $tanggalTerakhir = \App\Models\RawatInap::max('tanggal_masuk');
-        $defaultAkhir = $tanggalTerakhir ? \Illuminate\Support\Carbon::parse($tanggalTerakhir)->endOfDay() : now()->endOfDay();
-        $defaultAwal = $defaultAkhir->copy()->subDays(29)->startOfDay();
-
-        $awal = $request->filled('awal') ? \Illuminate\Support\Carbon::parse($request->query('awal'))->startOfDay() : $defaultAwal;
-        $akhir = $request->filled('akhir') ? \Illuminate\Support\Carbon::parse($request->query('akhir'))->endOfDay() : $defaultAkhir;
-
         $cari = $request->query('cari');
         $status = $request->query('status');
         $bangsal = $request->query('bangsal');
 
-        $rawatInap = RawatInap::with(['kunjungan.pasien', 'bed.kamar', 'dokter'])
+        $tanggalTerakhir = RawatInap::max('tanggal_masuk');
+        $defaultAkhir = $tanggalTerakhir ? Carbon::parse($tanggalTerakhir)->endOfDay() : now()->endOfDay();
+        $defaultAwal = $defaultAkhir->copy()->subDays(29)->startOfDay();
+
+        $awal = $request->filled('awal') ? Carbon::parse($request->query('awal'))->startOfDay() : $defaultAwal;
+        $akhir = $request->filled('akhir') ? Carbon::parse($request->query('akhir'))->endOfDay() : $defaultAkhir;
+
+        $rawatInap = RawatInap::with(['kunjungan.pasien.jenisPembayaran', 'bed.kamar'])
+            ->whereBetween('tanggal_masuk', [$awal, $akhir])
             ->when($cari, function ($query, $cari) {
                 $query->whereHas('kunjungan', function ($qk) use ($cari) {
                     $qk->where('no_kunjungan', 'like', "%{$cari}%")
@@ -43,50 +44,16 @@ class RawatInapController extends Controller
             ->withQueryString();
 
         $ringkasan = [
-            'sedang_dirawat' => RawatInap::whereNull('tanggal_keluar')->count(),
+            'sedang_dirawat' => RawatInap::where('tanggal_masuk', '<=', $akhir)
+                ->where(fn ($q) => $q->whereNull('tanggal_keluar')->orWhere('tanggal_keluar', '>', $akhir))
+                ->count(),
             'bed_terisi' => Bed::where('status', 'terisi')->count(),
             'bed_tersedia' => Bed::where('status', 'tersedia')->count(),
             'total_bed' => Bed::count(),
         ];
 
-        $daftarBangsal = \App\Models\Kamar::select('nama_bangsal')->distinct()->orderBy('nama_bangsal')->pluck('nama_bangsal');
+        $daftarBangsal = Kamar::select('nama_bangsal')->distinct()->orderBy('nama_bangsal')->pluck('nama_bangsal');
 
-        return view('divisi.layanan.rawat-inap', [
-            'division' => $division,
-            'rawatInap' => $rawatInap,
-            'ringkasan' => $ringkasan,
-            'daftarBangsal' => $daftarBangsal,
-            'cari' => $cari,
-            'status' => $status,
-            'bangsal' => $bangsal,
-            'awal' => $awal,
-            'akhir' => $akhir,
-        ]);
-    }
-
-    public function exportPdf(Request $request, Division $division)
-    {
-        abort_unless($division->slug === 'layanan', 404);
-
-        $awal = Carbon::parse($request->query('awal', now()->subDays(30)))->startOfDay();
-        $akhir = Carbon::parse($request->query('akhir', now()))->endOfDay();
-        $bangsal = $request->query('bangsal');
-
-        $rawatInap = RawatInap::with(['kunjungan.pasien', 'bed.kamar', 'dokter'])
-            ->whereBetween('tanggal_masuk', [$awal, $akhir])
-            ->when($bangsal, function ($query, $bangsal) {
-                $query->whereHas('bed.kamar', fn ($q) => $q->where('nama_bangsal', $bangsal));
-            })
-            ->orderBy('tanggal_masuk')
-            ->get();
-
-        $pdf = Pdf::loadView('pdf.layanan.rawat-inap', [
-            'rawatInap' => $rawatInap,
-            'awal' => $awal,
-            'akhir' => $akhir,
-            'bangsal' => $bangsal,
-        ])->setPaper('a4', 'landscape');
-
-        return $pdf->stream('rawat-inap-' . $awal->format('Ymd') . '-' . $akhir->format('Ymd') . '.pdf');
+        return view('divisi.layanan.rawat-inap', compact('division', 'rawatInap', 'ringkasan', 'daftarBangsal', 'cari', 'status', 'bangsal', 'awal', 'akhir'));
     }
 }
