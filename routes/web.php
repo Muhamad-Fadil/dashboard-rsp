@@ -120,6 +120,10 @@ Route::middleware('auth')->group(function () {
         ->name('divisi.sdm.komposisi')
         ->middleware(['role:direktur,manajer,operator', 'division.access']);
 
+    Route::get('/divisi/{division:slug}/pdf', [DivisiController::class, 'exportSdmPdf'])
+        ->name('divisi.sdm.dashboard.pdf')
+        ->middleware(['role:direktur,manajer,operator', 'division.access']);
+
     Route::get('/divisi/{division:slug}/data-pegawai', [DataPegawaiController::class, 'index'])
         ->name('divisi.sdm.data-pegawai')
         ->middleware(['role:direktur,manajer,operator', 'division.access']);
@@ -164,7 +168,7 @@ Route::middleware('auth')->group(function () {
         ->name('divisi.sdm.produktivitas')
         ->middleware(['role:direktur,manajer,operator', 'division.access']);
 
-   // ---- Sub-menu Keuangan: Pendapatan, Pengeluaran, Cashflow ----
+    // ---- Sub-menu Keuangan: Pendapatan, Pengeluaran, Cashflow ----
 
     Route::get('/divisi/{division:slug}/pendapatan', [PendapatanController::class, 'index'])
         ->name('divisi.keuangan.pendapatan')

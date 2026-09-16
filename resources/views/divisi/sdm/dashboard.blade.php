@@ -45,6 +45,8 @@
         transform: translateY(-4px);
         box-shadow: 0 12px 28px rgba(0,0,0,.1);
     }
+    .stat-card-link { display: block; color: inherit; text-decoration: none; height: 100%; }
+    .stat-card-link:hover { color: inherit; text-decoration: none; }
     .stat-icon {
         width: 52px; height: 52px;
         border-radius: 50%;
@@ -129,25 +131,17 @@
 @section('content')
 <div class="container-fluid px-6 py-6">
     @include('partials.submenu-sdm')
-    {{-- Header + Filter --}}
+    {{-- Header --}}
     <div class="page-header d-flex justify-content-between align-items-center flex-wrap mb-6">
         <div>
             <h1 class="font-weight-bolder mb-1"><i class="fas fa-users mr-2"></i>Dashboard SDM</h1>
             <span class="text-muted-light font-weight-bold">Statistik kepegawaian & sumber daya manusia rumah sakit</span>
         </div>
+        <a href="{{ route('divisi.sdm.dashboard.pdf', ['division' => $division->slug]) }}"
+           target="_blank" class="btn btn-dark font-weight-bold">
+            <i class="fas fa-file-pdf mr-2"></i>Download PDF
+        </a>
     </div>
-
-    <form method="GET" class="filter-card d-flex align-items-end flex-wrap p-4 mb-6">
-        <div class="form-group mb-0 mr-4">
-            <label class="font-weight-bold mb-1 font-size-sm text-muted">Dari Tanggal</label>
-            <input type="date" name="awal" value="{{ $awal->format('Y-m-d') }}" class="form-control form-control-solid" style="width: 170px;">
-        </div>
-        <div class="form-group mb-0 mr-4">
-            <label class="font-weight-bold mb-1 font-size-sm text-muted">Sampai Tanggal</label>
-            <input type="date" name="akhir" value="{{ $akhir->format('Y-m-d') }}" class="form-control form-control-solid" style="width: 170px;">
-        </div>
-        <button type="submit" class="btn btn-primary font-weight-bold px-6"><i class="fas fa-filter mr-2"></i>Terapkan</button>
-    </form>
 
     {{-- Ringkasan: Jumlah Pegawai (hero) + Komposisi Tenaga + Status Kepegawaian --}}
     @php
@@ -232,44 +226,44 @@
     <div class="section-title"><i class="fas fa-id-badge"></i> Status Kepegawaian</div>
     <div class="row">
         <div class="col-lg-4 col-md-6 mb-4">
-            <div class="card stat-card" style="--accent:#8950FC;"><div class="card-body">
+            <a href="{{ route('divisi.sdm.data-pegawai', ['division' => $division->slug, 'status' => 'pns']) }}" class="stat-card-link" aria-label="Lihat data pegawai PNS"><div class="card stat-card" style="--accent:#8950FC;"><div class="card-body">
                 <div class="stat-icon" style="background:#F1E9FF; color:#8950FC;"><i class="fas fa-landmark"></i></div>
                 <div class="stat-value text-dark">{{ number_format($data['status_kepegawaian']['pns']) }}</div>
                 <div class="stat-label">PNS</div>
                 <div class="stat-sub">{{ $persen($data['status_kepegawaian']['pns']) }}% dari total pegawai</div>
-            </div></div>
+            </div></div></a>
         </div>
         <div class="col-lg-4 col-md-6 mb-4">
-            <div class="card stat-card" style="--accent:#6993FF;"><div class="card-body">
+            <a href="{{ route('divisi.sdm.data-pegawai', ['division' => $division->slug, 'status' => 'pppk']) }}" class="stat-card-link" aria-label="Lihat data pegawai PPPK"><div class="card stat-card" style="--accent:#6993FF;"><div class="card-body">
                 <div class="stat-icon" style="background:#EEF3FF; color:#6993FF;"><i class="fas fa-file-signature"></i></div>
                 <div class="stat-value text-dark">{{ number_format($data['status_kepegawaian']['pppk']) }}</div>
                 <div class="stat-label">PPPK</div>
                 <div class="stat-sub">{{ $persen($data['status_kepegawaian']['pppk']) }}% dari total pegawai</div>
-            </div></div>
+            </div></div></a>
         </div>
         <div class="col-lg-4 col-md-6 mb-4">
-            <div class="card stat-card" style="--accent:#F64E60;"><div class="card-body">
+            <a href="{{ route('divisi.sdm.data-pegawai', ['division' => $division->slug, 'status' => 'blu']) }}" class="stat-card-link" aria-label="Lihat data pegawai BLU"><div class="card stat-card" style="--accent:#F64E60;"><div class="card-body">
                 <div class="stat-icon" style="background:#FFE9EA; color:#F64E60;"><i class="fas fa-file-contract"></i></div>
                 <div class="stat-value text-dark">{{ number_format($data['status_kepegawaian']['blu']) }}</div>
                 <div class="stat-label">BLU</div>
                 <div class="stat-sub">{{ $persen($data['status_kepegawaian']['blu']) }}% dari total pegawai</div>
-            </div></div>
+            </div></div></a>
         </div>
         <div class="col-lg-4 col-md-6 mb-4">
-            <div class="card stat-card" style="--accent:#FF8A3D;"><div class="card-body">
+            <a href="{{ route('divisi.sdm.data-pegawai', ['division' => $division->slug, 'status' => 'mitra']) }}" class="stat-card-link" aria-label="Lihat data pegawai Mitra"><div class="card stat-card" style="--accent:#FF8A3D;"><div class="card-body">
                 <div class="stat-icon" style="background:#FFF0E6; color:#FF8A3D;"><i class="fas fa-handshake"></i></div>
                 <div class="stat-value text-dark">{{ number_format($data['status_kepegawaian']['mitra']) }}</div>
                 <div class="stat-label">Mitra</div>
                 <div class="stat-sub">{{ $persen($data['status_kepegawaian']['mitra']) }}% dari total pegawai</div>
-            </div></div>
+            </div></div></a>
         </div>
         <div class="col-lg-4 col-md-6 mb-4">
-            <div class="card stat-card" style="--accent:#7e8299;"><div class="card-body">
+            <a href="{{ route('divisi.sdm.data-pegawai', ['division' => $division->slug, 'status' => 'magang']) }}" class="stat-card-link" aria-label="Lihat data pegawai Magang"><div class="card stat-card" style="--accent:#7e8299;"><div class="card-body">
                 <div class="stat-icon" style="background:#F3F6F9; color:#7e8299;"><i class="fas fa-user-graduate"></i></div>
                 <div class="stat-value text-dark">{{ number_format($data['status_kepegawaian']['magang']) }}</div>
                 <div class="stat-label">Magang</div>
                 <div class="stat-sub">{{ $persen($data['status_kepegawaian']['magang']) }}% dari total pegawai</div>
-            </div></div>
+            </div></div></a>
         </div>
     </div>
 

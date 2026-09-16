@@ -13,6 +13,7 @@ use App\Models\Resep;
 use App\Services\KeuanganIndikatorService;
 use App\Services\LayananIndikatorService;
 use App\Services\SdmIndikatorService;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -38,6 +39,13 @@ class DivisiController extends Controller
             ? \Illuminate\Support\Carbon::parse($request->query('akhir'))
             : $defaultAkhir;
 
+        if ($awal->gt($akhir)) {
+            [$awal, $akhir] = [$akhir, $awal];
+        }
+
+        $awal = $awal->copy()->startOfDay();
+        $akhir = $akhir->copy()->endOfDay();
+
         $jumlahBulanChart = (int) $request->query('bulan_chart', 3);
 
         return match ($division->slug) {
@@ -58,17 +66,31 @@ class DivisiController extends Controller
         };
     }
 
+    public function exportSdmPdf(Request $request, Division $division)
+    {
+        abort_unless($division->slug === 'sdm', 404);
+
+        $awal = now()->startOfDay();
+        $akhir = now()->endOfDay();
+
+        $pdf = Pdf::loadView('pdf.sdm.dashboard', [
+            'data' => app(SdmIndikatorService::class)->ringkasan($awal, $akhir),
+        ])->setPaper('a4', 'portrait');
+
+        return $pdf->stream('ringkasan-sdm-' . now()->format('Ymd-His') . '.pdf');
+    }
+
     protected function tampilLayanan(Division $division, $awal, $akhir, int $jumlahBulanChart): View
     {
         // Operator nggak boleh lihat Ringkasan (data gabungan semua sub-menu) — arahkan ke sub-menunya sendiri
         if (auth()->user()->role === 'operator') {
             abort(403, 'Operator tidak memiliki akses ke halaman Ringkasan. Hubungi Manajer divisi Anda.');
         }
-        
+
         $service = app(LayananIndikatorService::class);
 
         $data = $service->ringkasan($awal, $akhir);
-        $data['kunjungan_per_bulan'] = $service->kunjunganPerBulan($jumlahBulanChart);
+        $data['kunjungan_per_bulan'] = $service->kunjunganPerBulan($jumlahBulanChart, $awal, $akhir);
 
         // ringkasan cepat dari tiap sub-menu, buat ditampilkan sebagai akses cepat di Ringkasan
         $ringkasanSubMenu = [

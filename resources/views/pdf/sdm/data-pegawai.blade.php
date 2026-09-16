@@ -6,6 +6,7 @@
 <table>
     <thead>
         <tr>
+            <th>No.</th>
             <th>Nama</th>
             <th>Status Pegawai</th>
             <th>NIP</th>
@@ -19,6 +20,7 @@
     <tbody>
         @forelse ($pegawai as $p)
         <tr>
+            <td>{{ $loop->iteration }}</td>
             <td>{{ $p->nama }}</td>
             <td>
                 @if ($p->status_pegawai)
@@ -47,7 +49,7 @@
             <td>{{ $p->unitKerja?->nama_unit ?? '-' }}</td>
         </tr>
         @empty
-        <tr><td colspan="8" style="text-align:center;">Tidak ada pegawai yang cocok</td></tr>
+        <tr><td colspan="9" style="text-align:center;">Tidak ada pegawai yang cocok</td></tr>
         @endforelse
     </tbody>
 </table>
@@ -55,6 +57,9 @@
     Total: {{ $pegawai->count() }} pegawai aktif
     @if ($cari)
         &middot; Kata kunci pencarian: "{{ $cari }}"
+    @endif
+    @if ($status)
+        &middot; Status: {{ strtoupper($status) }}
     @endif
 </p>
 @endsection

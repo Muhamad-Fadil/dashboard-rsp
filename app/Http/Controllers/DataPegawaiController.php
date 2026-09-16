@@ -15,11 +15,15 @@ class DataPegawaiController extends Controller
         abort_unless($division->slug === 'sdm', 404);
 
         $cari = $request->query('cari');
+        $status = $request->query('status');
+        $statusYangDidukung = ['pns', 'pppk', 'blu', 'mitra', 'magang'];
+        $status = in_array($status, $statusYangDidukung, true) ? $status : null;
 
         return view('divisi.sdm.data-pegawai', [
             'division' => $division,
-            'pegawai' => app(SdmIndikatorService::class)->daftarLengkapPegawai($cari),
+            'pegawai' => app(SdmIndikatorService::class)->daftarLengkapPegawai($cari, true, $status),
             'cari' => $cari,
+            'status' => $status,
         ]);
     }
 
@@ -33,12 +37,16 @@ class DataPegawaiController extends Controller
         abort_unless($division->slug === 'sdm', 404);
 
         $cari = $request->query('cari');
+        $status = $request->query('status');
+        $statusYangDidukung = ['pns', 'pppk', 'blu', 'mitra', 'magang'];
+        $status = in_array($status, $statusYangDidukung, true) ? $status : null;
 
-        $pegawai = app(SdmIndikatorService::class)->daftarLengkapPegawai($cari, false);
+        $pegawai = app(SdmIndikatorService::class)->daftarLengkapPegawai($cari, false, $status);
 
         $pdf = Pdf::loadView('pdf.sdm.data-pegawai', [
             'pegawai' => $pegawai,
             'cari' => $cari,
+            'status' => $status,
         ])->setPaper('a4', 'landscape');
 
         return $pdf->stream('data-pegawai-' . now()->format('Ymd-His') . '.pdf');

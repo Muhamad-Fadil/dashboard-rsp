@@ -60,7 +60,7 @@ class KeuanganIndikatorService
     public function belanjaPegawai(Carbon $awal, Carbon $akhir): float
     {
         return (float) Pengeluaran::whereBetween('tanggal', [$awal, $akhir])
-            ->whereHas('kategori', fn ($q) => $q->where('kode', 'PGL-01'))
+            ->whereHas('kategori', fn($q) => $q->where('kode', 'PGL-01'))
             ->sum('jumlah');
     }
 
@@ -70,17 +70,18 @@ class KeuanganIndikatorService
     public function belanjaOperasional(Carbon $awal, Carbon $akhir): float
     {
         return (float) Pengeluaran::whereBetween('tanggal', [$awal, $akhir])
-            ->whereHas('kategori', fn ($q) => $q->where('kode', 'PGL-03'))
+            ->whereHas('kategori', fn($q) => $q->where('kode', 'PGL-03'))
             ->sum('jumlah');
     }
 
     /**
      * Total anggaran (RKA) yang ditetapkan untuk tahun & bulan tertentu, dari seluruh kategori pengeluaran.
      */
-    public function totalAnggaran(int $tahun, int $bulan): float
+    public function totalAnggaran(Carbon $awal, Carbon $akhir): float
     {
-        return (float) Anggaran::where('tahun', $tahun)
-            ->where('bulan', $bulan)
+        return (float) Anggaran::whereBetween('tahun', [$awal->year, $akhir->year])
+            ->get()
+            ->filter(fn($anggaran) => $this->bulanDalamPeriode($anggaran->tahun, $anggaran->bulan, $awal, $akhir))
             ->sum('jumlah_anggaran');
     }
 
@@ -88,27 +89,33 @@ class KeuanganIndikatorService
      * Realisasi anggaran per kategori pengeluaran dalam periode (tahun+bulan tertentu).
      * Return: collection [ ['kategori' => ..., 'anggaran' => ..., 'realisasi' => ..., 'persentase' => ...], ... ]
      */
-    public function realisasiAnggaran(int $tahun, ?int $bulan = null)
+    public function realisasiAnggaran(Carbon $awal, Carbon $akhir)
     {
-        $query = Anggaran::where('tahun', $tahun)->with('kategori');
+        return Anggaran::whereBetween('tahun', [$awal->year, $akhir->year])
+            ->with('kategori')
+            ->get()
+            ->filter(fn($anggaran) => $this->bulanDalamPeriode($anggaran->tahun, $anggaran->bulan, $awal, $akhir))
+            ->map(function ($anggaran) {
+                $realisasi = (float) RealisasiAnggaran::where('anggaran_id', $anggaran->id)->sum('jumlah_realisasi');
+                $persentase = $anggaran->jumlah_anggaran > 0
+                    ? round(($realisasi / $anggaran->jumlah_anggaran) * 100, 1)
+                    : 0;
 
-        if ($bulan) {
-            $query->where('bulan', $bulan);
-        }
+                return [
+                    'kategori' => $anggaran->kategori->nama_kategori ?? '-',
+                    'anggaran' => (float) $anggaran->jumlah_anggaran,
+                    'realisasi' => $realisasi,
+                    'persentase' => $persentase,
+                ];
+            })
+            ->values();
+    }
 
-        return $query->get()->map(function ($anggaran) {
-            $realisasi = (float) RealisasiAnggaran::where('anggaran_id', $anggaran->id)->sum('jumlah_realisasi');
-            $persentase = $anggaran->jumlah_anggaran > 0
-                ? round(($realisasi / $anggaran->jumlah_anggaran) * 100, 1)
-                : 0;
+    protected function bulanDalamPeriode(int $tahun, int $bulan, Carbon $awal, Carbon $akhir): bool
+    {
+        $tanggal = Carbon::create($tahun, $bulan, 1);
 
-            return [
-                'kategori' => $anggaran->kategori->nama_kategori ?? '-',
-                'anggaran' => (float) $anggaran->jumlah_anggaran,
-                'realisasi' => $realisasi,
-                'persentase' => $persentase,
-            ];
-        });
+        return $tanggal->between($awal->copy()->startOfMonth(), $akhir->copy()->startOfMonth());
     }
 
     /**
@@ -118,16 +125,37 @@ class KeuanganIndikatorService
     {
         return (float) Piutang::whereIn('status', ['belum_lunas', 'sebagian'])
             ->get()
-            ->sum(fn ($p) => $p->sisaPiutang());
+            ->sum(fn($p) => $p->sisaPiutang());
     }
 
     /**
      * Tren pendapatan & belanja per bulan, untuk N bulan terakhir — dipakai buat grafik.
      * Return: collection [ ['bulan' => 'Januari 2026', 'pendapatan' => ..., 'belanja' => ...], ... ]
      */
-    public function trenBulanan(int $jumlahBulan = 6)
+    public function trenBulanan(int $jumlahBulan = 6, ?Carbon $awalPeriode = null, ?Carbon $akhirPeriode = null)
     {
         $hasil = collect();
+
+        if ($awalPeriode && $akhirPeriode) {
+            $bulanMulai = $awalPeriode->copy()->startOfMonth();
+            $bulanAkhir = $akhirPeriode->copy()->startOfMonth();
+            $bulan = $bulanMulai->copy();
+
+            while ($bulan->lte($bulanAkhir)) {
+                $awal = $bulan->copy()->startOfMonth()->max($awalPeriode);
+                $akhir = $bulan->copy()->endOfMonth()->min($akhirPeriode);
+
+                $hasil->push([
+                    'bulan' => $bulan->translatedFormat('F Y'),
+                    'pendapatan' => $this->totalPendapatan($awal, $akhir),
+                    'belanja' => $this->totalBelanja($awal, $akhir),
+                ]);
+
+                $bulan->addMonth();
+            }
+
+            return $hasil;
+        }
 
         for ($i = $jumlahBulan - 1; $i >= 0; $i--) {
             $bulanAcuan = now()->subMonths($i);
@@ -154,12 +182,12 @@ class KeuanganIndikatorService
             'pendapatan_per_kategori' => $this->pendapatanPerKategori($awal, $akhir),
             'pendapatan_per_unit' => $this->pendapatanPerUnit($awal, $akhir),
             'total_belanja' => $this->totalBelanja($awal, $akhir),
-            'total_anggaran' => $this->totalAnggaran($awal->year, $awal->month),
+            'total_anggaran' => $this->totalAnggaran($awal, $akhir),
             'belanja_pegawai' => $this->belanjaPegawai($awal, $akhir),
             'belanja_operasional' => $this->belanjaOperasional($awal, $akhir),
-            'realisasi_anggaran' => $this->realisasiAnggaran($awal->year, $awal->month),
+            'realisasi_anggaran' => $this->realisasiAnggaran($awal, $akhir),
             'total_piutang' => $this->totalPiutang(),
-            'tren_bulanan' => $this->trenBulanan(6),
+            'tren_bulanan' => $this->trenBulanan(6, $awal, $akhir),
         ];
     }
 }

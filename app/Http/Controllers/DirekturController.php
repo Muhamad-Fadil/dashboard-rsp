@@ -25,6 +25,13 @@ class DirekturController extends Controller
             ? Carbon::parse($request->query('akhir'))
             : now();
 
+        if ($awal->gt($akhir)) {
+            [$awal, $akhir] = [$akhir, $awal];
+        }
+
+        $awal = $awal->copy()->startOfDay();
+        $akhir = $akhir->copy()->endOfDay();
+
         $layanan = app(LayananIndikatorService::class);
         $sdm = app(SdmIndikatorService::class);
         $keuangan = app(KeuanganIndikatorService::class);

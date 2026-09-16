@@ -269,11 +269,11 @@
     <form method="GET" class="filter-card d-flex align-items-end flex-wrap p-4 mb-8">
         <div class="form-group mb-0 mr-4">
             <label class="font-weight-bold mb-1 font-size-sm text-muted">Dari Tanggal</label>
-            <input type="date" name="awal" value="2026-04-01" class="form-control form-control-solid" style="width: 170px;">
+            <input type="date" name="awal" value="{{ $awal->format('Y-m-d') }}" class="form-control form-control-solid" style="width: 170px;">
         </div>
         <div class="form-group mb-0 mr-4">
             <label class="font-weight-bold mb-1 font-size-sm text-muted">Sampai Tanggal</label>
-            <input type="date" name="akhir" value="2026-07-30" class="form-control form-control-solid" style="width: 170px;">
+            <input type="date" name="akhir" value="{{ $akhir->format('Y-m-d') }}" class="form-control form-control-solid" style="width: 170px;">
         </div>
         <button type="submit" class="btn btn-primary font-weight-bold px-6">Terapkan</button>
         <a href="{{ route('divisi.dashboard', $division->slug) }}" class="btn btn-light font-weight-bold px-6 ml-2">
@@ -402,7 +402,7 @@
                                 <h3 class="section-title font-size-h1 mb-0" id="judulGrafikKunjungan">Tren Kunjungan Bulanan</h3>
                             </div>
                             <div class="chart-head-tools">
-                                <span class="chart-chip"><i class="fas fa-calendar-alt mr-2"></i>Apr – Jun 2026</span>
+                                <span class="chart-chip"><i class="fas fa-calendar-alt mr-2"></i>{{ $awal->format('d M Y') }} – {{ $akhir->format('d M Y') }}</span>
                                 <button type="button" id="btnKembaliBulanan" class="btn btn-sm btn-light-primary font-weight-bold" style="display:none;">
                                     Kembali ke Bulanan
                                 </button>

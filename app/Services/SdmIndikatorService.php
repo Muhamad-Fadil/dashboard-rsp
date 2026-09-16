@@ -270,9 +270,13 @@ class SdmIndikatorService
     /**
      * Tabel 1: Data Pegawai ringkas. Dipakai di sub-menu "Data Pegawai".
      */
-    public function daftarLengkapPegawai(?string $cari = null, bool $paginate = true)
+    public function daftarLengkapPegawai(?string $cari = null, bool $paginate = true, ?string $status = null)
     {
         $query = Pegawai::where('aktif', true)->with(['unitKerja']);
+
+        if ($status) {
+            $query->where('status_kepegawaian', $status);
+        }
 
         if ($cari) {
             $query->where(function ($q) use ($cari) {

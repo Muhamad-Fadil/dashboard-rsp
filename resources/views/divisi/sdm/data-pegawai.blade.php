@@ -90,19 +90,26 @@
             <h1 class="font-weight-bolder mb-1"><i class="fas fa-id-card mr-2"></i>Data Pegawai</h1>
             <span class="text-muted-light font-weight-bold">Data induk kepegawaian lengkap, {{ $pegawai->total() }} pegawai aktif</span>
         </div>
-        <a href="{{ route('divisi.sdm.data-pegawai.pdf', array_filter(['division' => $division->slug, 'cari' => $cari])) }}"
+        <a href="{{ route('divisi.sdm.data-pegawai.pdf', array_filter(['division' => $division->slug, 'cari' => $cari, 'status' => $status])) }}"
            target="_blank" class="btn btn-dark font-weight-bold">
-            Download PDF
+            <i class="fas fa-file-pdf mr-2"></i>Download PDF
         </a>
     </div>
 
     <form method="GET" class="filter-card d-flex align-items-end flex-wrap p-4 mb-6">
         <div class="form-group mb-0 mr-3">
-            <label class="font-weight-bold mb-1 font-size-sm text-muted">Cari Nama/NIP/NIK</label>
+            <label class="font-weight-bold mb-1 font-size-sm text-muted">Cari Nama/NIP</label>
             <input type="text" name="cari" value="{{ $cari }}" placeholder="Cari..." class="form-control form-control-solid" style="width: 250px;">
         </div>
+        @if ($status)
+            <input type="hidden" name="status" value="{{ $status }}">
+            <div class="form-group mb-0 mr-3">
+                <label class="font-weight-bold mb-1 font-size-sm text-muted">Status Kepegawaian</label>
+                <div class="form-control form-control-solid" style="width: 140px;">{{ strtoupper($status) }}</div>
+            </div>
+        @endif
         <button type="submit" class="btn btn-primary font-weight-bold px-6"><i class="fas fa-search mr-2"></i>Cari</button>
-        @if ($cari)
+        @if ($cari || $status)
             <a href="{{ route('divisi.sdm.data-pegawai', $division->slug) }}" class="ml-3 text-muted font-weight-bold">Reset</a>
         @endif
     </form>
@@ -120,6 +127,7 @@
                 <table class="table table-modern">
                     <thead>
                         <tr>
+                            <th>No.</th>
                             <th>Nama</th>
                             <th>Status Pegawai</th>
                             <th>NIP</th>
@@ -133,6 +141,7 @@
                     <tbody>
                         @forelse ($pegawai as $p)
                         <tr>
+                            <td>{{ $pegawai->firstItem() + $loop->index }}</td>
                             <td class="font-weight-bold text-dark">{{ $p->nama }}</td>
                             <td>
                                 @if ($p->status_pegawai)
@@ -165,7 +174,7 @@
                             <td>{{ $p->unitKerja?->nama_unit ?? '-' }}</td>
                         </tr>
                         @empty
-                        <tr><td colspan="8" class="text-center text-muted py-6">Tidak ada pegawai yang cocok dengan pencarian</td></tr>
+                        <tr><td colspan="9" class="text-center text-muted py-6">Tidak ada pegawai yang cocok dengan pencarian</td></tr>
                         @endforelse
                     </tbody>
                 </table>
