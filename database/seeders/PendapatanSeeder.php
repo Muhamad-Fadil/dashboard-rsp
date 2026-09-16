@@ -89,15 +89,16 @@ class PendapatanSeeder extends Seeder
 
             $batch[] = [
                  'kategori_pendapatan_id' => $kategoriPendapatanId,
-                 'unit_kerja_id' => $unitKerjaId,
+                'unit_kerja_id' => $unitKerjaId,
                 'kunjungan_id' => null,
                 'ds_dep' => $dsDep,
-                 'tanggal' => $tglReg,
-                  'jumlah' => $totalBill,
-                    'keterangan' => "Pendapatan {$labelJenis} - {$dsDep} ({$dsPastipe}) - No. Reg: {$noReg}",
-                    'user_id' => $operatorId,
-                    'created_at' => $now,
-                    'updated_at' => $now,
+                'jenis_pembayaran' => $dsPastipe,
+                'tanggal' => $tglReg,
+                'jumlah' => $totalBill,
+                'keterangan' => "Pendapatan {$labelJenis} - {$dsDep} ({$dsPastipe}) - No. Reg: {$noReg}",
+                'user_id' => $operatorId,
+                'created_at' => $now,
+                'updated_at' => $now,
             ];
 
             if (count($batch) >= $batchSize) {
