@@ -10,23 +10,44 @@ class KlaimBpjsController extends Controller
 {
     public function index(Request $request, Division $division)
     {
+        // kalau user belum pilih tanggal sendiri, otomatis pakai rentang tanggal
+        // data klaim BPJS yang benar-benar ada (bukan "bulan ini"), supaya tidak
+        // kelihatan kosong padahal datanya ada tapi di luar rentang tanggal default.
+        $rentangData = KlaimBpjs::selectRaw('min(tanggal_pengajuan) as awal, max(tanggal_pengajuan) as akhir')->first();
+
         $awal = $request->filled('awal')
             ? $request->awal
-            : now()->startOfMonth()->toDateString();
+            : ($rentangData?->awal ?? now()->startOfMonth()->toDateString());
 
         $akhir = $request->filled('akhir')
             ? $request->akhir
-            : now()->toDateString();
+            : ($rentangData?->akhir ?? now()->toDateString());
 
-        $klaim = KlaimBpjs::with(['pasien', 'kunjungan'])
-            ->whereBetween('tanggal_pengajuan', [$awal, $akhir])
+        $cari = trim((string) $request->query('cari', ''));
+
+        $queryDasar = KlaimBpjs::whereBetween('tanggal_pengajuan', [$awal, $akhir]);
+
+        // pencarian bebas: cocok di jenis BPJS, no. SEP, no. registrasi, status, atau keterangan
+        if ($cari !== '') {
+            $queryDasar->where(function ($q) use ($cari) {
+                $q->where('jenis_bpjs', 'like', "%{$cari}%")
+                    ->orWhere('no_sep', 'like', "%{$cari}%")
+                    ->orWhere('no_reg', 'like', "%{$cari}%")
+                    ->orWhere('status', 'like', "%{$cari}%")
+                    ->orWhere('keterangan', 'like', "%{$cari}%")
+                    ->orWhereHas('pasien', fn ($qp) => $qp->where('nama', 'like', "%{$cari}%"));
+            });
+        }
+
+        $totalKlaim = (clone $queryDasar)->sum('jumlah_klaim');
+        $totalDisetujui = (clone $queryDasar)->sum('jumlah_disetujui');
+        $jumlahPengajuan = (clone $queryDasar)->count();
+
+        $klaim = (clone $queryDasar)
+            ->with(['pasien', 'kunjungan'])
             ->latest('tanggal_pengajuan')
-            ->get();
-
-        $totalKlaim = $klaim->sum('jumlah_klaim');
-        $totalDisetujui = $klaim->sum('jumlah_disetujui');
-
-        $jumlahPengajuan = $klaim->count();
+            ->paginate(25)
+            ->withQueryString();
 
         return view('divisi.keuangan.klaim-bpjs', compact(
             'division',
@@ -35,7 +56,8 @@ class KlaimBpjsController extends Controller
             'totalDisetujui',
             'jumlahPengajuan',
             'awal',
-            'akhir'
+            'akhir',
+            'cari'
         ));
     }
 }

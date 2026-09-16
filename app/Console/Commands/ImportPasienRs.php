@@ -293,11 +293,6 @@ class ImportPasienRs extends Command
             }
         }
 
-        if (! $bedId) {
-            // fallback: kalau bangsal tidak kecocokan, pakai bed manapun (biar tidak gagal import)
-            $bedId = Bed::inRandomOrder()->value('id');
-        }
-
         RawatInap::create([
             'kunjungan_id' => $kunjungan->id,
             'bed_id' => $bedId,

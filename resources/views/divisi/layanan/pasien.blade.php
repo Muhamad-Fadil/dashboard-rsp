@@ -322,7 +322,6 @@
                                             <th>No. Kunjungan</th>
                                             <th>Jenis</th>
                                             <th>Poli / Ruang</th>
-                                            <th>Dokter</th>
                                             <th>Tanggal</th>
                                             <th>Status</th>
                                         </tr>
@@ -350,7 +349,6 @@
                                                     {{ $k->poli?->nama_poli ?? '-' }}
                                                 @endif
                                             </td>
-                                            <td>{{ $k->dokter->nama ?? '-' }}</td>
                                             <td>{{ optional($k->waktu_daftar)->format('d M Y') ?? '-' }}</td>
                                             <td>{{ ucfirst($k->status ?? '-') }}</td>
                                         </tr>

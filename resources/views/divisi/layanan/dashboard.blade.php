@@ -376,17 +376,6 @@
                     <div class="summary-meta">tersedia / total</div>
                 </div>
             </div>
-
-            <div class="col-xl-3 col-md-6 mb-4">
-                <div class="summary-card">
-                    <div class="summary-label">
-                        <span>Waktu Tunggu</span>
-                        <span class="badge badge-primary">Rata-rata</span>
-                    </div>
-                    <div class="summary-value">{{ $data['waktu_tunggu_rata_rata'] }}</div>
-                    <div class="summary-meta">Menit per kunjungan</div>
-                </div>
-            </div>
         </div>
     </div>
 

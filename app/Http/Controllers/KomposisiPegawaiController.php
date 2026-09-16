@@ -15,9 +15,15 @@ class KomposisiPegawaiController extends Controller
 
         $service = app(SdmIndikatorService::class);
 
+        $kelompok = $request->query('kelompok');
+        $cari = $request->query('cari');
+
         return view('divisi.sdm.komposisi', [
             'division' => $division,
             'komposisi' => $service->komposisiSdm(),
+            'pegawai' => $service->daftarPegawai($kelompok, $cari),
+            'kelompokFilter' => $kelompok,
+            'cari' => $cari,
         ]);
     }
 }

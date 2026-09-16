@@ -30,7 +30,7 @@ class LayananIndikatorService
             ->groupBy('poli_id')
             ->with('poli:id,nama_poli')
             ->get()
-            ->map(fn($row) => [
+            ->map(fn ($row) => [
                 'nama_poli' => $row->poli->nama_poli ?? '-',
                 'total' => $row->total,
             ]);
@@ -107,6 +107,7 @@ class LayananIndikatorService
     {
         $jumlahBed = Bed::count();
         $jumlahHariPeriode = $awal->diffInDays($akhir) + 1;
+
         if ($jumlahBed === 0 || $jumlahHariPeriode === 0) {
             return 0;
         }
@@ -128,7 +129,7 @@ class LayananIndikatorService
             return 0;
         }
 
-        $totalLamaRawat = $pasienKeluar->sum(fn($ri) => $ri->lamaRawatHari() ?? 0);
+        $totalLamaRawat = $pasienKeluar->sum(fn ($ri) => $ri->lamaRawatHari() ?? 0);
 
         return round($totalLamaRawat / $pasienKeluar->count(), 2);
     }
@@ -171,31 +172,13 @@ class LayananIndikatorService
     }
 
     /**
-     * Rata-rata waktu tunggu pelayanan dalam menit (dari daftar sampai mulai dilayani).
-     */
-    public function waktuTungguRataRata(Carbon $awal, Carbon $akhir): float
-    {
-        $kunjungan = Kunjungan::whereBetween('waktu_daftar', [$awal, $akhir])
-            ->whereNotNull('waktu_dilayani')
-            ->get();
-
-        if ($kunjungan->isEmpty()) {
-            return 0;
-        }
-
-        $totalMenit = $kunjungan->sum(fn($k) => $k->waktuTungguMenit() ?? 0);
-
-        return round($totalMenit / $kunjungan->count(), 1);
-    }
-
-    /**
      * Tren jumlah kunjungan per bulan yang benar-benar ada di database,
      * melalui tanggal minimum dan maksimum kunjungan.
      */
-    public function kunjunganPerBulan(int $jumlahBulan = 3, ?Carbon $awalPeriode = null, ?Carbon $akhirPeriode = null)
+    public function kunjunganPerBulan(int $jumlahBulan = 3)
     {
-        $minTanggal = $awalPeriode?->copy()->startOfMonth() ?? $this->tanggalKunjunganPertama();
-        $maxTanggal = $akhirPeriode?->copy()->startOfMonth() ?? $this->tanggalKunjunganTerakhir();
+        $minTanggal = Kunjungan::min('waktu_daftar');
+        $maxTanggal = Kunjungan::max('waktu_daftar');
 
         if ($minTanggal && $maxTanggal) {
             $bulanMulai = Carbon::parse($minTanggal)->startOfMonth();
@@ -207,13 +190,6 @@ class LayananIndikatorService
             while ($bulan->lte($bulanAkhir)) {
                 $awal = $bulan->copy()->startOfMonth();
                 $akhir = $bulan->copy()->endOfMonth();
-
-                if ($awalPeriode) {
-                    $awal = $awal->max($awalPeriode);
-                }
-                if ($akhirPeriode) {
-                    $akhir = $akhir->min($akhirPeriode);
-                }
 
                 $hasil->push([
                     'bulan' => $bulan->translatedFormat('F Y'),
@@ -246,20 +222,6 @@ class LayananIndikatorService
         return $hasil;
     }
 
-    protected function tanggalKunjunganPertama(): ?Carbon
-    {
-        $tanggal = Kunjungan::min('waktu_daftar');
-
-        return $tanggal ? Carbon::parse($tanggal) : null;
-    }
-
-    protected function tanggalKunjunganTerakhir(): ?Carbon
-    {
-        $tanggal = Kunjungan::max('waktu_daftar');
-
-        return $tanggal ? Carbon::parse($tanggal) : null;
-    }
-
     /**
      * Rincian jumlah kunjungan per hari, untuk 1 bulan tertentu — dipakai saat drill-down grafik.
      */
@@ -282,42 +244,8 @@ class LayananIndikatorService
         return $hasil;
     }
 
-
-    /**
-     * Trend penyakit (diagnosa) terbanyak dalam periode — dipakai buat grafik/tabel trend penyakit.
-     */
-
-    public function trendPenyakit(Carbon $awal, Carbon $akhir, int $limit = 8)
-    {
-        return Kunjungan::whereBetween('waktu_daftar', [$awal, $akhir])
-            ->whereNotNull('diagnosa')
-            ->selectRaw('diagnosa, count(*) as total')
-            ->groupBy('diagnosa')
-            ->orderByDesc('total')
-            ->limit($limit)
-            ->get();
-    }
-
-    /**
-     * Trend jumlah kunjungan berdasarkan asal daerah pasien (Kabupaten/Kota Bogor).
-     */
-    public function trendDaerah(Carbon $awal, Carbon $akhir, int $limit = 10)
-    {
-        return Kunjungan::whereBetween('kunjungan.waktu_daftar', [$awal, $akhir])
-            ->join('pasien', 'kunjungan.pasien_id', '=', 'pasien.id')
-            ->join('wilayah_bogor', 'pasien.wilayah_bogor_id', '=', 'wilayah_bogor.id')
-            ->selectRaw('wilayah_bogor.nama_kecamatan, wilayah_bogor.kabupaten_kota, count(*) as total')
-            ->groupBy('wilayah_bogor.nama_kecamatan', 'wilayah_bogor.kabupaten_kota')
-            ->orderByDesc('total')
-            ->limit($limit)
-            ->get();
-    }
-
-    /**
-     * Ambil semua indikator sekaligus dalam 1 array — ini yang dipanggil dari Controller.
-     */
-
-    /**
+    
+        /**
      * Breakdown status kunjungan dalam periode: berapa yang selesai berobat vs batal.
      */
     public function statusKunjungan(Carbon $awal, Carbon $akhir): array
@@ -372,8 +300,8 @@ class LayananIndikatorService
             'labels' => $labelTanggal,
             'series' => $dataPerPoli,
         ];
-    }
-
+    }    
+        
     public function ringkasan(Carbon $awal, Carbon $akhir): array
     {
         return [
@@ -385,7 +313,6 @@ class LayananIndikatorService
             'alos' => $this->alos($awal, $akhir),
             'toi' => $this->toi($awal, $akhir),
             'bto' => $this->bto($awal, $akhir),
-            'waktu_tunggu_rata_rata' => $this->waktuTungguRataRata($awal, $akhir),
             'kunjungan_per_bulan' => $this->kunjunganPerBulan(3),
             'status_kunjungan' => $this->statusKunjungan($awal, $akhir),
             'trend_poliklinik_harian' => $this->trendPoliklinikHarian(5),

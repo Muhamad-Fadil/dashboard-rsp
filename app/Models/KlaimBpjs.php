@@ -12,6 +12,8 @@ class KlaimBpjs extends Model
     protected $fillable = [
         'pasien_id',
         'kunjungan_id',
+        'no_reg',
+        'jenis_bpjs',
         'no_sep',
         'jumlah_klaim',
         'jumlah_disetujui',

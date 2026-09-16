@@ -143,7 +143,7 @@
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card stat-card"><div class="card-body">
                 <div class="stat-value" style="color:#F64E60;">{{ $ringkasan['sedang_dirawat'] }}</div>
-                <div class="stat-label">Sedang Dirawat Saat Ini</div>
+                <div class="stat-label">Sedang Dirawat</div>
             </div></div>
         </div>
         <div class="col-xl-3 col-md-6 mb-4">
@@ -181,7 +181,7 @@
                     <label class="font-weight-bold mb-1 font-size-sm text-muted">Sampai Tanggal</label>
                     <input type="date" name="akhir" value="{{ $akhir->format('Y-m-d') }}" class="form-control form-control-solid" style="width: 160px;">
                 </div>
-                <div class="form-group mb-0 mr-4">
+                <div class="form-group mb-0">
                     <label class="font-weight-bold mb-1 font-size-sm text-muted">Bangsal</label>
                     <select name="bangsal" class="form-control form-control-solid" style="width: 170px;">
                         <option value="">Semua Bangsal</option>
@@ -211,7 +211,6 @@
                             <th>Pasien</th>
                             <th>No. Kunjungan</th>
                             <th>Bangsal / Kamar / Bed</th>
-                            <th>Dokter</th>
                             <th>Tgl Masuk</th>
                             <th>Tgl Keluar</th>
                             <th>Lama Rawat</th>
@@ -227,10 +226,13 @@
                             </td>
                             <td>{{ $ri->kunjungan->no_kunjungan ?? '-' }}</td>
                             <td>
-                                <div class="font-weight-bold text-dark">{{ $ri->bed->kamar->nama_bangsal ?? '-' }}</div>
-                                <div class="text-muted font-size-sm">Kamar {{ $ri->bed->kamar->nomor_kamar ?? '-' }} / Bed {{ $ri->bed->nomor_bed ?? '-' }}</div>
+                                @if ($ri->bed)
+                                    <div class="font-weight-bold text-dark">{{ $ri->bed->kamar->nama_bangsal ?? '-' }}</div>
+                                    <div class="text-muted font-size-sm">Kamar {{ $ri->bed->kamar->nomor_kamar ?? '-' }} / Bed {{ $ri->bed->nomor_bed ?? '-' }}</div>
+                                @else
+                                    <span class="text-muted">Belum tercatat</span>
+                                @endif
                             </td>
-                            <td class="text-muted">{{ $ri->dokter->nama ?? 'Belum tercatat' }}</td>
                             <td>{{ $ri->tanggal_masuk ? $ri->tanggal_masuk->format('d M Y') : '-' }}</td>
                             <td>{{ $ri->tanggal_keluar ? $ri->tanggal_keluar->format('d M Y') : '-' }}</td>
                             <td>

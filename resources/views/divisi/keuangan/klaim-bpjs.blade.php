@@ -106,6 +106,12 @@
         text-transform: uppercase;
     }
 
+    .empty-state {
+        padding: 58px 20px;
+        text-align: center;
+        color: #7e8299;
+    }
+
     .table-modern thead th {
         border: none;
         color: #a1a5b7;
@@ -121,26 +127,6 @@
 
     .table-modern tbody tr:hover {
         background: #f9f9fb;
-    }
-
-    .status-badge {
-        display: inline-block;
-        border-radius: 8px;
-        font-size: 11px;
-        font-weight: 700;
-        padding: 7px 10px;
-        text-transform: capitalize;
-    }
-
-    .status-approved { background: #d1fae5; color: #047857; }
-    .status-pending { background: #fef3c7; color: #b45309; }
-    .status-rejected { background: #fee2e2; color: #b91c1c; }
-    .status-default { background: #eef2f7; color: #64748b; }
-
-    .empty-state {
-        padding: 58px 20px;
-        text-align: center;
-        color: #7e8299;
     }
 
     @media (max-width: 767.98px) {
@@ -159,16 +145,18 @@
     @include('partials.submenu-keuangan')
 
     @php
-        $persentaseDisetujui = $totalKlaim > 0 ? ($totalDisetujui / $totalKlaim) * 100 : 0;
+        $tingkatPersetujuan = $totalKlaim > 0 ? ($totalDisetujui / $totalKlaim) * 100 : 0;
     @endphp
 
     {{-- Header --}}
     <div class="page-header d-flex justify-content-between align-items-center flex-wrap mb-6">
+
         <div class="position-relative" style="z-index: 1;">
             <div class="text-uppercase font-size-sm font-weight-bold mb-2" style="letter-spacing: 1px; color: #99f6e4;">
                 Ringkasan keuangan
             </div>
             <h1 class="font-weight-bolder mb-2">Klaim BPJS</h1>
+
             <span class="text-muted-light font-weight-bold">
                 Ikhtisar pengajuan dan persetujuan klaim BPJS rumah sakit
             </span>
@@ -189,7 +177,7 @@
 
         <div class="w-100 mb-3">
             <div class="section-kicker">Periode laporan</div>
-            <div class="summary-note">Atur rentang tanggal untuk memperbarui ringkasan klaim BPJS.</div>
+            <div class="summary-note">Atur rentang tanggal untuk memperbarui ringkasan klaim.</div>
         </div>
 
         <div class="form-group mb-0 mr-4">
@@ -221,6 +209,7 @@
         <button
             type="submit"
             class="btn btn-primary font-weight-bold px-6">
+            <i class="fas fa-filter mr-2"></i>
             Terapkan
         </button>
 
@@ -232,17 +221,17 @@
         <div class="col-xl-3 col-md-6 mb-4">
 
             <div class="card stat-card">
+
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start mb-4">
-                        <div class="summary-icon" style="background: #dbeafe; color: #2563eb;"><i class="fas fa-file-medical"></i></div>
+                        <div class="summary-icon" style="background: #ccfbf1; color: #0f766e;"><i class="fas fa-file-invoice-dollar"></i></div>
                         <span class="summary-caption">Pengajuan</span>
                     </div>
-                    <div class="stat-value text-dark">
-                        Rp {{ number_format($totalKlaim, 0, ',', '.') }}
-                    </div>
+                    <div class="stat-value text-dark">Rp {{ number_format($totalKlaim, 0, ',', '.') }}</div>
                     <div class="stat-label">Total pengajuan klaim</div>
                     <div class="summary-note mt-3"><i class="fas fa-calendar-alt mr-1"></i>{{ $awal }} s/d {{ $akhir }}</div>
                 </div>
+
             </div>
 
         </div>
@@ -253,14 +242,12 @@
 
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start mb-4">
-                        <div class="summary-icon" style="background: #d1fae5; color: #047857;"><i class="fas fa-check-circle"></i></div>
+                        <div class="summary-icon" style="background: #dcfce7; color: #15803d;"><i class="fas fa-check-circle"></i></div>
                         <span class="summary-caption">Disetujui</span>
                     </div>
-                    <div class="stat-value text-dark">
-                        Rp {{ number_format($totalDisetujui, 0, ',', '.') }}
-                    </div>
+                    <div class="stat-value text-dark">Rp {{ number_format($totalDisetujui, 0, ',', '.') }}</div>
                     <div class="stat-label">Total klaim disetujui</div>
-                    <div class="summary-note mt-3">Nilai klaim yang diterima</div>
+                    <div class="summary-note mt-3">Nilai yang telah disetujui</div>
                 </div>
 
             </div>
@@ -273,14 +260,12 @@
 
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start mb-4">
-                        <div class="summary-icon" style="background: #fef3c7; color: #b45309;"><i class="fas fa-receipt"></i></div>
+                        <div class="summary-icon" style="background: #dbeafe; color: #2563eb;"><i class="fas fa-receipt"></i></div>
                         <span class="summary-caption">Aktivitas</span>
                     </div>
-                    <div class="stat-value text-dark">
-                        {{ number_format($jumlahPengajuan, 0, ',', '.') }}
-                    </div>
+                    <div class="stat-value text-dark">{{ number_format($jumlahPengajuan, 0, ',', '.') }}</div>
                     <div class="stat-label">Jumlah pengajuan</div>
-                    <div class="summary-note mt-3">Total berkas klaim</div>
+                    <div class="summary-note mt-3">Pada periode yang dipilih</div>
                 </div>
 
             </div>
@@ -291,11 +276,11 @@
             <div class="card stat-card">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start mb-4">
-                        <div class="summary-icon" style="background: #fce7f3; color: #be185d;"><i class="fas fa-percentage"></i></div>
+                        <div class="summary-icon" style="background: #fef3c7; color: #b45309;"><i class="fas fa-chart-line"></i></div>
                         <span class="summary-caption">Rasio</span>
                     </div>
-                    <div class="stat-value text-dark">{{ number_format($persentaseDisetujui, 1, ',', '.') }}%</div>
-                    <div class="stat-label">Persetujuan klaim</div>
+                    <div class="stat-value text-dark">{{ number_format($tingkatPersetujuan, 1, ',', '.') }}%</div>
+                    <div class="stat-label">Tingkat persetujuan</div>
                     <div class="summary-note mt-3">Dari total nilai pengajuan</div>
                 </div>
             </div>
@@ -311,20 +296,41 @@
             <div class="d-flex justify-content-between align-items-center flex-wrap mb-4">
                 <div>
                     <div class="section-kicker mb-1">Rincian pengajuan</div>
-                    <h3 class="font-weight-bolder text-dark mb-0">Transaksi Klaim BPJS</h3>
+                    <h3 class="font-weight-bolder text-dark mb-0">Data Klaim BPJS</h3>
                 </div>
                 <span class="badge badge-light-primary px-3 py-2 mt-2 mt-md-0">
                     {{ number_format($jumlahPengajuan, 0, ',', '.') }} pengajuan
                 </span>
             </div>
 
-            @if ($klaim->isEmpty())
-                <div class="empty-state">
-                    <div class="mb-3"><i class="fas fa-file-medical fa-3x text-muted"></i></div>
-                    <strong>Belum ada klaim BPJS pada periode ini.</strong>
-                    <div class="mt-2">Coba pilih rentang tanggal yang berbeda untuk melihat data klaim.</div>
-                </div>
-            @else
+            <form method="GET" class="d-flex flex-wrap align-items-center mb-4" style="gap: 10px;">
+
+                <input type="hidden" name="awal" value="{{ $awal }}">
+                <input type="hidden" name="akhir" value="{{ $akhir }}">
+
+                <input
+                    type="text"
+                    name="cari"
+                    value="{{ $cari ?? '' }}"
+                    placeholder="Cari jenis BPJS, no. SEP, no. registrasi, status, atau pasien..."
+                    class="form-control form-control-solid"
+                    style="max-width: 420px;">
+
+                <button type="submit" class="btn btn-primary font-weight-bold px-5">
+                    <i class="fas fa-search mr-2"></i>Cari
+                </button>
+
+                @if (! empty($cari))
+                    <a
+                        href="{{ route('divisi.keuangan.klaim-bpjs', ['division' => $division->slug, 'awal' => $awal, 'akhir' => $akhir]) }}"
+                        class="btn btn-light font-weight-bold px-5">
+                        <i class="fas fa-undo mr-2"></i>
+                        Reset
+                    </a>
+                @endif
+
+            </form>
+
             <div class="table-responsive">
 
                 <table class="table table-modern">
@@ -333,6 +339,8 @@
                         <tr>
                             <th>Tanggal Pengajuan</th>
                             <th>No. SEP</th>
+                            <th>No. Registrasi</th>
+                            <th>Jenis BPJS</th>
                             <th>Pasien</th>
                             <th>Jumlah Klaim</th>
                             <th>Disetujui</th>
@@ -356,7 +364,17 @@
                                 </td>
 
                                 <td>
-                                    {{ $item->pasien->nama ?? '-' }}
+                                    {{ $item->no_reg ?? '-' }}
+                                </td>
+
+                                <td>
+                                    <span class="badge badge-light-primary font-weight-bold">
+                                        {{ $item->jenis_bpjs ?? '-' }}
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <span class="font-weight-bold text-dark">{{ $item->pasien?->nama ?? '-' }}</span>
                                 </td>
 
                                 <td>
@@ -364,15 +382,13 @@
                                 </td>
 
                                 <td class="font-weight-bold text-dark">
-                                    Rp {{ number_format($item->jumlah_disetujui, 0, ',', '.') }}
+                                    {{ $item->jumlah_disetujui !== null ? 'Rp '.number_format($item->jumlah_disetujui, 0, ',', '.') : '-' }}
                                 </td>
 
                                 <td>
-                                    @php
-                                        $status = strtolower((string) ($item->status ?? ''));
-                                        $statusClass = str_contains($status, 'setuju') ? 'status-approved' : (str_contains($status, 'tolak') ? 'status-rejected' : (str_contains($status, 'proses') || str_contains($status, 'pending') ? 'status-pending' : 'status-default'));
-                                    @endphp
-                                    <span class="status-badge {{ $statusClass }}">{{ $item->status ?? 'Belum ada status' }}</span>
+                                    <span class="badge badge-light-info font-weight-bold px-3 py-2">
+                                        {{ $item->status ?? '-' }}
+                                    </span>
                                 </td>
 
                                 <td>
@@ -384,8 +400,10 @@
                         @empty
 
                             <tr>
-                                <td colspan="7" class="text-center text-muted py-5">
-                                    Belum ada data klaim BPJS pada periode ini.
+                                <td colspan="9" class="empty-state">
+                                    <div class="mb-3"><i class="fas fa-file-invoice fa-3x"></i></div>
+                                    <strong>Belum ada data klaim BPJS pada periode ini.</strong>
+                                    <div class="mt-2">Coba pilih rentang tanggal yang berbeda untuk melihat daftar klaim.</div>
                                 </td>
                             </tr>
 
@@ -396,7 +414,10 @@
                 </table>
 
             </div>
-            @endif
+
+            <div class="mt-4">
+                {{ $klaim->links() }}
+            </div>
 
         </div>
 
