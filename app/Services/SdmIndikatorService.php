@@ -66,6 +66,32 @@ class SdmIndikatorService
             ->values();
     }
 
+    public function daftarPegawai(?string $kelompok = null, ?string $cari = null)
+    {
+        $query = Pegawai::where('aktif', true)
+            ->with(['profesi', 'unitKerja'])
+            ->orderBy('nama');
+
+        if ($cari) {
+            $query->where(function ($q) use ($cari) {
+                $q->where('nama', 'like', "%{$cari}%")
+                    ->orWhere('nip', 'like', "%{$cari}%");
+            });
+        }
+
+        return $query->get()
+            ->map(function ($pegawai) {
+                $kelompok = $pegawai->kelompok_besar ?: 'Belum Diisi';
+
+                $pegawai->kelompok = $kelompok;
+                $pegawai->kelompok_label = $kelompok;
+
+                return $pegawai;
+            })
+            ->when($kelompok, fn($pegawai) => $pegawai->where('kelompok', $kelompok))
+            ->values();
+    }
+
     /**
      * Persentase kehadiran pegawai dalam periode.
      * Rumus: jumlah hadir / jumlah hari kerja wajib x 100%
