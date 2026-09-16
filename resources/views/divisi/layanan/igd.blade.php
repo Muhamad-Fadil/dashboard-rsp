@@ -196,7 +196,6 @@
                             <th>No. Kunjungan</th>
                             <th>Pasien</th>
                             <th>Poli</th>
-                            <th>Dokter</th>
                             <th>Tipe Pembayaran</th>
                             <th>Waktu Daftar</th>
                             <th>Status</th>
@@ -211,7 +210,6 @@
                                 <div class="text-muted font-size-sm">{{ $k->pasien->no_rm ?? '-' }}</div>
                             </td>
                             <td class="text-muted">{{ $k->poli->nama_poli ?? 'Gawat Darurat' }}</td>
-                            <td class="text-muted">{{ $k->dokter->nama ?? 'Belum tercatat' }}</td>
                             <td>
                                 @php
                                     $warnaTipe = match($k->pasien?->jenisPembayaran?->kode) {
